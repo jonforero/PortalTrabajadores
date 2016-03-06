@@ -1,0 +1,370 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+Este archivo es utilizado por el proceso de paquete/publicación de nuestro proyecto Web. Puede personalizar el comportamiento de este proceso
+editando este archivo MSBuild. Para conocer más acerca de esto, visite http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\Publicacion\Sumiservis</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/AjaxControlToolkit.dll">
+      <publishTime>02/17/2014 13:47:36</publishTime>
+    </File>
+    <File Include="bin/AjaxMin.dll">
+      <publishTime>02/17/2014 13:47:36</publishTime>
+    </File>
+    <File Include="bin/App_global.asax.compiled">
+      <publishTime>05/09/2014 05:47:06</publishTime>
+    </File>
+    <File Include="bin/App_global.asax.dll">
+      <publishTime>05/09/2014 05:47:06</publishTime>
+    </File>
+    <File Include="bin/ar/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/cs/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/de/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/es/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/es/Microsoft.QualityTools.Testing.Fakes.resources.dll">
+      <publishTime>10/05/2013 04:09:56</publishTime>
+    </File>
+    <File Include="bin/fr/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/he/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/hi/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/HtmlAgilityPack.dll">
+      <publishTime>05/09/2014 02:04:52</publishTime>
+    </File>
+    <File Include="bin/it/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/itextsharp.dll">
+      <publishTime>05/15/2014 18:34:06</publishTime>
+    </File>
+    <File Include="bin/ja/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/ko/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/Microsoft.QualityTools.Testing.Fakes.dll">
+      <publishTime>10/05/2013 02:38:22</publishTime>
+    </File>
+    <File Include="bin/Microsoft.WindowsAzure.Storage.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/MySql.Data.dll">
+      <publishTime>04/20/2014 21:03:00</publishTime>
+    </File>
+    <File Include="bin/nl/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/pl/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/PortalTrabajadores.dll">
+      <publishTime>04/13/2015 21:47:50</publishTime>
+    </File>
+    <File Include="bin/pt/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/ru/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/tr-TR/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/zh-CHS/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="bin/zh-CHT/AjaxControlToolkit.resources.dll">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="CSS/cerlaboral.css">
+      <publishTime>05/21/2014 17:57:10</publishTime>
+    </File>
+    <File Include="CSS/CSSCallapsePanel.css">
+      <publishTime>04/29/2014 00:23:10</publishTime>
+    </File>
+    <File Include="CSS/CSSConCliente.css">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="CSS/CSSLogin.css">
+      <publishTime>03/04/2014 16:26:08</publishTime>
+    </File>
+    <File Include="CSS/CSSPrincipal.css">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="CSS/font.css">
+      <publishTime>04/29/2014 00:23:10</publishTime>
+    </File>
+    <File Include="CSS/Loading.css">
+      <publishTime>05/21/2014 17:57:10</publishTime>
+    </File>
+    <File Include="CSS/login.css">
+      <publishTime>05/05/2014 00:07:28</publishTime>
+    </File>
+    <File Include="CSS/main_style.css">
+      <publishTime>07/06/2014 13:01:26</publishTime>
+    </File>
+    <File Include="CSS/normalize.css">
+      <publishTime>04/29/2014 00:23:10</publishTime>
+    </File>
+    <File Include="CSS/VentanaModal.css">
+      <publishTime>05/04/2014 22:01:08</publishTime>
+    </File>
+    <File Include="DataSet1.xsc">
+      <publishTime>03/25/2015 23:40:40</publishTime>
+    </File>
+    <File Include="DataSet1.xss">
+      <publishTime>03/25/2015 23:40:40</publishTime>
+    </File>
+    <File Include="DataSet2.xsc">
+      <publishTime>03/23/2015 18:14:42</publishTime>
+    </File>
+    <File Include="DataSet2.xss">
+      <publishTime>03/23/2015 18:14:42</publishTime>
+    </File>
+    <File Include="Estilos/SumiServis/CSS/login_style.css">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Estilos/SumiServis/CSS/main_style.css">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Estilos/SumiServis/images/fondo_body.jpg">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Estilos/SumiServis/images/Logo.jpg">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Estilos/SumiServis/images/Logo.png">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Estilos/SumiServis/images/Nombre.png">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Estilos/SumiServis/images/Thumbs.db">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Estilos/SumiTemp/CSS/login_style.css">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Estilos/SumiTemp/CSS/main_style.css">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Estilos/SumiTemp/images/fondo_body.jpg">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Estilos/SumiTemp/images/Logo.jpg">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Estilos/SumiTemp/images/Logo.png">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Estilos/SumiTemp/images/Nombre.png">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Estilos/SumiTemp/images/Thumbs.db">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="fonts/icomoon.eot">
+      <publishTime>04/21/2014 21:05:26</publishTime>
+    </File>
+    <File Include="fonts/icomoon.svg">
+      <publishTime>04/21/2014 21:05:26</publishTime>
+    </File>
+    <File Include="fonts/icomoon.ttf">
+      <publishTime>04/21/2014 21:05:26</publishTime>
+    </File>
+    <File Include="fonts/icomoon.woff">
+      <publishTime>04/21/2014 21:05:26</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>04/03/2014 16:21:38</publishTime>
+    </File>
+    <File Include="Html/SumiServis.html">
+      <publishTime>06/10/2014 10:50:36</publishTime>
+    </File>
+    <File Include="Img/Banner.png">
+      <publishTime>04/07/2015 00:19:04</publishTime>
+    </File>
+    <File Include="Img/Bienvenido SURA Sumiservis.JPG">
+      <publishTime>06/30/2014 09:38:12</publishTime>
+    </File>
+    <File Include="Img/Firma.png">
+      <publishTime>05/21/2014 18:04:52</publishTime>
+    </File>
+    <File Include="Img/fondo_body.jpg">
+      <publishTime>04/29/2014 00:22:44</publishTime>
+    </File>
+    <File Include="Img/Footer.png">
+      <publishTime>05/22/2014 22:36:40</publishTime>
+    </File>
+    <File Include="Img/Logo.png">
+      <publishTime>04/29/2014 00:22:24</publishTime>
+    </File>
+    <File Include="Img/Logo_SumiServis.jpg">
+      <publishTime>05/09/2014 03:16:46</publishTime>
+    </File>
+    <File Include="Img/Nombre.png">
+      <publishTime>05/04/2014 20:35:38</publishTime>
+    </File>
+    <File Include="Img/pdf.gif">
+      <publishTime>04/29/2014 00:22:44</publishTime>
+    </File>
+    <File Include="Img/printButton.png">
+      <publishTime>05/09/2014 03:12:08</publishTime>
+    </File>
+    <File Include="Img/Sumiservis.jpg">
+      <publishTime>05/22/2014 22:36:50</publishTime>
+    </File>
+    <File Include="Js/funciones.js">
+      <publishTime>04/29/2014 15:14:46</publishTime>
+    </File>
+    <File Include="login.aspx">
+      <publishTime>04/13/2015 21:45:23</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>05/15/2014 18:34:08</publishTime>
+    </File>
+    <File Include="Portal/Actualizadatos.aspx">
+      <publishTime>01/07/2015 00:10:50</publishTime>
+    </File>
+    <File Include="Portal/CambioContrasena.aspx">
+      <publishTime>10/01/2014 22:31:50</publishTime>
+    </File>
+    <File Include="Portal/CargueArchivos.aspx">
+      <publishTime>05/21/2014 17:47:08</publishTime>
+    </File>
+    <File Include="Portal/CargueEmpleados.aspx">
+      <publishTime>09/17/2014 22:25:21</publishTime>
+    </File>
+    <File Include="Portal/CargueNomina.aspx">
+      <publishTime>09/17/2014 22:25:39</publishTime>
+    </File>
+    <File Include="Portal/Certificado.aspx">
+      <publishTime>05/21/2014 18:02:50</publishTime>
+    </File>
+    <File Include="Portal/Cesantias.aspx">
+      <publishTime>01/10/2015 19:38:35</publishTime>
+    </File>
+    <File Include="Portal/Comprobantes.aspx">
+      <publishTime>05/13/2014 16:44:50</publishTime>
+    </File>
+    <File Include="Portal/Contactenos.aspx">
+      <publishTime>10/01/2014 22:54:03</publishTime>
+    </File>
+    <File Include="Portal/default.aspx">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Portal/EstadoFondo.aspx">
+      <publishTime>01/10/2015 19:38:35</publishTime>
+    </File>
+    <File Include="Portal/index.aspx">
+      <publishTime>04/07/2015 00:20:22</publishTime>
+    </File>
+    <File Include="Portal/IngRetenciones.aspx">
+      <publishTime>03/24/2015 01:02:44</publishTime>
+    </File>
+    <File Include="Portal/Laboral.aspx">
+      <publishTime>05/21/2014 17:58:00</publishTime>
+    </File>
+    <File Include="Portal/login.aspx">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Portal/ModificarDatos.aspx">
+      <publishTime>04/13/2015 21:41:36</publishTime>
+    </File>
+    <File Include="Portal/Nomina.aspx">
+      <publishTime>03/30/2015 11:02:38</publishTime>
+    </File>
+    <File Include="Portal/PaginaMaestra.Master">
+      <publishTime>05/22/2014 00:31:48</publishTime>
+    </File>
+    <File Include="Portal/PrimeraContrasena.aspx">
+      <publishTime>05/15/2014 18:16:42</publishTime>
+    </File>
+    <File Include="Portal/prueba.aspx">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Portal/Retefuente.aspx">
+      <publishTime>01/10/2015 19:38:35</publishTime>
+    </File>
+    <File Include="Portal/Retenciones.aspx">
+      <publishTime>03/23/2015 18:14:25</publishTime>
+    </File>
+    <File Include="Portal/Segsocial.aspx">
+      <publishTime>01/10/2015 19:38:35</publishTime>
+    </File>
+    <File Include="PrecompiledApp.config">
+      <publishTime>05/09/2014 05:47:04</publishTime>
+    </File>
+    <File Include="prueba.aspx">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="RecuperarContrasena.aspx">
+      <publishTime>04/13/2015 21:46:58</publishTime>
+    </File>
+    <File Include="RepositorioPDF/Aliados/Cesantias/123.pdf">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="RepositorioPDF/Aliados/IngRet/123.pdf">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="RepositorioPDF/Aliados/SegSocial/123.pdf">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="RepositorioPDF/Cesantias/37899866.pdf">
+      <publishTime>05/01/2014 09:47:46</publishTime>
+    </File>
+    <File Include="RepositorioPDF/Fondo/123.pdf">
+      <publishTime>01/05/2014 09:47:45</publishTime>
+    </File>
+    <File Include="RepositorioPDF/Fondo/37899866.pdf">
+      <publishTime>05/05/2014 00:08:24</publishTime>
+    </File>
+    <File Include="RepositorioPDF/IngRet/37899866.pdf">
+      <publishTime>05/05/2014 00:08:26</publishTime>
+    </File>
+    <File Include="RepositorioPDF/SegSocial/37899866.pdf">
+      <publishTime>05/05/2014 00:08:28</publishTime>
+    </File>
+    <File Include="RepositorioPDF/Sumiservis/Cesantias/123.pdf">
+      <publishTime>01/05/2014 09:47:45</publishTime>
+    </File>
+    <File Include="RepositorioPDF/Sumiservis/Cesantias/StyleSheet1.css">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="RepositorioPDF/Sumiservis/IngRet/123.pdf">
+      <publishTime>01/05/2014 09:47:45</publishTime>
+    </File>
+    <File Include="RepositorioPDF/Sumiservis/SegSocial/123.pdf">
+      <publishTime>01/05/2014 09:47:45</publishTime>
+    </File>
+    <File Include="RepositorioPDF/Sumitemp/Cesantias/123.pdf">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="RepositorioPDF/Sumitemp/IngRet/123.pdf">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="RepositorioPDF/Sumitemp/SegSocial/123.pdf">
+      <publishTime>01/01/0001 00:00:00</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>04/05/2015 20:39:03</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
