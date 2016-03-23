@@ -96,6 +96,9 @@
     <Content Include="Img\pdf.gif" />
     <Content Include="Img\printButton.png" />
     <Content Include="Js\funciones.js" />
+    <Content Include="lib\ClosedXML.dll" />
+    <Content Include="lib\ClosedXML.XML" />
+    <Content Include="lib\DocumentFormat.OpenXml.dll" />
     <Content Include="Portal\Actualizadatos.aspx" />
     <Content Include="Portal\Certificado.aspx" />
     <Content Include="Portal\Comprobantes.aspx" />
