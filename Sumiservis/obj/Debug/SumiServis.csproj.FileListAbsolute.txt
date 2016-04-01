@@ -101,3 +101,18 @@ D:\Proyectos\Sumi Nuevos\PortalTrabajadores\PortalTrabajadores\Sumiservis\obj\De
 D:\Proyectos\Sumi Nuevos\PortalTrabajadores\PortalTrabajadores\Sumiservis\obj\Debug\PortalTrabajadores.dll
 D:\Proyectos\Sumi Nuevos\PortalTrabajadores\PortalTrabajadores\Sumiservis\obj\Debug\PortalTrabajadores.pdb
 C:\Users\m3m0X\Documents\Visual Studio 2013\Projects\PortalTrabajadores\Sumiservis\obj\Debug\SumiServis.csprojResolveAssemblyReference.cache
+D:\Sumi\PortalTrabajadores\Sumiservis\bin\PortalTrabajadores.dll.config
+D:\Sumi\PortalTrabajadores\Sumiservis\bin\PortalTrabajadores.dll
+D:\Sumi\PortalTrabajadores\Sumiservis\bin\PortalTrabajadores.pdb
+D:\Sumi\PortalTrabajadores\Sumiservis\bin\HtmlAgilityPack.dll
+D:\Sumi\PortalTrabajadores\Sumiservis\bin\itextsharp.dll
+D:\Sumi\PortalTrabajadores\Sumiservis\bin\Microsoft.QualityTools.Testing.Fakes.dll
+D:\Sumi\PortalTrabajadores\Sumiservis\bin\HtmlAgilityPack.pdb
+D:\Sumi\PortalTrabajadores\Sumiservis\bin\HtmlAgilityPack.xml
+D:\Sumi\PortalTrabajadores\Sumiservis\bin\itextsharp.xml
+D:\Sumi\PortalTrabajadores\Sumiservis\bin\es\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Sumi\PortalTrabajadores\Sumiservis\obj\Debug\SumiServis.csprojResolveAssemblyReference.cache
+D:\Sumi\PortalTrabajadores\Sumiservis\obj\Debug\RdlCompile.cache
+D:\Sumi\PortalTrabajadores\Sumiservis\obj\Debug\RdlCompile.compiled
+D:\Sumi\PortalTrabajadores\Sumiservis\obj\Debug\PortalTrabajadores.dll
+D:\Sumi\PortalTrabajadores\Sumiservis\obj\Debug\PortalTrabajadores.pdb
