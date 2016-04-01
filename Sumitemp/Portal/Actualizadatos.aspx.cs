@@ -16,6 +16,8 @@ namespace PortalTrabajadores.Portal
     public partial class Actualizadatos : System.Web.UI.Page
     {
         string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
+        string bd1 = ConfigurationManager.AppSettings["BD1"].ToString();
+        string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
 
         #region Definicion de los Metodos de la Clase
 
@@ -41,7 +43,7 @@ namespace PortalTrabajadores.Portal
                         CargarInfoEmpleado(Session["usuario"].ToString());
                         Session.Add("cambiaContrasena", false);
 
-                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM basica_trabajador.Options_Menu WHERE url = 'Actualizadatos.aspx' AND idEmpresa = 'ST'", Conexion.ObtenerCnMysql());
+                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'Actualizadatos.aspx' AND idEmpresa = 'ST'", Conexion.ObtenerCnMysql());
                         MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                         DataSet dsDataSet = new DataSet();
                         DataTable dtDataTable = null;
@@ -76,7 +78,7 @@ namespace PortalTrabajadores.Portal
             CnMysql Conexion = new CnMysql(Cn);
             try
             {
-                MySqlCommand comando = new MySqlCommand("SELECT idCiudades, Descripcion_Ciudades FROM basica_trabajador.ciudades ORDER BY Descripcion_Ciudades", Conexion.ObtenerCnMysql());
+                MySqlCommand comando = new MySqlCommand("SELECT idCiudades, Descripcion_Ciudades FROM " + bd1 + ".ciudades ORDER BY Descripcion_Ciudades", Conexion.ObtenerCnMysql());
                 MySqlDataAdapter da = new MySqlDataAdapter(comando);
                 DataSet dsDataSet = new DataSet();
                 DataTable dtDataTable = null;
@@ -166,7 +168,7 @@ namespace PortalTrabajadores.Portal
             try
             {
                 Conexion.AbrirCnMysql();
-                MySqlCommand cmd = new MySqlCommand("trabajadores.sp_ActualizaEmpleado", Conexion.ObtenerCnMysql());
+                MySqlCommand cmd = new MySqlCommand(bd2 + ".sp_ActualizaEmpleado", Conexion.ObtenerCnMysql());
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@idEmpleado", TxtDoc.Text);
                 cmd.Parameters.AddWithValue("@nombresEmpleado", TxtNombres.Text);
@@ -238,7 +240,7 @@ namespace PortalTrabajadores.Portal
             try
             {
                 Conexion.AbrirCnMysql();
-                MySqlCommand cmd = new MySqlCommand("trabajadores.sp_ConsultaEmpleados", Conexion.ObtenerCnMysql());
+                MySqlCommand cmd = new MySqlCommand(bd2 + ".sp_ConsultaEmpleados", Conexion.ObtenerCnMysql());
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@idEmpleado", id_Empleado);
                 cmd.Parameters.AddWithValue("@empresa", "ST");
@@ -321,7 +323,7 @@ namespace PortalTrabajadores.Portal
                 CnMysql Conexion = new CnMysql(Cn);
                 try
                 {
-                    MySqlCommand scSqlCommand = new MySqlCommand("SELECT Contrasena_Empleado FROM trabajadores.empleados where Id_Empleado = '" + Session["usuario"].ToString() + "'", Conexion.ObtenerCnMysql());
+                    MySqlCommand scSqlCommand = new MySqlCommand("SELECT Contrasena_Empleado FROM " + bd2 + ".empleados where Id_Empleado = '" + Session["usuario"].ToString() + "'", Conexion.ObtenerCnMysql());
                     MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                     DataSet dsDataSet = new DataSet();
                     DataTable dtDataTable = null;

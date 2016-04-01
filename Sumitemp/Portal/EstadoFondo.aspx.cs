@@ -13,6 +13,8 @@ namespace PortalTrabajadores.Portal
     public partial class EstadoFondo : System.Web.UI.Page
     {
         string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
+        string bd1 = ConfigurationManager.AppSettings["BD1"].ToString();
+        string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
         string ruta = ConfigurationManager.AppSettings["RepositorioPDF"].ToString();
 
         #region Definicion de los Metodos de la Clase
@@ -30,13 +32,13 @@ namespace PortalTrabajadores.Portal
             }
             else
             {
-                SqlDataSource1.SelectCommand = "SELECT idfondo, anio_fondo, Mes_fondo, ruta_archivo_fondo as ruta,nombre_archivo_fondo as nombre FROM trabajadores.fondo where Empleados_Id_Empleado =" + Session["usuario"].ToString() + ";";
+                SqlDataSource1.SelectCommand = "SELECT idfondo, anio_fondo, Mes_fondo, ruta_archivo_fondo as ruta,nombre_archivo_fondo as nombre FROM " + bd2 + ".fondo where Empleados_Id_Empleado =" + Session["usuario"].ToString() + ";";
                 if (!IsPostBack)
                 {
                     CnMysql Conexion = new CnMysql(Cn);
                     try
                     {
-                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM basica_trabajador.Options_Menu WHERE url = 'EstadoFondo.aspx' AND idEmpresa = 'ST'", Conexion.ObtenerCnMysql());
+                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'EstadoFondo.aspx' AND idEmpresa = 'ST'", Conexion.ObtenerCnMysql());
                         MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                         DataSet dsDataSet = new DataSet();
                         DataTable dtDataTable = null;

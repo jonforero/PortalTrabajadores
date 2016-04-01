@@ -22,6 +22,7 @@ namespace PortalTrabajadores.Portal
     public partial class Visual : System.Web.UI.Page
     {
         string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
+        string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
 
         #region Definicion de los Metodos de la Clase
 
@@ -70,7 +71,7 @@ namespace PortalTrabajadores.Portal
             try
             {
                 Conexion.AbrirCnMysql();
-                cmd = new MySqlCommand("trabajadores.sp_GenCertificado", Conexion.ObtenerCnMysql());
+                cmd = new MySqlCommand(bd2 + ".sp_GenCertificado", Conexion.ObtenerCnMysql());
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@NumCed", id_Empleado);
 
