@@ -14,6 +14,7 @@ namespace PortalTrabajadores.Portal
     public partial class RecuperarContrasena : System.Web.UI.Page
     {
         string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
+        string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
 
         #region Definicion de los Metodos de la Clase
 
@@ -36,7 +37,7 @@ namespace PortalTrabajadores.Portal
             CnMysql Conexion = new CnMysql(Cn);
             try
             {
-                MySqlCommand scSqlCommand = new MySqlCommand("SELECT Id_Empleado, Contrasena_Empleado FROM trabajadores.empleados where Correo_Empleado = '" + this.txtMail.Text + "' and Id_Empleado = '" + this.txtIdentificacion.Text + "'", Conexion.ObtenerCnMysql());
+                MySqlCommand scSqlCommand = new MySqlCommand("SELECT Id_Empleado, Contrasena_Empleado FROM " + bd2 + ".empleados where Correo_Empleado = '" + this.txtMail.Text + "' and Id_Empleado = '" + this.txtIdentificacion.Text + "'", Conexion.ObtenerCnMysql());
                 MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                 DataSet dsDataSet = new DataSet();
                 DataTable dtDataTable = null;
@@ -56,7 +57,7 @@ namespace PortalTrabajadores.Portal
                 {
                     lblMsg.Text = "Se ha enviado un mensaje a su correo. Si no recibe este correo, comuniquese con el administrador.";
 
-                    MySqlCommand sqlCommand = new MySqlCommand("UPDATE trabajadores.empleados SET Contrasena_Activo = 1 WHERE Id_Empleado = '" + this.txtIdentificacion.Text + "'", Conexion.ObtenerCnMysql());
+                    MySqlCommand sqlCommand = new MySqlCommand("UPDATE " + bd2 + ".empleados SET Contrasena_Activo = 1 WHERE Id_Empleado = '" + this.txtIdentificacion.Text + "'", Conexion.ObtenerCnMysql());
                     sqlCommand.ExecuteNonQuery();
                 }
                 else

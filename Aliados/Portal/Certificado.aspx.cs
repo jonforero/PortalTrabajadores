@@ -61,6 +61,7 @@ namespace PortalTrabajadores.Portal
         public void generarCertificado(string id_Empleado)
         {
             string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
+            string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
             CnMysql Conexion = new CnMysql(Cn);
             MySqlDataReader reader = null;
             MySqlCommand cmd = new MySqlCommand();
@@ -68,7 +69,7 @@ namespace PortalTrabajadores.Portal
             try
             {
                 Conexion.AbrirCnMysql();
-                cmd = new MySqlCommand("trabajadores.sp_GenCertificado", Conexion.ObtenerCnMysql());
+                cmd = new MySqlCommand(bd2 +".sp_GenCertificado", Conexion.ObtenerCnMysql());
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@NumCed", id_Empleado);
 
