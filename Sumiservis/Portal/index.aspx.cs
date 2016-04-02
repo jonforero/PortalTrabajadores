@@ -13,6 +13,7 @@ namespace PortalTrabajadores.Portal
     public partial class index1 : System.Web.UI.Page
     {
         string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
+        string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
 
         #region Definicion de los Metodos de la Clase
 
@@ -33,7 +34,7 @@ namespace PortalTrabajadores.Portal
             {
                 if (!IsPostBack)
                 {
-                    MySqlCommand scSqlCommand = new MySqlCommand("SELECT Contrasena_Activo FROM trabajadores.empleados where Id_Empleado = '" + this.Session["usuario"].ToString() + "'", Conexion.ObtenerCnMysql());
+                    MySqlCommand scSqlCommand = new MySqlCommand("SELECT Contrasena_Activo FROM " + bd2 + ".empleados where Id_Empleado = '" + this.Session["usuario"].ToString() + "'", Conexion.ObtenerCnMysql());
                     MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                     DataSet dsDataSet = new DataSet();
                     DataTable dtDataTable = null;

@@ -14,6 +14,8 @@ namespace PortalTrabajadores.Portal
     public partial class Estadocesantias : System.Web.UI.Page
     {
         string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
+        string bd1 = ConfigurationManager.AppSettings["BD1"].ToString();
+        string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
 		string ruta = ConfigurationManager.AppSettings["RepositorioPDF"].ToString();
 		
         #region Definicion de los Metodos de la Clase
@@ -31,13 +33,13 @@ namespace PortalTrabajadores.Portal
             }
             else
             {
-                SqlDataSource1.SelectCommand = "SELECT idCesantia, anio_cesantia, Mes_Cesantia, ruta_archivo_cesantia as ruta,nombre_archivo_cesantia as nombre FROM trabajadores.cesantias where Empleados_Id_Empleado =" + Session["usuario"].ToString() + " and Empleados_idEmpresa = 'SS';";
+                SqlDataSource1.SelectCommand = "SELECT idCesantia, anio_cesantia, Mes_Cesantia, ruta_archivo_cesantia as ruta,nombre_archivo_cesantia as nombre FROM " + bd2 + ".cesantias where Empleados_Id_Empleado =" + Session["usuario"].ToString() + " and Empleados_idEmpresa = 'SS';";
                 if (!IsPostBack)
                 {
                     CnMysql Conexion = new CnMysql(Cn);
                     try
                     {
-                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM basica_trabajador.Options_Menu WHERE url = 'Cesantias.aspx' AND idEmpresa = 'SS'", Conexion.ObtenerCnMysql());
+                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'Cesantias.aspx' AND idEmpresa = 'SS'", Conexion.ObtenerCnMysql());
                         MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                         DataSet dsDataSet = new DataSet();
                         DataTable dtDataTable = null;
