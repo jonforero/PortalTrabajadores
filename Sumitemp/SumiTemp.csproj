@@ -113,6 +113,7 @@
     <Content Include="Portal\IngRetenciones.aspx" />
     <Content Include="Portal\Laboral.aspx" />
     <Content Include="Portal\ModificarDatos.aspx" />
+    <Content Include="Portal\FijarObjetivos.aspx" />
     <Content Include="Portal\PrimeraContrasena.aspx" />
     <Content Include="Portal\Nomina.aspx" />
     <Content Include="fonts\icomoon.eot" />
@@ -145,6 +146,7 @@
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <None Include="Properties\PublishProfiles\PerfilTrabajador.pubxml" />
     <Content Include="Portal\Retenciones.aspx" />
+    <Content Include="Portal\Seleccionjefe.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -260,6 +262,13 @@
     <Compile Include="Portal\ModificarDatos.aspx.designer.cs">
       <DependentUpon>ModificarDatos.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Portal\FijarObjetivos.aspx.cs">
+      <DependentUpon>FijarObjetivos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\FijarObjetivos.aspx.designer.cs">
+      <DependentUpon>FijarObjetivos.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Portal\PaginaMaestra.Master.cs">
       <DependentUpon>PaginaMaestra.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -301,6 +310,13 @@
     </Compile>
     <Compile Include="Portal\Segsocial.aspx.designer.cs">
       <DependentUpon>Segsocial.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\Seleccionjefe.aspx.cs">
+      <DependentUpon>Seleccionjefe.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\Seleccionjefe.aspx.designer.cs">
+      <DependentUpon>Seleccionjefe.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecuperarContrasena.aspx.cs">

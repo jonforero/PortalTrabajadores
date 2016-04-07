@@ -87,16 +87,23 @@ namespace PortalTrabajadores.Portal
         {
             if (valor)
             {
-                CnMysql Conexion = new CnMysql(Cn);
-                MySqlCommand scSqlCommand = new MySqlCommand("SELECT idOption_Menu, descripcion, idparent_option_Menu, url FROM " + bd1 + ".Options_Menu WHERE idEmpresa = 'ST' and TipoPortal = 'T'", Conexion.ObtenerCnMysql());
-                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
-                DataSet dsDataSet = new DataSet();
-                DataTable dtDataTable = null;
+                    CnMysql Conexion = new CnMysql(Cn);
+                    MySqlCommand cmd = new MySqlCommand();
+                    MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(); 
+                    DataTable dtDataTable = null;
+                    DataSet dsDataSet = new DataSet();              
+
                 try
                 {
                     Conexion.AbrirCnMysql();
-                    sdaSqlDataAdapter.Fill(dsDataSet);
-                    dtDataTable = dsDataSet.Tables[0];
+                    sdaSqlDataAdapter = new MySqlDataAdapter(bd1 + ".cargueMenu", Conexion.ObtenerCnMysql());
+                    sdaSqlDataAdapter.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    sdaSqlDataAdapter.SelectCommand.Parameters.AddWithValue("@idEmpleado", Session["usuario"].ToString());
+                    sdaSqlDataAdapter.SelectCommand.Parameters.AddWithValue("@Id_Empresa", "ST");
+                    sdaSqlDataAdapter.SelectCommand.Parameters.AddWithValue("@TipoPortal", "T");
+                    sdaSqlDataAdapter.Fill(dsDataSet);  
+                    
+                    dtDataTable = dsDataSet.Tables[1];
                     if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                     {
                         foreach (DataRow drDataRow in dtDataTable.Rows)
@@ -145,7 +152,7 @@ namespace PortalTrabajadores.Portal
                 try
                 {
                     dsDataSet = (DataSet)Session["Menu"];
-                    dtDataTable = dsDataSet.Tables[0];
+                    dtDataTable = dsDataSet.Tables[1];
                     if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                     {
                         foreach (DataRow drDataRow in dtDataTable.Rows)
