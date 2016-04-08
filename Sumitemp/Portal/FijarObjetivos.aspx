@@ -1,0 +1,85 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Portal/PaginaMaestra.Master" AutoEventWireup="true" CodeBehind="FijarObjetivos.aspx.cs" Inherits="PortalTrabajadores.Portal.Objetivos" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <!-- Css para la fecha -->
+    <link href="../CSS/CSSCallapsePanel.css" rel="stylesheet" type="text/css" />
+    <!-- Js De Los campos de Textos -->
+    <script src="../Js/funciones.js" type="text/javascript"></script>
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContainerTitulo" runat="server">
+    <asp:UpdatePanel ID="UpdatePanel2" runat="server">
+        <ContentTemplate>
+            <asp:Label ID="lblTitulo" runat="server" />
+        </ContentTemplate>
+    </asp:UpdatePanel>
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="Container" runat="server">
+    <div><asp:Label ID="lblInformacion" runat="server"></asp:Label></div>
+    <br />
+    <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
+        <ContentTemplate>
+            <div id="Container_UpdatePanelObservaciones" runat="server" visible="false">
+                <asp:Label ID="lblObservaciones" runat="server" CssClass="ObservacionesCSS"></asp:Label>
+            </div>
+            <div id="Container_UpdatePanel1" runat="server" visible="true" style="margin-top:15px">
+                <asp:GridView ID="gvObjetivosCreados" runat="server" AutoGenerateColumns="false" OnRowCommand="gvObjetivosCreados_RowCommand">
+                    <AlternatingRowStyle CssClass="ColorOscuro" />
+                    <Columns> 
+                        <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
+                        <asp:BoundField DataField="Ano" HeaderText="Año"/>
+                        <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
+                            <ItemTemplate>
+                                <asp:ImageButton ID="btnUpdate" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("idObjetivos")%>' CommandName="Editar" />
+                                <asp:ImageButton ID="btnDelete" runat="server" ImageUrl="~/Img/delete.gif" CommandArgument='<%#Eval("idObjetivos")%>' CommandName="Eliminar" />
+                            </ItemTemplate>
+                            <ItemStyle HorizontalAlign="Center" />
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
+                <br />
+                <asp:Button ID="BtnCrear" runat="server" Text="Crear Objetivo" Visible="false" OnClick="BtnCrear_Click"/>
+                <asp:Button ID="BtnEnviar" runat="server" Text="Enviar Objetivos a jefe" Visible="false" OnClick="BtnEnviar_Click"/>
+            </div>            
+            <div id="Container_UpdatePanelBloqueado" runat="server" visible="false">
+                <asp:GridView ID="gvObjetivosBloqueados" runat="server" AutoGenerateColumns="false">
+                    <AlternatingRowStyle CssClass="ColorOscuro" />
+                    <Columns> 
+                        <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
+                        <asp:BoundField DataField="Ano" HeaderText="Año"/>
+                    </Columns>
+                </asp:GridView>
+            </div>
+            <div id="Container_UpdatePanel2" runat="server" visible="false">
+                <br />
+                <table id="TablaDatos">
+                    <tr>
+                        <th colspan="2">Objetivos</th>
+                    </tr>
+                    <tr>
+                        <td class="CeldaTablaDatos"><asp:Label ID="lblObjetivo" runat="server" Text="Objetivo:" /></td>
+                        <td class="CeldaTablaDatos">
+                            <asp:TextBox ID="txtObjetivo" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px"/>
+                        </td>
+                    </tr>                
+                    <tr class="ColorOscuro">
+                        <td class="BotonTablaDatos"><asp:Button ID="BtnGuardar" runat="server" Text="Guardar" OnClick="BtnGuardar_Click"/></td>
+                        <td class="BotonTablaDatos"><asp:Button ID="BtnCancelar" runat="server" Text="Cancelar" OnClick="BtnCancel_Click"/></td>
+                    </tr>
+                </table>
+            </div>
+        </ContentTemplate>
+        <Triggers>
+            <asp:AsyncPostBackTrigger ControlID="BtnCrear" />
+        </Triggers>
+    </asp:UpdatePanel>
+</asp:Content>
+
+<asp:Content ID="Content4" ContentPlaceHolderID="Errores" runat="server">
+    <asp:UpdatePanel ID="UpdatePanel3" runat="server" UpdateMode="Conditional">
+        <ContentTemplate>
+             <asp:Label ID="LblMsj" runat="server" Text="LabelMsjError" Visible="False"></asp:Label>
+        </ContentTemplate>
+    </asp:UpdatePanel>
+</asp:Content>

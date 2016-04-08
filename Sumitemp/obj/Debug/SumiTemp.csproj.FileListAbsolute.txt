@@ -104,21 +104,6 @@ D:\Proyectos\Sumi Nuevos\PortalTrabajadores\PortalTrabajadores\Sumitemp\obj\Debu
 D:\Proyectos\Sumi Nuevos\PortalTrabajadores\PortalTrabajadores\Sumitemp\obj\Debug\RdlCompile.compiled
 D:\Proyectos\Sumi Nuevos\PortalTrabajadores\PortalTrabajadores\Sumitemp\obj\Debug\PortalTrabajadores.dll
 D:\Proyectos\Sumi Nuevos\PortalTrabajadores\PortalTrabajadores\Sumitemp\obj\Debug\PortalTrabajadores.pdb
-D:\Sumi\PortalTrabajadores\Sumitemp\bin\PortalTrabajadores.dll.config
-D:\Sumi\PortalTrabajadores\Sumitemp\bin\PortalTrabajadores.dll
-D:\Sumi\PortalTrabajadores\Sumitemp\bin\PortalTrabajadores.pdb
-D:\Sumi\PortalTrabajadores\Sumitemp\bin\HtmlAgilityPack.dll
-D:\Sumi\PortalTrabajadores\Sumitemp\bin\itextsharp.dll
-D:\Sumi\PortalTrabajadores\Sumitemp\bin\Microsoft.QualityTools.Testing.Fakes.dll
-D:\Sumi\PortalTrabajadores\Sumitemp\bin\HtmlAgilityPack.pdb
-D:\Sumi\PortalTrabajadores\Sumitemp\bin\HtmlAgilityPack.xml
-D:\Sumi\PortalTrabajadores\Sumitemp\bin\itextsharp.xml
-D:\Sumi\PortalTrabajadores\Sumitemp\bin\es\Microsoft.QualityTools.Testing.Fakes.resources.dll
-D:\Sumi\PortalTrabajadores\Sumitemp\obj\Debug\SumiTemp.csprojResolveAssemblyReference.cache
-D:\Sumi\PortalTrabajadores\Sumitemp\obj\Debug\RdlCompile.cache
-D:\Sumi\PortalTrabajadores\Sumitemp\obj\Debug\RdlCompile.compiled
-D:\Sumi\PortalTrabajadores\Sumitemp\obj\Debug\PortalTrabajadores.dll
-D:\Sumi\PortalTrabajadores\Sumitemp\obj\Debug\PortalTrabajadores.pdb
 D:\SUMI\ProyectoGIT\PortalTrabajadores\Sumitemp\bin\PortalTrabajadores.dll.config
 D:\SUMI\ProyectoGIT\PortalTrabajadores\Sumitemp\bin\PortalTrabajadores.dll
 D:\SUMI\ProyectoGIT\PortalTrabajadores\Sumitemp\bin\PortalTrabajadores.pdb
@@ -133,3 +118,32 @@ D:\SUMI\ProyectoGIT\PortalTrabajadores\Sumitemp\obj\Debug\RdlCompile.cache
 D:\SUMI\ProyectoGIT\PortalTrabajadores\Sumitemp\obj\Debug\RdlCompile.compiled
 D:\SUMI\ProyectoGIT\PortalTrabajadores\Sumitemp\obj\Debug\PortalTrabajadores.dll
 D:\SUMI\ProyectoGIT\PortalTrabajadores\Sumitemp\obj\Debug\PortalTrabajadores.pdb
+D:\PortalTrabajadores\Sumitemp\bin\PortalTrabajadores.dll.config
+D:\PortalTrabajadores\Sumitemp\bin\PortalTrabajadores.dll
+D:\PortalTrabajadores\Sumitemp\bin\PortalTrabajadores.pdb
+D:\PortalTrabajadores\Sumitemp\bin\HtmlAgilityPack.dll
+D:\PortalTrabajadores\Sumitemp\bin\itextsharp.dll
+D:\PortalTrabajadores\Sumitemp\bin\HtmlAgilityPack.pdb
+D:\PortalTrabajadores\Sumitemp\bin\HtmlAgilityPack.xml
+D:\PortalTrabajadores\Sumitemp\bin\itextsharp.xml
+D:\PortalTrabajadores\Sumitemp\bin\es\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\PortalTrabajadores\Sumitemp\obj\Debug\SumiTemp.csprojResolveAssemblyReference.cache
+D:\PortalTrabajadores\Sumitemp\obj\Debug\RdlCompile.cache
+D:\PortalTrabajadores\Sumitemp\obj\Debug\RdlCompile.compiled
+D:\PortalTrabajadores\Sumitemp\obj\Debug\PortalTrabajadores.dll
+D:\PortalTrabajadores\Sumitemp\obj\Debug\PortalTrabajadores.pdb
+D:\Sumi\PortalTrabajadores\Sumitemp\bin\PortalTrabajadores.dll.config
+D:\Sumi\PortalTrabajadores\Sumitemp\bin\PortalTrabajadores.dll
+D:\Sumi\PortalTrabajadores\Sumitemp\bin\PortalTrabajadores.pdb
+D:\Sumi\PortalTrabajadores\Sumitemp\bin\HtmlAgilityPack.dll
+D:\Sumi\PortalTrabajadores\Sumitemp\bin\itextsharp.dll
+D:\Sumi\PortalTrabajadores\Sumitemp\bin\Microsoft.QualityTools.Testing.Fakes.dll
+D:\Sumi\PortalTrabajadores\Sumitemp\bin\HtmlAgilityPack.pdb
+D:\Sumi\PortalTrabajadores\Sumitemp\bin\HtmlAgilityPack.xml
+D:\Sumi\PortalTrabajadores\Sumitemp\bin\itextsharp.xml
+D:\Sumi\PortalTrabajadores\Sumitemp\bin\es\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Sumi\PortalTrabajadores\Sumitemp\obj\Debug\RdlCompile.cache
+D:\Sumi\PortalTrabajadores\Sumitemp\obj\Debug\RdlCompile.compiled
+D:\Sumi\PortalTrabajadores\Sumitemp\obj\Debug\PortalTrabajadores.dll
+D:\Sumi\PortalTrabajadores\Sumitemp\obj\Debug\PortalTrabajadores.pdb
+D:\Sumi\PortalTrabajadores\Sumitemp\obj\Debug\SumiTemp.csprojResolveAssemblyReference.cache

@@ -117,6 +117,7 @@
     <Content Include="Portal\Laboral.aspx" />
     <Content Include="Portal\ModificarDatos.aspx" />
     <Content Include="Portal\FijarObjetivos.aspx" />
+    <Content Include="Portal\ValidarSeguimiento1.aspx" />
     <Content Include="Portal\PrimeraContrasena.aspx" />
     <Content Include="Portal\Nomina.aspx" />
     <Content Include="fonts\icomoon.eot" />
@@ -279,6 +280,13 @@
     </Compile>
     <Compile Include="Portal\PaginaMaestra.Master.designer.cs">
       <DependentUpon>PaginaMaestra.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\ValidarSeguimiento1.aspx.cs">
+      <DependentUpon>ValidarSeguimiento1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\ValidarSeguimiento1.aspx.designer.cs">
+      <DependentUpon>ValidarSeguimiento1.aspx</DependentUpon>
     </Compile>
     <Compile Include="Portal\PrimeraContrasena.aspx.cs">
       <DependentUpon>PrimeraContrasena.aspx</DependentUpon>
