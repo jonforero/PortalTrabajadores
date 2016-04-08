@@ -90,6 +90,8 @@
     <Content Include="CSS\main_style.css" />
     <Content Include="Html\SumiTemp.html" />
     <Content Include="Img\Banner.png" />
+    <Content Include="Img\delete.gif" />
+    <Content Include="Img\edit.gif" />
     <Content Include="Img\Firma.png" />
     <Content Include="Img\Footer.png" />
     <Content Include="Img\loader.gif" />
@@ -99,6 +101,7 @@
     <Content Include="Img\Nombre.png" />
     <Content Include="fonts\icomoon.svg" />
     <Content Include="Img\fondo_body.jpg" />
+    <Content Include="Img\ok.gif" />
     <Content Include="Img\pdf.gif" />
     <Content Include="Img\printButton.png" />
     <Content Include="Img\Sumitemp.jpg" />
@@ -147,6 +150,7 @@
     <None Include="Properties\PublishProfiles\PerfilTrabajador.pubxml" />
     <Content Include="Portal\Retenciones.aspx" />
     <Content Include="Portal\Seleccionjefe.aspx" />
+    <Content Include="Portal\ValidarObjetivos.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -317,6 +321,13 @@
     </Compile>
     <Compile Include="Portal\Seleccionjefe.aspx.designer.cs">
       <DependentUpon>Seleccionjefe.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\ValidarObjetivos.aspx.cs">
+      <DependentUpon>ValidarObjetivos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\ValidarObjetivos.aspx.designer.cs">
+      <DependentUpon>ValidarObjetivos.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecuperarContrasena.aspx.cs">
