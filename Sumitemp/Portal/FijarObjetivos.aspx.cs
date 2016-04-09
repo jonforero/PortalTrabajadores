@@ -60,7 +60,7 @@ namespace PortalTrabajadores.Portal
                             if (this.ComprobarFechaEtapas("1", DateTime.Now))
                             {
                                 //// Comprueba si esta en una estado de la etapa valido, sino restringe la vista
-                                if (this.ComprobarEstadoEtapa(Session["idJefeEmpleado"].ToString()))
+                                if (this.ComprobarEstadoEtapa(Session["idJefeEmpleado"].ToString(), "1"))
                                 {
                                     //// Carga los objetivos Modificables
                                     this.CargarObjetivos(Session["idJefeEmpleado"].ToString());
@@ -72,7 +72,7 @@ namespace PortalTrabajadores.Portal
                                     {
                                         if (Session["idEstadoEtapa"].ToString() == "3")
                                         {
-                                            this.CargarObservaciones(Session["idJefeEmpleado"].ToString());
+                                            this.CargarObservaciones(Session["idJefeEmpleado"].ToString(), "1");
                                         }
                                     }
                                 }
@@ -409,7 +409,7 @@ namespace PortalTrabajadores.Portal
         /// Verifica el estado de la etapa
         /// </summary>
         /// <returns>true si esta en etapa valida sino no lo deja continuar</returns>
-        public bool ComprobarEstadoEtapa(string idJefeEmpleado) 
+        public bool ComprobarEstadoEtapa(string idJefeEmpleado, string etapa) 
         {
             try
             {
@@ -420,7 +420,7 @@ namespace PortalTrabajadores.Portal
                 MySqlCommand scSqlCommand;
                 string consulta = "SELECT * FROM " + bd3 + ".etapa_jefeempleado where " + 
                                   "JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado + 
-                                  " AND Etapas_idEtapas = 1" +
+                                  " AND Etapas_idEtapas = " + etapa +
                                   " ORDER BY fecha desc;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
@@ -461,14 +461,16 @@ namespace PortalTrabajadores.Portal
         /// Observaciones del jefe
         /// </summary>
         /// <param name="idJefeEmpleado">Id del JefeEmpleado</param>
-        public void CargarObservaciones(string idJefeEmpleado) 
+        /// <param name="etapa">Etapa actual</param>
+        public void CargarObservaciones(string idJefeEmpleado, string etapa) 
         {
             try
             {
                 MySqlCn = new MySqlConnection(Cn);
                 MySqlCommand scSqlCommand;
-                string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = "
-                                + idJefeEmpleado + " Order by Orden desc limit 1;";
+                string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
+                                  " AND Etapas_idEtapas = " + etapa + 
+                                  " Order by Orden desc limit 1;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
 

@@ -41,7 +41,7 @@ namespace PortalTrabajadores.Portal
                     {
                         txtuser.Focus();
 
-                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'AgregarCliente.aspx' and Tipoportal = 'A'", Conexion.ObtenerCnMysql());
+                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'Seleccionjefe.aspx' and Tipoportal = 'A'", Conexion.ObtenerCnMysql());
                         MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                         DataSet dsDataSet = new DataSet();
                         DataTable dtDataTable = null;
@@ -107,7 +107,7 @@ namespace PortalTrabajadores.Portal
                     TxtNombres.Text = "";
                     txtuser.Focus();
 
-                    TxtNombres.BackColor = System.Drawing.Color.White;
+                   // TxtNombres.BackColor = System.Drawing.Color.White;
                     BtnEditar.Enabled = true;
                     BtnEditar.BackColor = default(System.Drawing.Color);
                 }
@@ -175,6 +175,7 @@ namespace PortalTrabajadores.Portal
         protected void BtnEditar_Click(object sender, EventArgs e)
         {
             CnMysql Conexion = new CnMysql(Cn);
+            int res = 0;
 
             try
             {
@@ -184,10 +185,33 @@ namespace PortalTrabajadores.Portal
                 cmd.Parameters.AddWithValue("@idjefe", TxtDoc.Text);
                 cmd.Parameters.AddWithValue("@idEmpleado", Session["usuario"].ToString());
                 cmd.Parameters.AddWithValue("@empresa", "ST");
+
+                // Crea un parametro de salida para el SP
+                MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                cmd.Parameters.Add(outputIdParam);
                 cmd.ExecuteNonQuery();
 
-                 MensajeError("El Jefe fue Asignado. ");
-                 BtnEditar.Enabled = false;
+                //Almacena la respuesta de la variable de retorno del SP
+                res = int.Parse(outputIdParam.Value.ToString());
+                if (res == 0)
+                {
+                    MensajeError("Usted ya cuenta con un Jefe Asignado. ");
+                    BtnEditar.Enabled = false;
+                }
+                else if (res == 3)
+                {
+                    MensajeError("Usted No puede ser su propio Jefe. ");
+                    BtnEditar.Enabled = false;
+                }
+                else
+                {
+                    MensajeError("El Jefe fue Asignado. ");
+                    BtnEditar.Enabled = false;
+                }
             }
             catch (Exception E)
             {
