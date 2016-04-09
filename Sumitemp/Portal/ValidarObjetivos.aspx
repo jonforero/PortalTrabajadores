@@ -26,8 +26,8 @@
                         <asp:BoundField DataField="Nombres_Completos_Empleado" HeaderText="Nombre"/>
                         <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:ImageButton ID="btnEvaluar" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("idJefeEmpleado")%>' CommandName="Evaluar" />
-                                <asp:ImageButton ID="btnRevisar" runat="server" ImageUrl="~/Img/ok.gif" CommandArgument='<%#Eval("idJefeEmpleado")%>' CommandName="Revisar" Visible="false"/>
+                                <asp:ImageButton ID="btnEvaluar" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("idJefeEmpleado") + ";" + Eval("Cedula_Empleado")%>' CommandName="Evaluar" />
+                                <asp:ImageButton ID="btnRevisar" runat="server" ImageUrl="~/Img/ok.gif" CommandArgument='<%#Eval("idJefeEmpleado") + ";" + Eval("Cedula_Empleado")%>' CommandName="Revisar" Visible="false"/>
                             </ItemTemplate>
                             <ItemStyle HorizontalAlign="Center" />
                         </asp:TemplateField>
@@ -36,6 +36,8 @@
                 <br />
             </div>
             <div id="Container_UpdatePanel2" runat="server" visible="false">
+                <asp:Label ID="lblObservaciones" runat="server" CssClass="ObservacionesCSS" Visible ="false"></asp:Label>
+                <br />
                 <asp:GridView ID="gvObjetivosCreados" runat="server" AutoGenerateColumns="false">
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns> 
@@ -55,7 +57,7 @@
                     </tr>
                     <tr>
                         <td class="CeldaTablaDatos">
-                            <asp:TextBox ID="txtObjetivo" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px"/>
+                            <asp:TextBox ID="txtObservacion" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px"/>
                         </td>
                     </tr>                
                     <tr class="ColorOscuro">

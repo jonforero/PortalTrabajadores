@@ -67,6 +67,15 @@ namespace PortalTrabajadores.Portal {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl Container_UpdatePanel2;
         
         /// <summary>
+        /// Control lblObservaciones.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblObservaciones;
+        
+        /// <summary>
         /// Control gvObjetivosCreados.
         /// </summary>
         /// <remarks>
@@ -112,13 +121,13 @@ namespace PortalTrabajadores.Portal {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl Container_UpdatePanel3;
         
         /// <summary>
-        /// Control txtObjetivo.
+        /// Control txtObservacion.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtObjetivo;
+        protected global::System.Web.UI.WebControls.TextBox txtObservacion;
         
         /// <summary>
         /// Control BtnGuardar.

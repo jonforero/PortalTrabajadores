@@ -69,6 +69,22 @@
                     </tr>
                 </table>
             </div>
+            <div id="Container_UpdatePanel3" runat="server" visible="false">
+                <br />
+                <table id="TablaDatos2">
+                    <tr>
+                        <th>Observaciones</th>
+                    </tr>
+                    <tr>
+                        <td class="CeldaTablaDatos">
+                            <asp:TextBox ID="txtObservacion" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px"/>
+                        </td>
+                    </tr>                
+                    <tr class="ColorOscuro">
+                        <td class="BotonTablaDatos"><asp:Button ID="BtnGuardarObs" runat="server" Text="Enviar" OnClick="BtnGuardarObs_Click"/></td>
+                    </tr>
+                </table>
+            </div>
         </ContentTemplate>
         <Triggers>
             <asp:AsyncPostBackTrigger ControlID="BtnCrear" />

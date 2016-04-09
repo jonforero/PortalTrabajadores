@@ -418,8 +418,10 @@ namespace PortalTrabajadores.Portal
 
                 MySqlCn = new MySqlConnection(Cn);
                 MySqlCommand scSqlCommand;
-                string consulta = "SELECT * FROM " + bd3 + ".etapa_jefeempleado where JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado
-                                + " ORDER BY fecha desc;";
+                string consulta = "SELECT * FROM " + bd3 + ".etapa_jefeempleado where " + 
+                                  "JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado + 
+                                  " AND Etapas_idEtapas = 1" +
+                                  " ORDER BY fecha desc;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
                 MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
@@ -465,7 +467,8 @@ namespace PortalTrabajadores.Portal
             {
                 MySqlCn = new MySqlConnection(Cn);
                 MySqlCommand scSqlCommand;
-                string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado;
+                string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = "
+                                + idJefeEmpleado + " Order by Orden desc limit 1;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
 
@@ -490,6 +493,59 @@ namespace PortalTrabajadores.Portal
             finally
             {
                 MySqlCn.Close();
+            }
+        }
+
+        /// <summary>
+        /// Crea una observacion
+        /// </summary>
+        /// <param name="cedula">Cedula de quien observa</param>
+        /// <param name="observacion">texto observacion</param>
+        /// <returns>true si el proceso es correcto</returns>
+        public bool CrearObservacion(string cedula, string observacion)
+        {
+            CnMysql Conexion = new CnMysql(Cn2);
+            int res = 0;
+
+            try
+            {
+                Conexion.AbrirCnMysql();
+                MySqlCommand cmd;
+
+                cmd = new MySqlCommand("sp_CrearObservacion", Conexion.ObtenerCnMysql());
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
+                cmd.Parameters.AddWithValue("@Etapas_idEtapas", 1);
+                cmd.Parameters.AddWithValue("@Cedula", cedula);
+                cmd.Parameters.AddWithValue("@Descripcion", observacion);
+                cmd.Parameters.AddWithValue("@Fecha", DateTime.Now);
+                cmd.Parameters.AddWithValue("@Ano", DateTime.Now.Year);
+
+                // Crea un parametro de salida para el SP
+                MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                cmd.Parameters.Add(outputIdParam);
+                cmd.ExecuteNonQuery();
+
+                //Almacena la respuesta de la variable de retorno del SP
+                res = int.Parse(outputIdParam.Value.ToString());
+
+                if (res == 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception E)
+            {
+                MensajeError("Ha ocurrido el siguiente error: " + E.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+                return false;
             }
         }
 
@@ -519,59 +575,16 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">evento e</param>
         protected void BtnEnviar_Click(object sender, EventArgs e)
         {
-            CnMysql Conexion = new CnMysql(Cn2);
-            Conexion.AbrirCnMysql();
-
-            int res = 0;
-
-            try
+            if (Convert.ToInt32(Session["Min_obj"].ToString()) > this.numeroObjetivos(Session["idJefeEmpleado"].ToString()))
             {
-                if (Convert.ToInt32(Session["Min_obj"].ToString()) > this.numeroObjetivos(Session["idJefeEmpleado"].ToString()))
-                {
-                    this.CargarObjetivos(Session["idJefeEmpleado"].ToString());
-                    MensajeError("El numero de objetivos ingresados es menor al solicitado, por favor ingrese mas objetivos");
-                }
-                else 
-                {
-                    MySqlCommand cmd = new MySqlCommand("sp_CrearEtapaJefeEmpleado", Conexion.ObtenerCnMysql());
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Etapas_idEtapas", 1);
-                    cmd.Parameters.AddWithValue("@JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
-                    cmd.Parameters.AddWithValue("@EstadoEtapa_idEstadoEtapa", 2);
-                    cmd.Parameters.AddWithValue("@Fecha", DateTime.Now);
-
-                    // Crea un parametro de salida para el SP
-                    MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
-                    {
-                        Direction = ParameterDirection.Output
-                    };
-
-                    cmd.Parameters.Add(outputIdParam);
-                    cmd.ExecuteNonQuery();
-
-                    //Almacena la respuesta de la variable de retorno del SP
-                    res = int.Parse(outputIdParam.Value.ToString());
-
-                    if (res == 1)
-                    {
-                        this.CargarObjetivoBloqueados(Session["idJefeEmpleado"].ToString());
-                    }
-
-                    Container_UpdatePanelObservaciones.Visible = false;
-                    UpdatePanel1.Update();
-                    MensajeError("Se envio correctamente la información");
-                }
-
+                this.CargarObjetivos(Session["idJefeEmpleado"].ToString());
+                MensajeError("El numero de objetivos ingresados es menor al solicitado, por favor ingrese mas objetivos");
+            }
+            else
+            {
                 Container_UpdatePanel2.Visible = false;
-                UpdatePanel1.Update();                    
-            }
-            catch (Exception ex)
-            {
-                MensajeError("Ha ocurrido el siguiente error: " + ex.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
-            }
-            finally
-            {
-                Conexion.CerrarCnMysql();
+                Container_UpdatePanel3.Visible = true;
+                UpdatePanel1.Update();
             }
         }
 
@@ -751,6 +764,70 @@ namespace PortalTrabajadores.Portal
             {
                 Conexion.CerrarCnMysql();
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void BtnGuardarObs_Click(object sender, EventArgs e)
+        {
+            if (this.CrearObservacion(Session["usuario"].ToString(), txtObservacion.Text))
+            {
+                CnMysql Conexion = new CnMysql(Cn2);
+                Conexion.AbrirCnMysql();
+
+                int res = 0;
+
+                try
+                {
+                    MySqlCommand cmd = new MySqlCommand("sp_CrearEtapaJefeEmpleado", Conexion.ObtenerCnMysql());
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Etapas_idEtapas", 1);
+                    cmd.Parameters.AddWithValue("@JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
+                    cmd.Parameters.AddWithValue("@EstadoEtapa_idEstadoEtapa", 2);
+                    cmd.Parameters.AddWithValue("@Fecha", DateTime.Now);
+
+                    // Crea un parametro de salida para el SP
+                    MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    cmd.Parameters.Add(outputIdParam);
+                    cmd.ExecuteNonQuery();
+
+                    //Almacena la respuesta de la variable de retorno del SP
+                    res = int.Parse(outputIdParam.Value.ToString());
+
+                    if (res == 1)
+                    {
+                        this.CargarObjetivoBloqueados(Session["idJefeEmpleado"].ToString());
+                    }
+
+                    Container_UpdatePanelObservaciones.Visible = false;
+                    UpdatePanel1.Update();
+                    MensajeError("Se envio correctamente la información");
+
+                    Container_UpdatePanel1.Visible = false;
+                    Container_UpdatePanel2.Visible = false;
+                    Container_UpdatePanel3.Visible = false;
+                    UpdatePanel1.Update();
+                }
+                catch (Exception ex)
+                {
+                    MensajeError("Ha ocurrido el siguiente error: " + ex.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+                }
+                finally
+                {
+                    Conexion.CerrarCnMysql();
+                }
+            }
+            else
+            {
+                MensajeError("Hubo un error, por favor revise con su administrador");
+            }            
         }
 
         #endregion
