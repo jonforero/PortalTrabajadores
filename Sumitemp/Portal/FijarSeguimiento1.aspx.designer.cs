@@ -10,7 +10,7 @@
 namespace PortalTrabajadores.Portal {
     
     
-    public partial class PeriodoExtra {
+    public partial class FijarSeguimiento1 {
         
         /// <summary>
         /// Control UpdatePanel2.
@@ -40,31 +40,13 @@ namespace PortalTrabajadores.Portal {
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
         
         /// <summary>
-        /// Control Container_UpdatePanel1.
+        /// Control Container_UpdatePanelObservaciones.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Container_UpdatePanel1;
-        
-        /// <summary>
-        /// Control gvEmpleadosAsociados.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvEmpleadosAsociados;
-        
-        /// <summary>
-        /// Control Container_UpdatePanel2.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Container_UpdatePanel2;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Container_UpdatePanelObservaciones;
         
         /// <summary>
         /// Control lblObservaciones.
@@ -76,6 +58,15 @@ namespace PortalTrabajadores.Portal {
         protected global::System.Web.UI.WebControls.Label lblObservaciones;
         
         /// <summary>
+        /// Control Container_UpdatePanel1.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Container_UpdatePanel1;
+        
+        /// <summary>
         /// Control gvObjetivosCreados.
         /// </summary>
         /// <remarks>
@@ -85,31 +76,76 @@ namespace PortalTrabajadores.Portal {
         protected global::System.Web.UI.WebControls.GridView gvObjetivosCreados;
         
         /// <summary>
-        /// Control BtnAceptar.
+        /// Control BtnEnviar.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnAceptar;
+        protected global::System.Web.UI.WebControls.Button BtnEnviar;
         
         /// <summary>
-        /// Control BtnRechazar.
+        /// Control Container_UpdatePanelBloqueado.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnRechazar;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Container_UpdatePanelBloqueado;
         
         /// <summary>
-        /// Control BtnRegresar.
+        /// Control gvObjetivosBloqueados.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnRegresar;
+        protected global::System.Web.UI.WebControls.GridView gvObjetivosBloqueados;
+        
+        /// <summary>
+        /// Control Container_UpdatePanel2.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Container_UpdatePanel2;
+        
+        /// <summary>
+        /// Control lblSeguimiento.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSeguimiento;
+        
+        /// <summary>
+        /// Control txtSeguimiento.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtSeguimiento;
+        
+        /// <summary>
+        /// Control BtnGuardar.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnGuardar;
+        
+        /// <summary>
+        /// Control BtnCancel.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnCancel;
         
         /// <summary>
         /// Control Container_UpdatePanel3.
@@ -130,13 +166,13 @@ namespace PortalTrabajadores.Portal {
         protected global::System.Web.UI.WebControls.TextBox txtObservacion;
         
         /// <summary>
-        /// Control BtnGuardar.
+        /// Control BtnGuardarObs.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnGuardar;
+        protected global::System.Web.UI.WebControls.Button BtnGuardarObs;
         
         /// <summary>
         /// Control UpdatePanel3.

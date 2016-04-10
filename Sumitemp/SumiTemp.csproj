@@ -112,6 +112,7 @@
     <Content Include="Portal\Contactenos.aspx" />
     <Content Include="Portal\Cesantias.aspx" />
     <Content Include="Portal\EstadoFondo.aspx" />
+    <Content Include="Portal\FijarSeguimiento1.aspx" />
     <Content Include="Portal\index.aspx" />
     <Content Include="Portal\IngRetenciones.aspx" />
     <Content Include="Portal\Laboral.aspx" />
@@ -238,6 +239,13 @@
     </Compile>
     <Compile Include="Portal\EstadoFondo.aspx.designer.cs">
       <DependentUpon>EstadoFondo.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\FijarSeguimiento1.aspx.cs">
+      <DependentUpon>FijarSeguimiento1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\FijarSeguimiento1.aspx.designer.cs">
+      <DependentUpon>FijarSeguimiento1.aspx</DependentUpon>
     </Compile>
     <Compile Include="Portal\index.aspx.cs">
       <DependentUpon>index.aspx</DependentUpon>

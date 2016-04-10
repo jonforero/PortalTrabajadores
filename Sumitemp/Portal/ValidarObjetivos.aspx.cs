@@ -199,7 +199,7 @@ namespace PortalTrabajadores.Portal
         /// Verifica el estado de la etapa
         /// </summary>
         /// <returns>true si esta en etapa valida sino no lo deja continuar</returns>
-        public bool ComprobarEstadoEtapa(string idJefeEmpleado)
+        public bool ComprobarEstadoEtapa(string idJefeEmpleado, string etapa) 
         {
             try
             {
@@ -208,8 +208,10 @@ namespace PortalTrabajadores.Portal
 
                 MySqlCn = new MySqlConnection(Cn);
                 MySqlCommand scSqlCommand;
-                string consulta = "SELECT * FROM " + bd3 + ".etapa_jefeempleado where JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado
-                                + " ORDER BY fecha desc;";
+                string consulta = "SELECT * FROM " + bd3 + ".etapa_jefeempleado where " +
+                                  "JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
+                                  " AND Etapas_idEtapas = " + etapa +
+                                  " ORDER BY fecha desc;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
                 MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
@@ -218,7 +220,7 @@ namespace PortalTrabajadores.Portal
 
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
-                    if (dtDataTable.Rows[0].ItemArray[2].ToString() == "2")
+                    if (dtDataTable.Rows[0].ItemArray[3].ToString() == "2")
                     {
                         return true;
                     }
@@ -300,14 +302,16 @@ namespace PortalTrabajadores.Portal
         /// Observaciones del jefe
         /// </summary>
         /// <param name="idJefeEmpleado">Id del JefeEmpleado</param>
-        public void CargarObservacionesEmpleado(int idJefeEmpleado, int cedulaEmpleado)
+        public void CargarObservacionesEmpleado(int idJefeEmpleado, int cedulaEmpleado, string etapa)
         {
             try
             {
                 MySqlCn = new MySqlConnection(Cn);
                 MySqlCommand scSqlCommand;
                 string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
-                                  " AND Cedula = " + cedulaEmpleado + " Order by Orden desc limit 1;";
+                                  " AND Cedula = " + cedulaEmpleado +
+                                  " AND Etapas_idEtapas = " + etapa + 
+                                  " Order by Orden desc limit 1;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
 
@@ -346,6 +350,7 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">evento e de la grilla</param>
         protected void gvEmpleadosAsociados_RowCommand(object sender, GridViewCommandEventArgs e)
         {
+            lblObservaciones.Visible = false;
             LblMsj.Visible = false;
             UpdatePanel3.Update();
 
@@ -365,8 +370,11 @@ namespace PortalTrabajadores.Portal
                 MySqlCommand scSqlCommand;
                 string consulta = "SELECT objetivos.Descripcion " +
                                   "FROM " + bd3 + ".objetivos " +
-                                  "INNER JOIN " + bd3 + ".jefeempleado ON objetivos.JefeEmpleado_idJefeEmpleado = jefeempleado.idJefeEmpleado " +
-                                  "where jefeempleado.Cedula_Jefe = " + Session["usuario"].ToString() + " and jefeempleado.idCompania = '" + Session["compania"].ToString() + "';";
+                                  "INNER JOIN " + bd3 + ".jefeempleado " + 
+                                  "ON objetivos.JefeEmpleado_idJefeEmpleado = jefeempleado.idJefeEmpleado " +
+                                  "where jefeempleado.Cedula_Jefe = " + Session["usuario"].ToString() + 
+                                  " AND jefeempleado.idCompania = '" + Session["compania"].ToString() +
+                                  "' AND jefeempleado.idJefeEmpleado = " + idJefeEmpleado + ";";
 
                 scSqlCommand = new MySqlCommand(consulta, Conexion.ObtenerCnMysql());
                 MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
@@ -376,26 +384,28 @@ namespace PortalTrabajadores.Portal
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
                     gvObjetivosCreados.DataSource = dtDataTable;
+
+                    if (e.CommandName == "Evaluar")
+                    {
+                        this.CargarObservacionesEmpleado(idJefeEmpleado, cedulaEmpleado, "1");
+                        this.BtnAceptar.Visible = true;
+                        this.BtnRechazar.Visible = true;
+                    }
+                    else if (e.CommandName == "Revisar")
+                    {
+                        this.BtnAceptar.Visible = false;
+                        this.BtnRechazar.Visible = false;
+                    }
                 }
                 else
                 {
                     gvObjetivosCreados.DataSource = null;
                     MensajeError("El empleado no ha creado objetivos");
-                }
-
-                gvObjetivosCreados.DataBind();
-
-                if (e.CommandName == "Evaluar")
-                {
-                    this.CargarObservacionesEmpleado(idJefeEmpleado, cedulaEmpleado);
-                    this.BtnAceptar.Visible = true;
-                    this.BtnRechazar.Visible = true;
-                }
-                else if (e.CommandName == "Revisar") 
-                {
                     this.BtnAceptar.Visible = false;
                     this.BtnRechazar.Visible = false;
                 }
+
+                gvObjetivosCreados.DataBind();                
 
                 Container_UpdatePanel1.Visible = false;
                 Container_UpdatePanel2.Visible = true;
@@ -425,7 +435,7 @@ namespace PortalTrabajadores.Portal
 
                 string idJefeEmpleado = DataBinder.Eval(e.Row.DataItem, "idJefeEmpleado").ToString();
 
-                if (this.ComprobarEstadoEtapa(idJefeEmpleado))
+                if (this.ComprobarEstadoEtapa(idJefeEmpleado, "1") )
                 {
                     btnEvaluar.Visible = true;
                     btnRevisar.Visible = false;
@@ -499,6 +509,8 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">evento e</param>
         protected void BtnRegresar_Click(object sender, EventArgs e)
         {
+            LblMsj.Visible = false;
+            UpdatePanel3.Update();
             this.CargarEmpleados(Session["usuario"].ToString(), Session["compania"].ToString());
         }
         

@@ -430,9 +430,9 @@ namespace PortalTrabajadores.Portal
 
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
-                    Session.Add("idEstadoEtapa", dtDataTable.Rows[0].ItemArray[2].ToString());
+                    Session.Add("idEstadoEtapa", dtDataTable.Rows[0].ItemArray[3].ToString());
 
-                    if (dtDataTable.Rows[0].ItemArray[2].ToString() == "1" || dtDataTable.Rows[0].ItemArray[2].ToString() == "3")
+                    if (dtDataTable.Rows[0].ItemArray[3].ToString() == "1" || dtDataTable.Rows[0].ItemArray[3].ToString() == "3")
                     {
                         return true;
                     }
