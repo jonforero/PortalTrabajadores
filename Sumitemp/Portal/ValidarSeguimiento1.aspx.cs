@@ -53,6 +53,7 @@ namespace PortalTrabajadores.Portal
                             this.lblTitulo.Text = dtDataTable.Rows[0].ItemArray[0].ToString();
                         }
 
+                        this.ObtenerPeriodoActivo();
                         this.CargarEmpleados(Session["usuario"].ToString(), Session["compania"].ToString());
                     }
                     catch (Exception E)
@@ -87,6 +88,43 @@ namespace PortalTrabajadores.Portal
         #region Parametros
 
         /// <summary>
+        /// Obtiene el año activo en el sistema
+        /// </summary>
+        public void ObtenerPeriodoActivo()
+        {
+            try
+            {
+                MySqlCn = new MySqlConnection(Cn);
+                MySqlCommand scSqlCommand;
+                string consulta = "SELECT * FROM " + bd3 + ".parametrosgenerales " +
+                                  "WHERE Empresas_idEmpresa = '" + Session["idEmpresa"] +
+                                  "' AND idCompania = '" + Session["compania"] + "'" +
+                                  " AND Activo = 1;";
+
+                scSqlCommand = new MySqlCommand(consulta, MySqlCn);
+
+                MySqlCn.Open();
+                MySqlDataReader rd = scSqlCommand.ExecuteReader();
+
+                if (rd.HasRows)
+                {
+                    if (rd.Read())
+                    {
+                        Session.Add("anoActivo", rd["Ano"]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MensajeError("El sistema no se encuentra disponible en este momento. " + ex.Message);
+            }
+            finally
+            {
+                MySqlCn.Close();
+            }
+        }
+
+        /// <summary>
         /// Carga los empleados asociados al jefe
         /// </summary>
         /// <param name="cedulaJefe">Cedula Jefe</param>
@@ -107,7 +145,7 @@ namespace PortalTrabajadores.Portal
                                   "empleados.Nombres_Completos_Empleado " +
                                   "FROM " + bd3 + ".jefeempleado " +
                                   "INNER JOIN " + bd2 + ".empleados ON jefeempleado.Cedula_Empleado = empleados.Id_Empleado " +
-                                  "WHERE idCompania = '" + idCompania + "' AND Cedula_Jefe = " + cedulaJefe + " AND Ano = '" + DateTime.Now.Year + "';";
+                                  "WHERE idCompania = '" + idCompania + "' AND Cedula_Jefe = " + cedulaJefe + " AND Ano = '" + Session["anoActivo"] + "';";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
                 MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
@@ -220,6 +258,8 @@ namespace PortalTrabajadores.Portal
 
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
+                    Session.Add("etapaJefeEmpleado", dtDataTable.Rows[0].ItemArray[3].ToString());
+
                     if (dtDataTable.Rows[0].ItemArray[3].ToString() == "5")
                     {
                         return true;
@@ -231,7 +271,8 @@ namespace PortalTrabajadores.Portal
                 }
                 else
                 {
-                    return true;
+                    Session.Add("etapaJefeEmpleado", "0");
+                    return false;
                 }
             }
             catch (Exception ex)
@@ -268,7 +309,7 @@ namespace PortalTrabajadores.Portal
                 cmd.Parameters.AddWithValue("@Cedula", cedula);
                 cmd.Parameters.AddWithValue("@Descripcion", observacion);
                 cmd.Parameters.AddWithValue("@Fecha", DateTime.Now);
-                cmd.Parameters.AddWithValue("@Ano", DateTime.Now.Year);
+                cmd.Parameters.AddWithValue("@Ano", Session["anoActivo"]);
 
                 // Crea un parametro de salida para el SP
                 MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
@@ -438,8 +479,16 @@ namespace PortalTrabajadores.Portal
                 }
                 else
                 {
-                    btnEvaluar.Visible = false;
-                    btnRevisar.Visible = true;
+                    if (Session["etapaJefeEmpleado"].ToString() == "0")
+                    {
+                        btnEvaluar.Visible = false;
+                        btnRevisar.Visible = false;
+                    }
+                    else
+                    {
+                        btnEvaluar.Visible = false;
+                        btnRevisar.Visible = true;
+                    }
                 }
             }
         }

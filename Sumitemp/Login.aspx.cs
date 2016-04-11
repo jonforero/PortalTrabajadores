@@ -37,7 +37,7 @@ namespace PortalTrabajadores.Portal
             CnMysql Conexion = new CnMysql(Cn);
             try
             {
-                MySqlCommand scSqlCommand = new MySqlCommand("SELECT Id_Empleado, Id_Rol, Nombres_Empleado, Companias_idCompania FROM " + bd2 + ".empleados where Id_Empleado = '" + this.txtuser.Text + "' and Contrasena_Empleado = '" + this.txtPass.Text + "' and (Companias_idEmpresa = 'ST' or Companias_idEmpresa = 'SB')", Conexion.ObtenerCnMysql());
+                MySqlCommand scSqlCommand = new MySqlCommand("SELECT Id_Empleado, Id_Rol, Nombres_Empleado, Companias_idCompania, Companias_idEmpresa FROM " + bd2 + ".empleados where Id_Empleado = '" + this.txtuser.Text + "' and Contrasena_Empleado = '" + this.txtPass.Text + "' and (Companias_idEmpresa = 'ST' or Companias_idEmpresa = 'SB')", Conexion.ObtenerCnMysql());
                 MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                 DataSet dsDataSet = new DataSet();
                 DataTable dtDataTable = null;
@@ -55,6 +55,7 @@ namespace PortalTrabajadores.Portal
                         Session.Add("rol", dtDataTable.Rows[0].ItemArray[1].ToString());
                         Session.Add("nombre", dtDataTable.Rows[0].ItemArray[2].ToString());
                         Session.Add("compania", dtDataTable.Rows[0].ItemArray[3].ToString());
+                        Session.Add("idEmpresa", dtDataTable.Rows[0].ItemArray[4].ToString());
 
                         //redirecciona al usuario a la pagina principal del Portal
                         Response.Redirect("~/Portal/index.aspx");

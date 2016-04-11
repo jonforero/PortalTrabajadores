@@ -54,6 +54,8 @@ namespace PortalTrabajadores.Portal
                             this.lblTitulo.Text = dtDataTable.Rows[0].ItemArray[0].ToString();
                         }
 
+                        this.ObtenerPeriodoActivo();
+
                         //// Revisa si tiene un jefe asignado
                         if (this.CargarParametros())
                         {
@@ -82,12 +84,16 @@ namespace PortalTrabajadores.Portal
 
                                         if (Session["idEstadoEtapa"].ToString() == "4")
                                         {
-                                            MensajeError("Sus objetivos han sido aceptados por su jefe.");
+                                            MensajeError("El seguimiento fue aceptado por su jefe.");
                                         }
                                         else
                                         {
-                                            MensajeError("Alerta, sus objetivos fueron enviados, se carga una vista de solo lectura");
+                                            MensajeError("Alerta, su seguimiento fue enviado, se carga una vista de solo lectura");
                                         }
+                                    }
+                                    else
+                                    {
+                                        MensajeError("No puede acceder a esta sección en el momento.");
                                     }
                                 }
                             }
@@ -102,7 +108,7 @@ namespace PortalTrabajadores.Portal
                             MensajeError("Usted no puede continuar hasta asignar un jefe, por favor revise la pagina Selección de Jefe");
                         }
 
-                        this.ComprobarSeguimientoTotal();
+                        this.ComprobarSeguimientoTotal(Session["idJefeEmpleado"].ToString());
                     }
                     catch (Exception E)
                     {
@@ -136,6 +142,43 @@ namespace PortalTrabajadores.Portal
         #region Parametros
 
         /// <summary>
+        /// Obtiene el año activo en el sistema
+        /// </summary>
+        public void ObtenerPeriodoActivo() 
+        {
+            try
+            {
+                MySqlCn = new MySqlConnection(Cn);
+                MySqlCommand scSqlCommand;
+                string consulta = "SELECT * FROM " + bd3 + ".parametrosgenerales " +
+                                  "WHERE Empresas_idEmpresa = '" + Session["idEmpresa"] + 
+                                  "' AND idCompania = '" + Session["compania"] + "'" +
+                                  " AND Activo = 1;";
+
+                scSqlCommand = new MySqlCommand(consulta, MySqlCn);
+
+                MySqlCn.Open();
+                MySqlDataReader rd = scSqlCommand.ExecuteReader();
+
+                if (rd.HasRows)
+                {
+                    if (rd.Read())
+                    {
+                        Session.Add("anoActivo", rd["Ano"]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MensajeError("El sistema no se encuentra disponible en este momento. " + ex.Message);
+            }
+            finally
+            {
+                MySqlCn.Close();
+            }
+        }
+
+        /// <summary>
         /// Permite cargar los parametros esenciales
         /// Revisa si tiene un jefe asignado
         /// </summary>
@@ -148,7 +191,7 @@ namespace PortalTrabajadores.Portal
                 MySqlCommand scSqlCommand;
                 string consulta = "SELECT * FROM " + bd3 + ".jefeempleado where idCompania = '" + Session["compania"]
                                 + "' AND Cedula_Empleado = " + Session["usuario"].ToString()
-                                + " AND Ano = '" + DateTime.Now.Year + "';";
+                                + " AND Ano = '" + Session["anoActivo"] + "';";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
 
@@ -244,6 +287,8 @@ namespace PortalTrabajadores.Portal
         {
             try
             {
+                Session.Remove("idEstadoEtapa");
+
                 DataSet dsDataSet = new DataSet();
                 DataTable dtDataTable = null;
 
@@ -274,7 +319,66 @@ namespace PortalTrabajadores.Portal
                 }
                 else
                 {
-                    return true;
+                    if (this.ComprobarEtapaAnterior(idJefeEmpleado, "1"))
+                    {
+                        return true;
+                    }
+                    else 
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MensajeError("El sistema no se encuentra disponible en este momento. " + ex.Message);
+                return false;
+            }
+            finally
+            {
+                MySqlCn.Close();
+            }
+        }
+
+        /// <summary>
+        /// Comprueba el estado de la etapa
+        /// </summary>
+        /// <param name="idJefeEmpleado"></param>
+        /// <param name="etapa"></param>
+        /// <returns>true si la etapa esta finalizada</returns>
+        public bool ComprobarEtapaAnterior(string idJefeEmpleado, string etapa) 
+        {
+            try
+            {
+                DataSet dsDataSet = new DataSet();
+                DataTable dtDataTable = null;
+
+                MySqlCn = new MySqlConnection(Cn);
+                MySqlCommand scSqlCommand;
+                string consulta = "SELECT * FROM " + bd3 + ".etapa_jefeempleado where " +
+                                  "JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
+                                  " AND Etapas_idEtapas = " + etapa +
+                                  " ORDER BY fecha desc;";
+
+                scSqlCommand = new MySqlCommand(consulta, MySqlCn);
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
+                sdaSqlDataAdapter.Fill(dsDataSet);
+                dtDataTable = dsDataSet.Tables[0];
+
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
+                {
+                    if (dtDataTable.Rows[0].ItemArray[3].ToString() == "4")
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
                 }
             }
             catch (Exception ex)
@@ -440,7 +544,7 @@ namespace PortalTrabajadores.Portal
                 cmd.Parameters.AddWithValue("@Cedula", cedula);
                 cmd.Parameters.AddWithValue("@Descripcion", observacion);
                 cmd.Parameters.AddWithValue("@Fecha", DateTime.Now);
-                cmd.Parameters.AddWithValue("@Ano", DateTime.Now.Year);
+                cmd.Parameters.AddWithValue("@Ano", Session["anoActivo"]);
 
                 // Crea un parametro de salida para el SP
                 MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
@@ -473,14 +577,14 @@ namespace PortalTrabajadores.Portal
         /// <summary>
         /// Comprueba el que se hayan registrado todos los seguimientos
         /// </summary>
-        public void ComprobarSeguimientoTotal() 
+        public void ComprobarSeguimientoTotal(string idJefeEmpleado) 
         {
             try
             {
                 MySqlCn = new MySqlConnection(Cn2);
                 MySqlCommand scSqlCommand;
-                string consulta = "SELECT IF((SELECT COUNT(*) FROM objetivos WHERE objetivos.JefeEmpleado_idJefeEmpleado = 15) = " +
-                                  "(SELECT COUNT(*) FROM seguimiento WHERE seguimiento.Objetivos_JefeEmpleado_idJefeEmpleado = 15), 1, 0) " +
+                string consulta = "SELECT IF((SELECT COUNT(*) FROM objetivos WHERE objetivos.JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado + ") = " +
+                                  "(SELECT COUNT(*) FROM seguimiento WHERE seguimiento.Objetivos_JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado + "), 1, 0) " +
                                   "AS Seguimiento;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
@@ -552,7 +656,7 @@ namespace PortalTrabajadores.Portal
                     cmd.Parameters.AddWithValue("@Cedula", Session["usuario"]);
                     cmd.Parameters.AddWithValue("@Descripcion", txtSeguimiento.Text);
                     cmd.Parameters.AddWithValue("@Fecha", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@Ano", DateTime.Now.Year);
+                    cmd.Parameters.AddWithValue("@Ano", Session["anoActivo"]);
                 }
                 else
                 {
@@ -591,7 +695,7 @@ namespace PortalTrabajadores.Portal
                     MensajeError("Hubo un error al crear, por favor revise con su administrador");
                 }
 
-                this.ComprobarSeguimientoTotal();
+                this.ComprobarSeguimientoTotal(Session["idJefeEmpleado"].ToString());
                 txtSeguimiento.Text = string.Empty;
                 this.CargarObjetivos(Session["idJefeEmpleado"].ToString());
             }

@@ -1,4 +1,4 @@
-﻿ <%@ Page Title="" Language="C#" MasterPageFile="~/Portal/PaginaMaestra.Master" AutoEventWireup="true" CodeBehind="FijarSeguimiento1.aspx.cs" Inherits="PortalTrabajadores.Portal.FijarSeguimiento1" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Portal/PaginaMaestra.Master" AutoEventWireup="true" CodeBehind="FijarSeguimientoFinal.aspx.cs" Inherits="PortalTrabajadores.Portal.FijarSeguimientoFinal" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <!-- Css para la fecha -->
@@ -27,10 +27,10 @@
                     <Columns> 
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
                         <asp:BoundField DataField="Ano" HeaderText="Año"/>
-                        <asp:BoundField DataField="SegDescripcion" HeaderText="Descripción seguimiento"/>
+                        <asp:BoundField DataField="EvalDescripcion" HeaderText="Evaluación"/>
                         <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:ImageButton ID="btnSeguimiento" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("id_obj") + ";" + Eval("Seguimiento") + ";" + Eval("SegDescripcion")%>' CommandName="Seguimiento" />
+                                <asp:ImageButton ID="btnEvaluacion" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("id_obj") + ";" + Eval("CodEvaluacion")%>' CommandName="Evaluacion" />
                                 <asp:ImageButton ID="btnOk" runat="server" ImageUrl="~/Img/ok.gif" Enabled="false"/>
                             </ItemTemplate>
                             <ItemStyle HorizontalAlign="Center" />
@@ -46,20 +46,21 @@
                     <Columns> 
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
                         <asp:BoundField DataField="Ano" HeaderText="Año"/>
-                        <asp:BoundField DataField="SegDescripcion" HeaderText="Descripción seguimiento"/>
+                        <asp:BoundField DataField="EvalDescripcion" HeaderText="Evaluación"/>
                     </Columns>
                 </asp:GridView>
             </div>      
             <div id="Container_UpdatePanel2" runat="server" visible="false">
                 <br />
-                <table id="TablaDatos">                    
+                <table id="TablaDatos">
                     <tr>
-                        <th colspan="2">Digite su seguimiento</th>
+                        <th colspan="2">Seleccione su calificación</th>
                     </tr>
                     <tr>
-                        <td class="CeldaTablaDatos"><asp:Label ID="lblSeguimiento" runat="server" Text="Seguimiento:" /></td>
+                        <td class="CeldaTablaDatos"><asp:Label ID="lblEvaluacion" runat="server" Text="Calificación:" /></td>
                         <td class="CeldaTablaDatos">
-                            <asp:TextBox ID="txtSeguimiento" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px"/>
+                            <asp:DropDownList ID="ddlEvaluacion" runat="server" DataSourceID="sqlEvaluacion" DataTextField="Valor" DataValueField="idCalificacion"></asp:DropDownList>
+                            <asp:SqlDataSource ID="sqlEvaluacion" runat="server" ConnectionString='<%$ ConnectionStrings:trabajadoresConnectionString2 %>' ProviderName='<%$ ConnectionStrings:trabajadoresConnectionString2.ProviderName %>' SelectCommand="SELECT idCalificacion, Valor FROM calificacion"></asp:SqlDataSource>
                         </td>
                     </tr>                
                     <tr class="ColorOscuro">

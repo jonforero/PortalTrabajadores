@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 namespace PortalTrabajadores.Portal
 {
-    public partial class ValidarObjetivos : System.Web.UI.Page
+    public partial class ValidarSeguimientoFinal : System.Web.UI.Page
     {
         string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
         string Cn2 = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString2"].ConnectionString.ToString();
@@ -40,7 +40,7 @@ namespace PortalTrabajadores.Portal
                     CnMysql Conexion = new CnMysql(Cn);
                     try
                     {
-                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'ValidarObjetivos.aspx' AND idEmpresa = 'ST'", Conexion.ObtenerCnMysql());
+                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'ValidarSeguimientoFinal.aspx' AND idEmpresa = 'ST'", Conexion.ObtenerCnMysql());
                         MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                         DataSet dsDataSet = new DataSet();
                         DataTable dtDataTable = null;
@@ -167,11 +167,11 @@ namespace PortalTrabajadores.Portal
                 Container_UpdatePanel1.Visible = true;
                 Container_UpdatePanel2.Visible = false;
                 Container_UpdatePanel3.Visible = false;
-                UpdatePanel1.Update();           
+                UpdatePanel1.Update();
             }
             catch (Exception ex)
             {
-                MensajeError("El sistema no se encuentra disponible en este momento. " + ex.Message);                
+                MensajeError("El sistema no se encuentra disponible en este momento. " + ex.Message);
             }
             finally
             {
@@ -185,7 +185,7 @@ namespace PortalTrabajadores.Portal
         /// <param name="etapa">Etapa actual</param>
         /// <param name="estadoEtapa">Estado de la etapa</param>
         /// <returns>true si se realizo correctamente el procedimiento</returns>
-        public bool ActualizarEtapa(int etapa, int estadoEtapa) 
+        public bool ActualizarEtapa(int etapa, int estadoEtapa)
         {
             CnMysql Conexion = new CnMysql(Cn2);
             Conexion.AbrirCnMysql();
@@ -217,10 +217,10 @@ namespace PortalTrabajadores.Portal
                 {
                     return true;
                 }
-                else 
+                else
                 {
                     return false;
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -237,7 +237,7 @@ namespace PortalTrabajadores.Portal
         /// Verifica el estado de la etapa
         /// </summary>
         /// <returns>true si esta en etapa valida sino no lo deja continuar</returns>
-        public bool ComprobarEstadoEtapa(string idJefeEmpleado, string etapa) 
+        public bool ComprobarEstadoEtapa(string idJefeEmpleado, string etapa)
         {
             try
             {
@@ -260,7 +260,7 @@ namespace PortalTrabajadores.Portal
                 {
                     Session.Add("etapaJefeEmpleado", dtDataTable.Rows[0].ItemArray[3].ToString());
 
-                    if (dtDataTable.Rows[0].ItemArray[3].ToString() == "2")
+                    if (dtDataTable.Rows[0].ItemArray[3].ToString() == "6")
                     {
                         return true;
                     }
@@ -292,7 +292,7 @@ namespace PortalTrabajadores.Portal
         /// <param name="cedula">Cedula de quien observa</param>
         /// <param name="observacion">texto observacion</param>
         /// <returns>true si el proceso es correcto</returns>
-        public bool CrearObservacion(string cedula, string observacion) 
+        public bool CrearObservacion(string cedula, string observacion)
         {
             CnMysql Conexion = new CnMysql(Cn2);
             int res = 0;
@@ -305,7 +305,7 @@ namespace PortalTrabajadores.Portal
                 cmd = new MySqlCommand("sp_CrearObservacion", Conexion.ObtenerCnMysql());
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
-                cmd.Parameters.AddWithValue("@Etapas_idEtapas", 1);
+                cmd.Parameters.AddWithValue("@Etapas_idEtapas", 3);
                 cmd.Parameters.AddWithValue("@Cedula", cedula);
                 cmd.Parameters.AddWithValue("@Descripcion", observacion);
                 cmd.Parameters.AddWithValue("@Fecha", DateTime.Now);
@@ -351,7 +351,7 @@ namespace PortalTrabajadores.Portal
                 MySqlCommand scSqlCommand;
                 string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
                                   " AND Cedula = " + cedulaEmpleado +
-                                  " AND Etapas_idEtapas = " + etapa + 
+                                  " AND Etapas_idEtapas = " + etapa +
                                   " Order by Orden desc limit 1;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
@@ -367,7 +367,50 @@ namespace PortalTrabajadores.Portal
                         lblObservaciones.Visible = true;
                     }
                 }
-                
+
+                UpdatePanel1.Update();
+            }
+            catch (Exception ex)
+            {
+                MensajeError("El sistema no se encuentra disponible en este momento. " + ex.Message);
+            }
+            finally
+            {
+                MySqlCn.Close();
+            }
+        }
+
+        /// <summary>
+        /// Carga los objetivos modificables
+        /// </summary>
+        /// <param name="idJefeEmpleado">id JefeEmpleado</param>
+        public void CargarObjetivos(string idJefeEmpleado)
+        {
+            try
+            {
+                DataSet dsDataSet = new DataSet();
+                DataTable dtDataTable = null;
+
+                MySqlCn = new MySqlConnection(Cn2);
+                MySqlCommand scSqlCommand;
+                scSqlCommand = new MySqlCommand("sp_ConsultarObjetivosFinalJefe", MySqlCn);
+                scSqlCommand.CommandType = CommandType.StoredProcedure;
+                scSqlCommand.Parameters.AddWithValue("@idJefeEmpleado", Session["idJefeEmpleado"]);
+
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
+                sdaSqlDataAdapter.Fill(dsDataSet);
+                dtDataTable = dsDataSet.Tables[0];
+
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
+                {
+                    gvObjetivosCreados.DataSource = dtDataTable;
+                }
+                else
+                {
+                    gvObjetivosCreados.DataSource = null;
+                }
+
+                gvObjetivosCreados.DataBind();
                 UpdatePanel1.Update();
             }
             catch (Exception ex)
@@ -405,20 +448,15 @@ namespace PortalTrabajadores.Portal
                 int idJefeEmpleado = Convert.ToInt32(arg[0]);
                 int cedulaEmpleado = Convert.ToInt32(arg[1]);
 
-                
                 DataSet dsDataSet = new DataSet();
                 DataTable dtDataTable = null;
 
+                MySqlCn = new MySqlConnection(Cn2);
                 MySqlCommand scSqlCommand;
-                string consulta = "SELECT objetivos.Descripcion " +
-                                    "FROM " + bd3 + ".objetivos " +
-                                    "INNER JOIN " + bd3 + ".jefeempleado " +
-                                    "ON objetivos.JefeEmpleado_idJefeEmpleado = jefeempleado.idJefeEmpleado " +
-                                    "where jefeempleado.Cedula_Jefe = " + Session["usuario"].ToString() +
-                                    " AND jefeempleado.idCompania = '" + Session["compania"].ToString() +
-                                    "' AND jefeempleado.idJefeEmpleado = " + idJefeEmpleado + ";";
+                scSqlCommand = new MySqlCommand("sp_ConsultarObjetivosFinalJefe", MySqlCn);
+                scSqlCommand.CommandType = CommandType.StoredProcedure;
+                scSqlCommand.Parameters.AddWithValue("@idJefeEmpleado", idJefeEmpleado);
 
-                scSqlCommand = new MySqlCommand(consulta, Conexion.ObtenerCnMysql());
                 MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                 sdaSqlDataAdapter.Fill(dsDataSet);
                 dtDataTable = dsDataSet.Tables[0];
@@ -429,25 +467,26 @@ namespace PortalTrabajadores.Portal
 
                     if (e.CommandName == "Evaluar")
                     {
-                        this.CargarObservacionesEmpleado(idJefeEmpleado, cedulaEmpleado, "1");
+                        this.CargarObservacionesEmpleado(idJefeEmpleado, cedulaEmpleado, "3");
                         this.BtnAceptar.Visible = true;
-                        this.BtnRechazar.Visible = true;
                     }
                     else if (e.CommandName == "Revisar")
                     {
                         this.BtnAceptar.Visible = false;
-                        this.BtnRechazar.Visible = false;
                     }
                 }
                 else
                 {
                     gvObjetivosCreados.DataSource = null;
-                    MensajeError("El empleado no ha creado objetivos");
+                    MensajeError("El empleado no ha realizado su evaluación");
                     this.BtnAceptar.Visible = false;
-                    this.BtnRechazar.Visible = false;
                 }
 
                 gvObjetivosCreados.DataBind();
+
+                Container_UpdatePanel1.Visible = false;
+                Container_UpdatePanel2.Visible = true;
+                UpdatePanel1.Update();
             }
             catch (Exception E)
             {
@@ -455,9 +494,6 @@ namespace PortalTrabajadores.Portal
             }
             finally
             {
-                Container_UpdatePanel1.Visible = false;
-                Container_UpdatePanel2.Visible = true;
-                UpdatePanel1.Update();
                 Conexion.CerrarCnMysql();
             }
         }
@@ -476,7 +512,7 @@ namespace PortalTrabajadores.Portal
 
                 string idJefeEmpleado = DataBinder.Eval(e.Row.DataItem, "idJefeEmpleado").ToString();
 
-                if (this.ComprobarEstadoEtapa(idJefeEmpleado, "1"))
+                if (this.ComprobarEstadoEtapa(idJefeEmpleado, "3"))
                 {
                     btnEvaluar.Visible = true;
                     btnRevisar.Visible = false;
@@ -498,6 +534,71 @@ namespace PortalTrabajadores.Portal
         }
 
         /// <summary>
+        /// Maneja los eventos de la grilla objetivos
+        /// </summary>
+        /// <param name="sender">Objeto sender</param>
+        /// <param name="e">evento e de la grilla</param>
+        protected void gvObjetivosCreados_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            LblMsj.Visible = false;
+            UpdatePanel3.Update();
+
+            CnMysql Conexion = new CnMysql(Cn2);
+            Conexion.AbrirCnMysql();
+
+            try
+            {
+                string[] arg = new string[2];
+                arg = e.CommandArgument.ToString().Split(';');
+                int idObjetivos = Convert.ToInt32(arg[0]);
+                string codEvaluacion = arg[1];
+
+                Session.Add("idObjetivos", idObjetivos);
+
+                if (e.CommandName == "Evaluacion")
+                {
+                    Container_UpdatePanelEval.Visible = true;
+                    UpdatePanel1.Update();
+                }
+            }
+            catch (Exception E)
+            {
+                MensajeError("Ha ocurrido el siguiente error: " + E.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            }
+            finally
+            {
+                Conexion.CerrarCnMysql();
+            }
+        }
+
+        /// <summary>
+        /// Al cargar la grilla se realizan modificaciones sobre las acciones
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e de la grilla</param>
+        protected void gvObjetivosCreados_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                ImageButton btnOk = (ImageButton)e.Row.FindControl("btnOk");
+                ImageButton btnEvaluacion = (ImageButton)e.Row.FindControl("btnEvaluacion");
+
+                string idJefeEmpleado = DataBinder.Eval(e.Row.DataItem, "EvaluacionJefe").ToString();
+
+                if (idJefeEmpleado == "1")
+                {
+                    btnOk.Visible = true;
+                    btnEvaluacion.Visible = false;
+                }
+                else
+                {
+                    btnOk.Visible = false;
+                    btnEvaluacion.Visible = true;
+                }
+            }
+        }
+        
+        /// <summary>
         /// Acepta los objetivos y los envia al empleado
         /// </summary>
         /// <param name="sender">objeto sender</param>
@@ -505,24 +606,9 @@ namespace PortalTrabajadores.Portal
         protected void BtnAceptar_Click(object sender, EventArgs e)
         {
             this.BtnAceptar.Visible = false;
-            this.BtnRechazar.Visible = false;
             Container_UpdatePanel3.Visible = true;
             UpdatePanel1.Update();
             Session.Add("botonOpc", 4);
-        }
-
-        /// <summary>
-        /// Se rechazan los objetivos y se envia una observación
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected void BtnRechazar_Click(object sender, EventArgs e)
-        {
-            this.BtnAceptar.Visible = false;
-            this.BtnRechazar.Visible = false;
-            Container_UpdatePanel3.Visible = true;
-            UpdatePanel1.Update();
-            Session.Add("botonOpc", 3);
         }
 
         /// <summary>
@@ -532,7 +618,7 @@ namespace PortalTrabajadores.Portal
         /// <param name="e"></param>
         protected void BtnGuardar_Click(object sender, EventArgs e)
         {
-            if (this.ActualizarEtapa(1, Convert.ToInt32(Session["botonOpc"].ToString())))
+            if (this.ActualizarEtapa(3, Convert.ToInt32(Session["botonOpc"].ToString())))
             {
                 if (this.CrearObservacion(Session["usuario"].ToString(), txtObservacion.Text))
                 {
@@ -562,7 +648,65 @@ namespace PortalTrabajadores.Portal
             UpdatePanel3.Update();
             this.CargarEmpleados(Session["usuario"].ToString(), Session["compania"].ToString());
         }
-        
-        #endregion        
+
+        /// <summary>
+        /// Evaluacion Jefe
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void BtnEvaluar_Click(object sender, EventArgs e)
+        {
+            CnMysql Conexion = new CnMysql(Cn2);
+            int res = 0;
+
+            try
+            {
+                Conexion.AbrirCnMysql();
+                MySqlCommand cmd;
+
+                cmd = new MySqlCommand("sp_ActualizarEvaluacion", Conexion.ObtenerCnMysql());
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@idObjetivos", Session["idObjetivos"]);
+                cmd.Parameters.AddWithValue("@idJefeEmpleado", Session["idJefeEmpleado"]);
+                cmd.Parameters.AddWithValue("@Cedula_Jefe", Session["usuario"]);
+                cmd.Parameters.AddWithValue("@idCalificacionJefe", ddlEvaluacion.SelectedValue);
+
+                // Crea un parametro de salida para el SP
+                MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                cmd.Parameters.Add(outputIdParam);
+                cmd.ExecuteNonQuery();
+
+                //Almacena la respuesta de la variable de retorno del SP
+                res = int.Parse(outputIdParam.Value.ToString());
+
+                if (res == 1)
+                {
+                    MensajeError("Evaluación Registrada");
+                }
+                else
+                {
+                    MensajeError("Hubo un error al crear, por favor revise con su administrador");
+                }
+
+                ddlEvaluacion.SelectedIndex = 1;
+                this.CargarObjetivos(Session["idJefeEmpleado"].ToString());
+            }
+            catch (Exception E)
+            {
+                MensajeError("Ha ocurrido el siguiente error: " + E.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            }
+            finally
+            {
+                Container_UpdatePanelEval.Visible = false;
+                UpdatePanel1.Update();
+                Conexion.CerrarCnMysql();
+            }
+        }
+
+        #endregion
     }
 }

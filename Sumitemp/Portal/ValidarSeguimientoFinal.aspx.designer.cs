@@ -10,7 +10,7 @@
 namespace PortalTrabajadores.Portal {
     
     
-    public partial class PeriodoExtra {
+    public partial class ValidarSeguimientoFinal {
         
         /// <summary>
         /// Control UpdatePanel2.
@@ -94,15 +94,6 @@ namespace PortalTrabajadores.Portal {
         protected global::System.Web.UI.WebControls.Button BtnAceptar;
         
         /// <summary>
-        /// Control BtnRechazar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnRechazar;
-        
-        /// <summary>
         /// Control BtnRegresar.
         /// </summary>
         /// <remarks>
@@ -110,6 +101,51 @@ namespace PortalTrabajadores.Portal {
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button BtnRegresar;
+        
+        /// <summary>
+        /// Control Container_UpdatePanelEval.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Container_UpdatePanelEval;
+        
+        /// <summary>
+        /// Control lblEvaluacion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblEvaluacion;
+        
+        /// <summary>
+        /// Control ddlEvaluacion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlEvaluacion;
+        
+        /// <summary>
+        /// Control sqlEvaluacion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.SqlDataSource sqlEvaluacion;
+        
+        /// <summary>
+        /// Control BtnEvaluar.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnEvaluar;
         
         /// <summary>
         /// Control Container_UpdatePanel3.
