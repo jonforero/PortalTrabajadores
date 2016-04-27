@@ -67,14 +67,6 @@ namespace PortalTrabajadores.Portal
                                 {
                                     //// Carga los objetivos Modificables
                                     this.CargarObjetivos(Session["idJefeEmpleado"].ToString());
-
-                                    if (Session["idEstadoEtapa"] != null)
-                                    {
-                                        if (Session["idEstadoEtapa"].ToString() == "3")
-                                        {
-                                            this.CargarObservaciones(Session["idJefeEmpleado"].ToString(), "2");
-                                        }
-                                    }
                                 }
                                 else
                                 {
@@ -101,6 +93,11 @@ namespace PortalTrabajadores.Portal
                             {
                                 this.CargarObjetivoBloqueados(Session["idJefeEmpleado"].ToString());
                                 MensajeError("Usted no puede continuar ya que esta por fuera de las fechas. Por favor comuniquese con su Jefe");
+                            }
+
+                            if (Session["idEstadoEtapa"] != null)
+                            {
+                                this.CargarObservaciones(Session["idJefeEmpleado"].ToString(), "2");
                             }
                         }
                         else
@@ -144,14 +141,14 @@ namespace PortalTrabajadores.Portal
         /// <summary>
         /// Obtiene el año activo en el sistema
         /// </summary>
-        public void ObtenerPeriodoActivo() 
+        public void ObtenerPeriodoActivo()
         {
             try
             {
                 MySqlCn = new MySqlConnection(Cn);
                 MySqlCommand scSqlCommand;
                 string consulta = "SELECT * FROM " + bd3 + ".parametrosgenerales " +
-                                  "WHERE Empresas_idEmpresa = '" + Session["idEmpresa"] + 
+                                  "WHERE Empresas_idEmpresa = '" + Session["idEmpresa"] +
                                   "' AND idCompania = '" + Session["compania"] + "'" +
                                   " AND Activo = 1;";
 
@@ -323,7 +320,7 @@ namespace PortalTrabajadores.Portal
                     {
                         return true;
                     }
-                    else 
+                    else
                     {
                         return false;
                     }
@@ -346,7 +343,7 @@ namespace PortalTrabajadores.Portal
         /// <param name="idJefeEmpleado"></param>
         /// <param name="etapa"></param>
         /// <returns>true si la etapa esta finalizada</returns>
-        public bool ComprobarEtapaAnterior(string idJefeEmpleado, string etapa) 
+        public bool ComprobarEtapaAnterior(string idJefeEmpleado, string etapa)
         {
             try
             {
@@ -400,25 +397,30 @@ namespace PortalTrabajadores.Portal
         {
             try
             {
+                DataSet dsDataSet = new DataSet();
+                DataTable dtDataTable = null;
+
                 MySqlCn = new MySqlConnection(Cn);
                 MySqlCommand scSqlCommand;
-                string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = " 
-                                + idJefeEmpleado + " AND Etapas_idEtapas = " 
-                                + etapa + " Order by Orden desc limit 1;";
+                string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = "
+                                + idJefeEmpleado + " AND Etapas_idEtapas = "
+                                + etapa + " Order by Orden;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
+                sdaSqlDataAdapter.Fill(dsDataSet);
+                dtDataTable = dsDataSet.Tables[0];
 
-                MySqlCn.Open();
-                MySqlDataReader rd = scSqlCommand.ExecuteReader();
-
-                if (rd.HasRows)
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
-                    if (rd.Read())
-                    {
-                        lblObservaciones.Text = "Observaciones: " + rd["Descripcion"].ToString();
-                    }
+                    gvObservaciones.DataSource = dtDataTable;
+                }
+                else
+                {
+                    gvObservaciones.DataSource = null;
                 }
 
+                gvObservaciones.DataBind();
                 Container_UpdatePanelObservaciones.Visible = true;
                 UpdatePanel1.Update();
             }
@@ -577,7 +579,7 @@ namespace PortalTrabajadores.Portal
         /// <summary>
         /// Comprueba el que se hayan registrado todos los seguimientos
         /// </summary>
-        public void ComprobarSeguimientoTotal(string idJefeEmpleado) 
+        public void ComprobarSeguimientoTotal(string idJefeEmpleado)
         {
             try
             {
@@ -640,7 +642,7 @@ namespace PortalTrabajadores.Portal
         protected void BtnGuardar_Click(object sender, EventArgs e)
         {
             CnMysql Conexion = new CnMysql(Cn2);
-            int res = 0;            
+            int res = 0;
 
             try
             {
@@ -664,7 +666,7 @@ namespace PortalTrabajadores.Portal
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Objetivos_idObjetivos", Session["idObjetivos"]);
                     cmd.Parameters.AddWithValue("@Objetivos_JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
-                    cmd.Parameters.AddWithValue("@Descripcion", txtSeguimiento.Text);      
+                    cmd.Parameters.AddWithValue("@Descripcion", txtSeguimiento.Text);
                 }
 
                 // Crea un parametro de salida para el SP
@@ -685,7 +687,7 @@ namespace PortalTrabajadores.Portal
                     {
                         MensajeError("Seguimiento creado correctamente");
                     }
-                    else 
+                    else
                     {
                         MensajeError("Seguimiento actualizado correctamente");
                     }
@@ -757,7 +759,7 @@ namespace PortalTrabajadores.Portal
                         BtnGuardar.Text = "Editar";
                         txtSeguimiento.Text = segDescripcion;
                     }
-                    else 
+                    else
                     {
                         BtnGuardar.Text = "Guardar";
                     }
@@ -864,6 +866,6 @@ namespace PortalTrabajadores.Portal
             }
         }
 
-        #endregion        
+        #endregion
     }
 }

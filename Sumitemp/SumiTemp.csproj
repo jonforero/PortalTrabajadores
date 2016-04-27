@@ -104,6 +104,7 @@
     <Content Include="Img\ok.gif" />
     <Content Include="Img\pdf.gif" />
     <Content Include="Img\printButton.png" />
+    <Content Include="Img\search.gif" />
     <Content Include="Img\Sumitemp.jpg" />
     <Content Include="Js\funciones.js" />
     <Content Include="Portal\Actualizadatos.aspx" />

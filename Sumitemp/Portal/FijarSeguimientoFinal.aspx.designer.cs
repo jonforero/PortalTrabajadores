@@ -40,24 +40,6 @@ namespace PortalTrabajadores.Portal {
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
         
         /// <summary>
-        /// Control Container_UpdatePanelObservaciones.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Container_UpdatePanelObservaciones;
-        
-        /// <summary>
-        /// Control lblObservaciones.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblObservaciones;
-        
-        /// <summary>
         /// Control Container_UpdatePanel1.
         /// </summary>
         /// <remarks>
@@ -101,6 +83,24 @@ namespace PortalTrabajadores.Portal {
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvObjetivosBloqueados;
+        
+        /// <summary>
+        /// Control Container_UpdatePanelObservaciones.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Container_UpdatePanelObservaciones;
+        
+        /// <summary>
+        /// Control gvObservaciones.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvObservaciones;
         
         /// <summary>
         /// Control Container_UpdatePanel2.

@@ -194,3 +194,10 @@ h2 {
     color: #00AB59;
     font-size: 2em;
 }
+
+/*Estilos Observaciones*/
+
+.ObservacionesCSS {
+    color: #ff3434;
+    font-size: 10pt;
+}

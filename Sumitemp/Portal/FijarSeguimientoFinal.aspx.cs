@@ -67,14 +67,6 @@ namespace PortalTrabajadores.Portal
                                 {
                                     //// Carga los objetivos Modificables
                                     this.CargarObjetivos(Session["idJefeEmpleado"].ToString());
-
-                                    if (Session["idEstadoEtapa"] != null)
-                                    {
-                                        if (Session["idEstadoEtapa"].ToString() == "3")
-                                        {
-                                            this.CargarObservaciones(Session["idJefeEmpleado"].ToString(), "3");
-                                        }
-                                    }
                                 }
                                 else
                                 {
@@ -101,6 +93,11 @@ namespace PortalTrabajadores.Portal
                             {
                                 this.CargarObjetivoBloqueados(Session["idJefeEmpleado"].ToString());
                                 MensajeError("Usted no puede continuar ya que esta por fuera de las fechas. Por favor comuniquese con su Jefe");
+                            }
+
+                            if (Session["idEstadoEtapa"] != null)
+                            {
+                                this.CargarObservaciones(Session["idJefeEmpleado"].ToString(), "3");
                             }
                         }
                         else
@@ -400,25 +397,30 @@ namespace PortalTrabajadores.Portal
         {
             try
             {
+                DataSet dsDataSet = new DataSet();
+                DataTable dtDataTable = null;
+
                 MySqlCn = new MySqlConnection(Cn);
                 MySqlCommand scSqlCommand;
                 string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = "
                                 + idJefeEmpleado + " AND Etapas_idEtapas = "
-                                + etapa + " Order by Orden desc limit 1;";
+                                + etapa + " Order by Orden;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
+                sdaSqlDataAdapter.Fill(dsDataSet);
+                dtDataTable = dsDataSet.Tables[0];
 
-                MySqlCn.Open();
-                MySqlDataReader rd = scSqlCommand.ExecuteReader();
-
-                if (rd.HasRows)
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
-                    if (rd.Read())
-                    {
-                        lblObservaciones.Text = "Observaciones: " + rd["Descripcion"].ToString();
-                    }
+                    gvObservaciones.DataSource = dtDataTable;
+                }
+                else
+                {
+                    gvObservaciones.DataSource = null;
                 }
 
+                gvObservaciones.DataBind();
                 Container_UpdatePanelObservaciones.Visible = true;
                 UpdatePanel1.Update();
             }
@@ -841,6 +843,6 @@ namespace PortalTrabajadores.Portal
             }
         }
 
-        #endregion        
+        #endregion
     }
 }

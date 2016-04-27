@@ -167,11 +167,12 @@ namespace PortalTrabajadores.Portal
                 Container_UpdatePanel1.Visible = true;
                 Container_UpdatePanel2.Visible = false;
                 Container_UpdatePanel3.Visible = false;
-                UpdatePanel1.Update();           
+                Container_UpdatePanelObservaciones.Visible = false;
+                UpdatePanel1.Update();
             }
             catch (Exception ex)
             {
-                MensajeError("El sistema no se encuentra disponible en este momento. " + ex.Message);                
+                MensajeError("El sistema no se encuentra disponible en este momento. " + ex.Message);
             }
             finally
             {
@@ -185,7 +186,7 @@ namespace PortalTrabajadores.Portal
         /// <param name="etapa">Etapa actual</param>
         /// <param name="estadoEtapa">Estado de la etapa</param>
         /// <returns>true si se realizo correctamente el procedimiento</returns>
-        public bool ActualizarEtapa(int etapa, int estadoEtapa) 
+        public bool ActualizarEtapa(int etapa, int estadoEtapa)
         {
             CnMysql Conexion = new CnMysql(Cn2);
             Conexion.AbrirCnMysql();
@@ -217,10 +218,10 @@ namespace PortalTrabajadores.Portal
                 {
                     return true;
                 }
-                else 
+                else
                 {
                     return false;
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -237,7 +238,7 @@ namespace PortalTrabajadores.Portal
         /// Verifica el estado de la etapa
         /// </summary>
         /// <returns>true si esta en etapa valida sino no lo deja continuar</returns>
-        public bool ComprobarEstadoEtapa(string idJefeEmpleado, string etapa) 
+        public bool ComprobarEstadoEtapa(string idJefeEmpleado, string etapa)
         {
             try
             {
@@ -292,7 +293,7 @@ namespace PortalTrabajadores.Portal
         /// <param name="cedula">Cedula de quien observa</param>
         /// <param name="observacion">texto observacion</param>
         /// <returns>true si el proceso es correcto</returns>
-        public bool CrearObservacion(string cedula, string observacion) 
+        public bool CrearObservacion(string cedula, string observacion)
         {
             CnMysql Conexion = new CnMysql(Cn2);
             int res = 0;
@@ -347,27 +348,31 @@ namespace PortalTrabajadores.Portal
         {
             try
             {
+                DataSet dsDataSet = new DataSet();
+                DataTable dtDataTable = null;
+
                 MySqlCn = new MySqlConnection(Cn);
                 MySqlCommand scSqlCommand;
                 string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
-                                  " AND Cedula = " + cedulaEmpleado +
-                                  " AND Etapas_idEtapas = " + etapa + 
-                                  " Order by Orden desc limit 1;";
+                                  " AND Etapas_idEtapas = " + etapa +
+                                  " Order by Orden;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
+                sdaSqlDataAdapter.Fill(dsDataSet);
+                dtDataTable = dsDataSet.Tables[0];
 
-                MySqlCn.Open();
-                MySqlDataReader rd = scSqlCommand.ExecuteReader();
-
-                if (rd.HasRows)
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
-                    if (rd.Read())
-                    {
-                        lblObservaciones.Text = "Observaciones: " + rd["Descripcion"].ToString();
-                        lblObservaciones.Visible = true;
-                    }
+                    gvObservaciones.DataSource = dtDataTable;
                 }
-                
+                else
+                {
+                    gvObservaciones.DataSource = null;
+                }
+
+                gvObservaciones.DataBind();
+                Container_UpdatePanelObservaciones.Visible = true;
                 UpdatePanel1.Update();
             }
             catch (Exception ex)
@@ -391,7 +396,7 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">evento e de la grilla</param>
         protected void gvEmpleadosAsociados_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            lblObservaciones.Visible = false;
+            Container_UpdatePanelObservaciones.Visible = false;
             LblMsj.Visible = false;
             UpdatePanel3.Update();
 
@@ -405,7 +410,7 @@ namespace PortalTrabajadores.Portal
                 int idJefeEmpleado = Convert.ToInt32(arg[0]);
                 int cedulaEmpleado = Convert.ToInt32(arg[1]);
 
-                
+
                 DataSet dsDataSet = new DataSet();
                 DataTable dtDataTable = null;
 
@@ -426,10 +431,10 @@ namespace PortalTrabajadores.Portal
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
                     gvObjetivosCreados.DataSource = dtDataTable;
+                    this.CargarObservacionesEmpleado(idJefeEmpleado, cedulaEmpleado, "1");
 
                     if (e.CommandName == "Evaluar")
                     {
-                        this.CargarObservacionesEmpleado(idJefeEmpleado, cedulaEmpleado, "1");
                         this.BtnAceptar.Visible = true;
                         this.BtnRechazar.Visible = true;
                     }
@@ -473,6 +478,7 @@ namespace PortalTrabajadores.Portal
             {
                 ImageButton btnEvaluar = (ImageButton)e.Row.FindControl("btnEvaluar");
                 ImageButton btnRevisar = (ImageButton)e.Row.FindControl("btnRevisar");
+                ImageButton btnOk = (ImageButton)e.Row.FindControl("btnOk");
 
                 string idJefeEmpleado = DataBinder.Eval(e.Row.DataItem, "idJefeEmpleado").ToString();
 
@@ -480,6 +486,7 @@ namespace PortalTrabajadores.Portal
                 {
                     btnEvaluar.Visible = true;
                     btnRevisar.Visible = false;
+                    btnOk.Visible = false;
                 }
                 else
                 {
@@ -487,11 +494,13 @@ namespace PortalTrabajadores.Portal
                     {
                         btnEvaluar.Visible = false;
                         btnRevisar.Visible = false;
+                        btnOk.Visible = false;
                     }
                     else
                     {
                         btnEvaluar.Visible = false;
                         btnRevisar.Visible = true;
+                        btnOk.Visible = true;
                     }
                 }
             }
@@ -520,6 +529,7 @@ namespace PortalTrabajadores.Portal
         {
             this.BtnAceptar.Visible = false;
             this.BtnRechazar.Visible = false;
+            Container_UpdatePanelObservaciones.Visible = false;
             Container_UpdatePanel3.Visible = true;
             UpdatePanel1.Update();
             Session.Add("botonOpc", 3);
@@ -562,7 +572,7 @@ namespace PortalTrabajadores.Portal
             UpdatePanel3.Update();
             this.CargarEmpleados(Session["usuario"].ToString(), Session["compania"].ToString());
         }
-        
-        #endregion        
+
+        #endregion
     }
 }

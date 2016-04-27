@@ -16,19 +16,23 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="Container" runat="server">
-    <div><asp:Label ID="lblInformacion" runat="server"></asp:Label></div>
+    <div>
+        <asp:Label ID="lblInformacion" runat="server"></asp:Label></div>
     <br />
+    <asp:UpdateProgress ID="upProgress" DynamicLayout="true" runat="server" AssociatedUpdatePanelID="UpdatePanel1">
+        <ProgressTemplate>
+            <div class="loader">
+            </div>
+        </ProgressTemplate>
+    </asp:UpdateProgress>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
-            <div id="Container_UpdatePanelObservaciones" runat="server" visible="false">
-                <asp:Label ID="lblObservaciones" runat="server" CssClass="ObservacionesCSS"></asp:Label>
-            </div>
-            <div id="Container_UpdatePanel1" runat="server" visible="true" style="margin-top:15px">
+            <div id="Container_UpdatePanel1" runat="server" visible="true" style="margin-top: 15px">
                 <asp:GridView ID="gvObjetivosCreados" runat="server" AutoGenerateColumns="false" OnRowCommand="gvObjetivosCreados_RowCommand">
                     <AlternatingRowStyle CssClass="ColorOscuro" />
-                    <Columns> 
+                    <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
-                        <asp:BoundField DataField="Ano" HeaderText="Año"/>
+                        <asp:BoundField DataField="Ano" HeaderText="Año" />
                         <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
                                 <asp:ImageButton ID="btnUpdate" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("idObjetivos")%>' CommandName="Editar" />
@@ -39,15 +43,24 @@
                     </Columns>
                 </asp:GridView>
                 <br />
-                <asp:Button ID="BtnCrear" runat="server" Text="Crear Objetivo" Visible="false" OnClick="BtnCrear_Click"/>
-                <asp:Button ID="BtnEnviar" runat="server" Text="Enviar Objetivos a jefe" Visible="false" OnClick="BtnEnviar_Click"/>
-            </div>            
+                <asp:Button ID="BtnCrear" runat="server" Text="Crear Objetivo" Visible="false" OnClick="BtnCrear_Click" />
+                <asp:Button ID="BtnEnviar" runat="server" Text="Enviar Objetivos a jefe" Visible="false" OnClick="BtnEnviar_Click" />
+            </div>
             <div id="Container_UpdatePanelBloqueado" runat="server" visible="false">
                 <asp:GridView ID="gvObjetivosBloqueados" runat="server" AutoGenerateColumns="false">
                     <AlternatingRowStyle CssClass="ColorOscuro" />
-                    <Columns> 
+                    <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
-                        <asp:BoundField DataField="Ano" HeaderText="Año"/>
+                        <asp:BoundField DataField="Ano" HeaderText="Año" />
+                    </Columns>
+                </asp:GridView>
+            </div>
+            <div id="Container_UpdatePanelObservaciones" runat="server" visible="false">
+                <asp:GridView ID="gvObservaciones" runat="server" AutoGenerateColumns="false">
+                    <AlternatingRowStyle CssClass="ColorOscuro" />
+                    <Columns>
+                        <asp:BoundField DataField="Descripcion" HeaderText="Observaciones" SortExpression="Descripcion" />
+                        <asp:BoundField DataField="Cedula" HeaderText="Cedula" SortExpression="Cedula" />
                     </Columns>
                 </asp:GridView>
             </div>
@@ -58,14 +71,17 @@
                         <th colspan="2">Objetivos</th>
                     </tr>
                     <tr>
-                        <td class="CeldaTablaDatos"><asp:Label ID="lblObjetivo" runat="server" Text="Objetivo:" /></td>
                         <td class="CeldaTablaDatos">
-                            <asp:TextBox ID="txtObjetivo" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px"/>
+                            <asp:Label ID="lblObjetivo" runat="server" Text="Objetivo:" /></td>
+                        <td class="CeldaTablaDatos">
+                            <asp:TextBox ID="txtObjetivo" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px" />
                         </td>
-                    </tr>                
+                    </tr>
                     <tr class="ColorOscuro">
-                        <td class="BotonTablaDatos"><asp:Button ID="BtnGuardar" runat="server" Text="Guardar" OnClick="BtnGuardar_Click"/></td>
-                        <td class="BotonTablaDatos"><asp:Button ID="BtnCancelar" runat="server" Text="Cancelar" OnClick="BtnCancel_Click"/></td>
+                        <td class="BotonTablaDatos">
+                            <asp:Button ID="BtnGuardar" runat="server" Text="Guardar" OnClick="BtnGuardar_Click" /></td>
+                        <td class="BotonTablaDatos">
+                            <asp:Button ID="BtnCancelar" runat="server" Text="Cancelar" OnClick="BtnCancel_Click" /></td>
                     </tr>
                 </table>
             </div>
@@ -77,11 +93,12 @@
                     </tr>
                     <tr>
                         <td class="CeldaTablaDatos">
-                            <asp:TextBox ID="txtObservacion" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px"/>
+                            <asp:TextBox ID="txtObservacion" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px" />
                         </td>
-                    </tr>                
+                    </tr>
                     <tr class="ColorOscuro">
-                        <td class="BotonTablaDatos"><asp:Button ID="BtnGuardarObs" runat="server" Text="Enviar" OnClick="BtnGuardarObs_Click"/></td>
+                        <td class="BotonTablaDatos">
+                            <asp:Button ID="BtnGuardarObs" runat="server" Text="Enviar" OnClick="BtnGuardarObs_Click" /></td>
                     </tr>
                 </table>
             </div>
@@ -95,7 +112,7 @@
 <asp:Content ID="Content4" ContentPlaceHolderID="Errores" runat="server">
     <asp:UpdatePanel ID="UpdatePanel3" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
-             <asp:Label ID="LblMsj" runat="server" Text="LabelMsjError" Visible="False"></asp:Label>
+            <asp:Label ID="LblMsj" runat="server" Text="LabelMsjError" Visible="False"></asp:Label>
         </ContentTemplate>
     </asp:UpdatePanel>
 </asp:Content>

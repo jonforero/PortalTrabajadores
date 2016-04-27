@@ -167,6 +167,7 @@ namespace PortalTrabajadores.Portal
                 Container_UpdatePanel1.Visible = true;
                 Container_UpdatePanel2.Visible = false;
                 Container_UpdatePanel3.Visible = false;
+                Container_UpdatePanelObservaciones.Visible = false;
                 UpdatePanel1.Update();
             }
             catch (Exception ex)
@@ -347,27 +348,31 @@ namespace PortalTrabajadores.Portal
         {
             try
             {
+                DataSet dsDataSet = new DataSet();
+                DataTable dtDataTable = null;
+
                 MySqlCn = new MySqlConnection(Cn);
                 MySqlCommand scSqlCommand;
                 string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
-                                  " AND Cedula = " + cedulaEmpleado +
-                                  " AND Etapas_idEtapas = " + etapa + 
-                                  " Order by Orden desc limit 1;";
+                                  " AND Etapas_idEtapas = " + etapa +
+                                  " Order by Orden;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
+                sdaSqlDataAdapter.Fill(dsDataSet);
+                dtDataTable = dsDataSet.Tables[0];
 
-                MySqlCn.Open();
-                MySqlDataReader rd = scSqlCommand.ExecuteReader();
-
-                if (rd.HasRows)
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
-                    if (rd.Read())
-                    {
-                        lblObservaciones.Text = "Observaciones: " + rd["Descripcion"].ToString();
-                        lblObservaciones.Visible = true;
-                    }
+                    gvObservaciones.DataSource = dtDataTable;
+                }
+                else
+                {
+                    gvObservaciones.DataSource = null;
                 }
 
+                gvObservaciones.DataBind();
+                Container_UpdatePanelObservaciones.Visible = true;
                 UpdatePanel1.Update();
             }
             catch (Exception ex)
@@ -391,7 +396,7 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">evento e de la grilla</param>
         protected void gvEmpleadosAsociados_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            lblObservaciones.Visible = false;
+            Container_UpdatePanelObservaciones.Visible = false;
             LblMsj.Visible = false;
             UpdatePanel3.Update();
 
@@ -407,7 +412,7 @@ namespace PortalTrabajadores.Portal
 
                 DataSet dsDataSet = new DataSet();
                 DataTable dtDataTable = null;
-                
+
                 MySqlCn = new MySqlConnection(Cn2);
                 MySqlCommand scSqlCommand;
                 scSqlCommand = new MySqlCommand("sp_ConsultarObjetivosSeguimientos", MySqlCn);
@@ -421,10 +426,10 @@ namespace PortalTrabajadores.Portal
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
                     gvObjetivosCreados.DataSource = dtDataTable;
+                    this.CargarObservacionesEmpleado(idJefeEmpleado, cedulaEmpleado, "2");
 
                     if (e.CommandName == "Evaluar")
                     {
-                        this.CargarObservacionesEmpleado(idJefeEmpleado, cedulaEmpleado, "2");
                         this.BtnAceptar.Visible = true;
                         this.BtnRechazar.Visible = true;
                     }
@@ -469,6 +474,7 @@ namespace PortalTrabajadores.Portal
             {
                 ImageButton btnEvaluar = (ImageButton)e.Row.FindControl("btnEvaluar");
                 ImageButton btnRevisar = (ImageButton)e.Row.FindControl("btnRevisar");
+                ImageButton btnOk = (ImageButton)e.Row.FindControl("btnOk");
 
                 string idJefeEmpleado = DataBinder.Eval(e.Row.DataItem, "idJefeEmpleado").ToString();
 
@@ -476,6 +482,7 @@ namespace PortalTrabajadores.Portal
                 {
                     btnEvaluar.Visible = true;
                     btnRevisar.Visible = false;
+                    btnOk.Visible = false;
                 }
                 else
                 {
@@ -483,11 +490,13 @@ namespace PortalTrabajadores.Portal
                     {
                         btnEvaluar.Visible = false;
                         btnRevisar.Visible = false;
+                        btnOk.Visible = false;
                     }
                     else
                     {
                         btnEvaluar.Visible = false;
                         btnRevisar.Visible = true;
+                        btnOk.Visible = true;
                     }
                 }
             }
@@ -517,6 +526,7 @@ namespace PortalTrabajadores.Portal
             this.BtnAceptar.Visible = false;
             this.BtnRechazar.Visible = false;
             Container_UpdatePanel3.Visible = true;
+            Container_UpdatePanelObservaciones.Visible = false;
             UpdatePanel1.Update();
             Session.Add("botonOpc", 3);
         }
@@ -555,10 +565,10 @@ namespace PortalTrabajadores.Portal
         protected void BtnRegresar_Click(object sender, EventArgs e)
         {
             LblMsj.Visible = false;
-            UpdatePanel3.Update();            
+            UpdatePanel3.Update();
             this.CargarEmpleados(Session["usuario"].ToString(), Session["compania"].ToString());
         }
 
-        #endregion        
+        #endregion
     }
 }

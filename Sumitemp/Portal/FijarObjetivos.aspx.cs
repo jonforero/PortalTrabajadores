@@ -69,14 +69,6 @@ namespace PortalTrabajadores.Portal
                                     this.CargarMensajeObjetivos();
                                     this.BtnCrear.Visible = true;
                                     this.BtnEnviar.Visible = true;
-
-                                    if (Session["idEstadoEtapa"] != null)
-                                    {
-                                        if (Session["idEstadoEtapa"].ToString() == "3")
-                                        {
-                                            this.CargarObservaciones(Session["idJefeEmpleado"].ToString(), "1");
-                                        }
-                                    }
                                 }
                                 else
                                 {
@@ -96,10 +88,15 @@ namespace PortalTrabajadores.Portal
                                     }
                                 }
                             }
-                            else 
+                            else
                             {
                                 this.CargarObjetivoBloqueados(Session["idJefeEmpleado"].ToString());
                                 MensajeError("Usted no puede continuar ya que esta por fuera de las fechas. Por favor comuniquese con su Jefe");
+                            }
+
+                            if (Session["idEstadoEtapa"] != null)
+                            {
+                                this.CargarObservaciones(Session["idJefeEmpleado"].ToString(), "1");
                             }
                         }
                         else
@@ -118,11 +115,11 @@ namespace PortalTrabajadores.Portal
                 }
             }
         }
-        
+
         #endregion
 
         #region Metodo MensajeError
-        
+
         /// <summary>
         /// Carga el mensaje de error
         /// </summary>
@@ -133,7 +130,7 @@ namespace PortalTrabajadores.Portal
             LblMsj.Visible = true;
             UpdatePanel3.Update();
         }
-        
+
         #endregion
 
         #region Parametros
@@ -180,7 +177,7 @@ namespace PortalTrabajadores.Portal
         /// Revisa si tiene un jefe asignado
         /// </summary>
         /// <returns>true si tiene jefe</returns>
-        public bool CargarParametros() 
+        public bool CargarParametros()
         {
             try
             {
@@ -205,7 +202,7 @@ namespace PortalTrabajadores.Portal
 
                     return true;
                 }
-                else 
+                else
                 {
                     return false;
                 }
@@ -227,7 +224,7 @@ namespace PortalTrabajadores.Portal
         /// <param name="etapa">Identificador de la etapa</param>
         /// <param name="fecha">fecha actual</param>
         /// <returns>true si puede modificar</returns>
-        public bool ComprobarFechaEtapas(string etapa, DateTime fecha) 
+        public bool ComprobarFechaEtapas(string etapa, DateTime fecha)
         {
             try
             {
@@ -270,7 +267,7 @@ namespace PortalTrabajadores.Portal
                 MensajeError("El sistema no se encuentra disponible en este momento. " + ex.Message);
                 return false;
             }
-            finally 
+            finally
             {
                 MySqlCn.Close();
             }
@@ -340,7 +337,7 @@ namespace PortalTrabajadores.Portal
                 {
                     gvObjetivosCreados.DataSource = dtDataTable;
                 }
-                else 
+                else
                 {
                     gvObjetivosCreados.DataSource = null;
                 }
@@ -381,7 +378,7 @@ namespace PortalTrabajadores.Portal
 
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
-                    gvObjetivosBloqueados.DataSource = dtDataTable;                    
+                    gvObjetivosBloqueados.DataSource = dtDataTable;
                 }
                 else
                 {
@@ -408,7 +405,7 @@ namespace PortalTrabajadores.Portal
         /// </summary>
         /// <param name="idJefeEmpleado">id JefeEmpleado</param>
         /// <returns>Numero de objetivos creados</returns>
-        public int numeroObjetivos(string idJefeEmpleado) 
+        public int numeroObjetivos(string idJefeEmpleado)
         {
             try
             {
@@ -428,7 +425,7 @@ namespace PortalTrabajadores.Portal
                 {
                     return dtDataTable.Rows.Count;
                 }
-                else 
+                else
                 {
                     return 0;
                 }
@@ -448,7 +445,7 @@ namespace PortalTrabajadores.Portal
         /// Verifica el estado de la etapa
         /// </summary>
         /// <returns>true si esta en etapa valida sino no lo deja continuar</returns>
-        public bool ComprobarEstadoEtapa(string idJefeEmpleado, string etapa) 
+        public bool ComprobarEstadoEtapa(string idJefeEmpleado, string etapa)
         {
             try
             {
@@ -457,8 +454,8 @@ namespace PortalTrabajadores.Portal
 
                 MySqlCn = new MySqlConnection(Cn);
                 MySqlCommand scSqlCommand;
-                string consulta = "SELECT * FROM " + bd3 + ".etapa_jefeempleado where " + 
-                                  "JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado + 
+                string consulta = "SELECT * FROM " + bd3 + ".etapa_jefeempleado where " +
+                                  "JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
                                   " AND Etapas_idEtapas = " + etapa +
                                   " ORDER BY fecha desc;";
 
@@ -475,7 +472,7 @@ namespace PortalTrabajadores.Portal
                     {
                         return true;
                     }
-                    else 
+                    else
                     {
                         return false;
                     }
@@ -501,29 +498,34 @@ namespace PortalTrabajadores.Portal
         /// </summary>
         /// <param name="idJefeEmpleado">Id del JefeEmpleado</param>
         /// <param name="etapa">Etapa actual</param>
-        public void CargarObservaciones(string idJefeEmpleado, string etapa) 
+        public void CargarObservaciones(string idJefeEmpleado, string etapa)
         {
             try
             {
+                DataSet dsDataSet = new DataSet();
+                DataTable dtDataTable = null;
+
                 MySqlCn = new MySqlConnection(Cn);
                 MySqlCommand scSqlCommand;
                 string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
-                                  " AND Etapas_idEtapas = " + etapa + 
-                                  " Order by Orden desc limit 1;";
+                                  " AND Etapas_idEtapas = " + etapa +
+                                  " Order by Orden;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
+                sdaSqlDataAdapter.Fill(dsDataSet);
+                dtDataTable = dsDataSet.Tables[0];
 
-                MySqlCn.Open();
-                MySqlDataReader rd = scSqlCommand.ExecuteReader();
-
-                if (rd.HasRows)
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
-                    if (rd.Read())
-                    {
-                        lblObservaciones.Text = "Observaciones: " + rd["Descripcion"].ToString();
-                    }
+                    gvObservaciones.DataSource = dtDataTable;
+                }
+                else
+                {
+                    gvObservaciones.DataSource = null;
                 }
 
+                gvObservaciones.DataBind();
                 Container_UpdatePanelObservaciones.Visible = true;
                 UpdatePanel1.Update();
             }
@@ -640,7 +642,7 @@ namespace PortalTrabajadores.Portal
             int res = 0;
 
             try
-            {                
+            {
                 Conexion.AbrirCnMysql();
                 MySqlCommand cmd;
 
@@ -670,14 +672,14 @@ namespace PortalTrabajadores.Portal
 
                         if (res == 1)
                         {
-                            MensajeError("Objetivo creado correctamente");                                
+                            MensajeError("Objetivo creado correctamente");
                         }
-                        else 
+                        else
                         {
                             MensajeError("Hubo un error al crear, por favor revise con su administrador");
                         }
                     }
-                    else 
+                    else
                     {
                         MensajeError("Ha llegado al maximo permitido de objetivos. No puede crear más");
                     }
@@ -688,7 +690,7 @@ namespace PortalTrabajadores.Portal
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@idObjetivos", Session["idObjetivos"]);
                     cmd.Parameters.AddWithValue("@JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
-                    cmd.Parameters.AddWithValue("@Descripcion", txtObjetivo.Text);                    
+                    cmd.Parameters.AddWithValue("@Descripcion", txtObjetivo.Text);
 
                     // Crea un parametro de salida para el SP
                     MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
@@ -722,10 +724,10 @@ namespace PortalTrabajadores.Portal
             finally
             {
                 Container_UpdatePanel2.Visible = false;
-                UpdatePanel1.Update();   
+                UpdatePanel1.Update();
                 Conexion.CerrarCnMysql();
             }
-        }   
+        }
 
         /// <summary>
         /// Cancela el formulario actual
@@ -801,7 +803,7 @@ namespace PortalTrabajadores.Portal
             {
                 MensajeError("Ha ocurrido el siguiente error: " + E.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
             }
-            finally 
+            finally
             {
                 Conexion.CerrarCnMysql();
             }
@@ -868,7 +870,7 @@ namespace PortalTrabajadores.Portal
             else
             {
                 MensajeError("Hubo un error, por favor revise con su administrador");
-            }            
+            }
         }
 
         #endregion

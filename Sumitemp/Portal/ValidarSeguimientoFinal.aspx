@@ -21,13 +21,14 @@
             <div id="Container_UpdatePanel1" runat="server" visible="true">
                 <asp:GridView ID="gvEmpleadosAsociados" runat="server" AutoGenerateColumns="false" OnRowCommand="gvEmpleadosAsociados_RowCommand" OnRowDataBound="gvEmpleadosAsociados_RowDataBound">
                     <AlternatingRowStyle CssClass="ColorOscuro" />
-                    <Columns> 
+                    <Columns>
                         <asp:BoundField DataField="Cedula_Empleado" HeaderText="Cedula Empleado" SortExpression="Cedula_Empleado" />
-                        <asp:BoundField DataField="Nombres_Completos_Empleado" HeaderText="Nombre"/>
+                        <asp:BoundField DataField="Nombres_Completos_Empleado" HeaderText="Nombre" />
                         <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
                                 <asp:ImageButton ID="btnEvaluar" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("idJefeEmpleado") + ";" + Eval("Cedula_Empleado")%>' CommandName="Evaluar" />
-                                <asp:ImageButton ID="btnRevisar" runat="server" ImageUrl="~/Img/ok.gif" CommandArgument='<%#Eval("idJefeEmpleado") + ";" + Eval("Cedula_Empleado")%>' CommandName="Revisar" Visible="false"/>
+                                <asp:ImageButton ID="btnOk" runat="server" ImageUrl="~/Img/ok.gif" Visible="false" Enabled="false" />
+                                <asp:ImageButton ID="btnRevisar" runat="server" ImageUrl="~/Img/search.gif" CommandArgument='<%#Eval("idJefeEmpleado") + ";" + Eval("Cedula_Empleado")%>' CommandName="Revisar" Visible="false" />
                             </ItemTemplate>
                             <ItemStyle HorizontalAlign="Center" />
                         </asp:TemplateField>
@@ -35,28 +36,35 @@
                 </asp:GridView>
                 <br />
             </div>
+            <div id="Container_UpdatePanelObservaciones" runat="server" visible="false">
+                <asp:GridView ID="gvObservaciones" runat="server" AutoGenerateColumns="false">
+                    <AlternatingRowStyle CssClass="ColorOscuro" />
+                    <Columns>
+                        <asp:BoundField DataField="Descripcion" HeaderText="Observaciones" SortExpression="Descripcion" />
+                        <asp:BoundField DataField="Cedula" HeaderText="Cedula" SortExpression="Cedula" />
+                    </Columns>
+                </asp:GridView>
+            </div>
             <div id="Container_UpdatePanel2" runat="server" visible="false">
-                <asp:Label ID="lblObservaciones" runat="server" CssClass="ObservacionesCSS" Visible ="false"></asp:Label>
-                <br />
                 <asp:GridView ID="gvObjetivosCreados" runat="server" AutoGenerateColumns="false" OnRowCommand="gvObjetivosCreados_RowCommand" OnRowDataBound="gvObjetivosCreados_RowDataBound">
                     <AlternatingRowStyle CssClass="ColorOscuro" />
-                    <Columns> 
+                    <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
-                        <asp:BoundField DataField="Ano" HeaderText="Año"/>
-                        <asp:BoundField DataField="EvalDescripcion" HeaderText="Evaluación"/>
-                        <asp:BoundField DataField="EvalDescripcionJefe" HeaderText="Evaluación"/>                        
+                        <asp:BoundField DataField="Ano" HeaderText="Año" />
+                        <asp:BoundField DataField="EvalDescripcion" HeaderText="Evaluación" />
+                        <asp:BoundField DataField="EvalDescripcionJefe" HeaderText="Evaluación" />
                         <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
                                 <asp:ImageButton ID="btnEvaluacion" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("id_obj") + ";" + Eval("CodEvaluacionJefe")%>' CommandName="Evaluacion" />
-                                <asp:ImageButton ID="btnOk" runat="server" ImageUrl="~/Img/ok.gif" Enabled="false"/>
+                                <asp:ImageButton ID="btnOk" runat="server" ImageUrl="~/Img/ok.gif" Enabled="false" />
                             </ItemTemplate>
                             <ItemStyle HorizontalAlign="Center" />
                         </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
                 <br />
-                <asp:Button ID="BtnAceptar" runat="server" Text="Aceptar Seguimiento" Visible="false" OnClick="BtnAceptar_Click"/>
-                <asp:Button ID="BtnRegresar" runat="server" Text="Regresar" OnClick="BtnRegresar_Click" />                
+                <asp:Button ID="BtnAceptar" runat="server" Text="Aceptar Seguimiento" Visible="false" OnClick="BtnAceptar_Click" />
+                <asp:Button ID="BtnRegresar" runat="server" Text="Regresar" OnClick="BtnRegresar_Click" />
             </div>
             <div id="Container_UpdatePanelEval" runat="server" visible="false">
                 <br />
@@ -65,14 +73,16 @@
                         <th colspan="2">Seleccione su calificación</th>
                     </tr>
                     <tr>
-                        <td class="CeldaTablaDatos"><asp:Label ID="lblEvaluacion" runat="server" Text="Calificación:" /></td>
+                        <td class="CeldaTablaDatos">
+                            <asp:Label ID="lblEvaluacion" runat="server" Text="Calificación:" /></td>
                         <td class="CeldaTablaDatos">
                             <asp:DropDownList ID="ddlEvaluacion" runat="server" DataSourceID="sqlEvaluacion" DataTextField="Valor" DataValueField="idCalificacion"></asp:DropDownList>
                             <asp:SqlDataSource ID="sqlEvaluacion" runat="server" ConnectionString='<%$ ConnectionStrings:trabajadoresConnectionString2 %>' ProviderName='<%$ ConnectionStrings:trabajadoresConnectionString2.ProviderName %>' SelectCommand="SELECT idCalificacion, Valor FROM calificacion"></asp:SqlDataSource>
                         </td>
-                    </tr>                
+                    </tr>
                     <tr class="ColorOscuro">
-                        <td class="BotonTablaDatos"><asp:Button ID="BtnEvaluar" runat="server" Text="Guardar" OnClick="BtnEvaluar_Click"/></td>
+                        <td class="BotonTablaDatos">
+                            <asp:Button ID="BtnEvaluar" runat="server" Text="Guardar" OnClick="BtnEvaluar_Click" /></td>
                     </tr>
                 </table>
             </div>
@@ -84,11 +94,12 @@
                     </tr>
                     <tr>
                         <td class="CeldaTablaDatos">
-                            <asp:TextBox ID="txtObservacion" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px"/>
+                            <asp:TextBox ID="txtObservacion" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px" />
                         </td>
-                    </tr>                
+                    </tr>
                     <tr class="ColorOscuro">
-                        <td class="BotonTablaDatos"><asp:Button ID="BtnGuardar" runat="server" Text="Enviar" OnClick="BtnGuardar_Click"/></td>
+                        <td class="BotonTablaDatos">
+                            <asp:Button ID="BtnGuardar" runat="server" Text="Enviar" OnClick="BtnGuardar_Click" /></td>
                     </tr>
                 </table>
             </div>
@@ -102,7 +113,7 @@
 <asp:Content ID="Content4" ContentPlaceHolderID="Errores" runat="server">
     <asp:UpdatePanel ID="UpdatePanel3" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
-             <asp:Label ID="LblMsj" runat="server" Text="LabelMsjError" Visible="False"></asp:Label>
+            <asp:Label ID="LblMsj" runat="server" Text="LabelMsjError" Visible="False"></asp:Label>
         </ContentTemplate>
     </asp:UpdatePanel>
 </asp:Content>
