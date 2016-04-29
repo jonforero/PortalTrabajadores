@@ -17,6 +17,7 @@ namespace PortalTrabajadores.Portal
     {
         string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
         string bd1 = ConfigurationManager.AppSettings["BD1"].ToString();
+        string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
 
         #region Definicion de los Metodos de la Clase
 
@@ -87,11 +88,11 @@ namespace PortalTrabajadores.Portal
         {
             if (valor)
             {
-                    CnMysql Conexion = new CnMysql(Cn);
-                    MySqlCommand cmd = new MySqlCommand();
-                    MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(); 
-                    DataTable dtDataTable = null;
-                    DataSet dsDataSet = new DataSet();              
+                CnMysql Conexion = new CnMysql(Cn);
+                MySqlCommand cmd = new MySqlCommand();
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(); 
+                DataTable dtDataTable = null;
+                DataSet dsDataSet = new DataSet();              
 
                 try
                 {

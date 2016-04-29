@@ -17,6 +17,8 @@
 	<!-- Hoja de estilos propia -->
 	<link type='text/css' rel='stylesheet' href='../CSS/main_style.css'>
 
+    <link type='text/css' rel='stylesheet' href='../CSS/Loading.css'>
+
     <!-- Libreria jQuery -->
     <script type='text/javascript' src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 </head>
