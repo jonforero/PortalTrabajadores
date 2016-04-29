@@ -85,7 +85,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="bin/PortalTrabajadores.dll">
-      <publishTime>04/28/2016 23:27:50</publishTime>
+      <publishTime>04/29/2016 00:26:35</publishTime>
     </File>
     <File Include="bin/pt/AjaxControlToolkit.resources.dll">
       <publishTime>01/01/0001 00:00:00</publishTime>
@@ -139,10 +139,10 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>03/25/2015 22:25:10</publishTime>
     </File>
     <File Include="DataSet1.xsc">
-      <publishTime>04/28/2016 22:15:30</publishTime>
+      <publishTime>04/29/2016 00:24:14</publishTime>
     </File>
     <File Include="DataSet1.xss">
-      <publishTime>04/28/2016 22:15:30</publishTime>
+      <publishTime>04/29/2016 00:24:14</publishTime>
     </File>
     <File Include="DataSet2.xsc">
       <publishTime>04/04/2016 22:39:28</publishTime>
@@ -424,7 +424,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>04/28/2016 23:27:51</publishTime>
+      <publishTime>04/29/2016 00:26:36</publishTime>
     </File>
   </ItemGroup>
 </Project>
