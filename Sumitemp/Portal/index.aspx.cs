@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using PortalTrabajadores.Class;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -33,7 +34,7 @@ namespace PortalTrabajadores.Portal
                 if (!IsPostBack)
                 {
                     CnMysql Conexion = new CnMysql(Cn);
-                    MySqlCommand scSqlCommand = new MySqlCommand("SELECT Contrasena_Activo FROM " + bd2 + ".empleados where Id_Empleado = '" + this.Session["usuario"].ToString() + "'", Conexion.ObtenerCnMysql());
+                    MySqlCommand scSqlCommand = new MySqlCommand("SELECT Contrasena_Activo, IdAreas, IdCargos FROM " + bd2 + ".empleados where Id_Empleado = '" + this.Session["usuario"].ToString() + "'", Conexion.ObtenerCnMysql());
                     MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                     DataSet dsDataSet = new DataSet();
                     DataTable dtDataTable = null;
@@ -46,11 +47,24 @@ namespace PortalTrabajadores.Portal
 
                         if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                         {
+                            InfoJefeEmpleado info = new InfoJefeEmpleado();
+
                             if (dtDataTable.Rows[0].ItemArray[0].ToString() == "1")
                             {
-                                Response.Redirect("PrimeraContrasena.aspx");
+                                Response.Redirect("PrimeraContrasena.aspx", false);
                             }
-                        }
+                            else if (dtDataTable.Rows[0].ItemArray[1].ToString() == "" ||
+                                     dtDataTable.Rows[0].ItemArray[2].ToString() == "")
+                            {
+                                Session.Add("AsignarAreaCargo", "1");
+                                Response.Redirect("AsignarAreaCargo.aspx", false);                                
+                            }
+                            else if (!info.ConsultarEstadoJefe(this.Session["usuario"].ToString())) 
+                            {
+                                Session.Add("Seleccionjefe", "1");
+                                Response.Redirect("Seleccionjefe.aspx", false);                                
+                            }
+                        }                        
                     }
                     catch (Exception ex)
                     {

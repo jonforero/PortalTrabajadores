@@ -20,6 +20,11 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="Container" runat="server">
     <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
+            <p class="TextoFiltros">
+                <asp:Label ID="lblTexto" runat="server" 
+                    Text="Su jefe actual ha sido desactivado, por favor seleccione uno nuevo"
+                    Visible="false"></asp:Label>                
+            </p>
             <div id="Container_UpdatePanel1">
                 <table id="TablaDatos">
                     <tr>

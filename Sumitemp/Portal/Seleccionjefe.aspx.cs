@@ -36,12 +36,21 @@ namespace PortalTrabajadores.Portal
             {
                 if (!IsPostBack)
                 {
+                    if (Session["Seleccionjefe"] != null)
+                    {
+                        if (Session["Seleccionjefe"].ToString() == "1")
+                        {
+                            lblTexto.Visible = true;
+                            Session.Remove("Seleccionjefe");
+                        }
+                    }
+
                     CnMysql Conexion = new CnMysql(Cn);
                     try
                     {
                         txtuser.Focus();
 
-                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'Seleccionjefe.aspx' and Tipoportal = 'A'", Conexion.ObtenerCnMysql());
+                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'Seleccionjefe.aspx' and Tipoportal = 'T'", Conexion.ObtenerCnMysql());
                         MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                         DataSet dsDataSet = new DataSet();
                         DataTable dtDataTable = null;
@@ -92,8 +101,6 @@ namespace PortalTrabajadores.Portal
             }
             else
             {
-                //Session.Add("cambiaContrasena", false);
-
                 if (BtnBuscar.Text == "Nueva Búsqueda")
                 {
                     txtuser.Text = "";
@@ -107,7 +114,6 @@ namespace PortalTrabajadores.Portal
                     TxtNombres.Text = "";
                     txtuser.Focus();
 
-                   // TxtNombres.BackColor = System.Drawing.Color.White;
                     BtnEditar.Enabled = true;
                     BtnEditar.BackColor = default(System.Drawing.Color);
                 }
@@ -205,6 +211,11 @@ namespace PortalTrabajadores.Portal
                 else if (res == 3)
                 {
                     MensajeError("Usted No puede ser su propio Jefe. ");
+                    BtnEditar.Enabled = false;
+                }
+                else if (res == 2)
+                {
+                    MensajeError("El Jefe fue Actualizado. ");
                     BtnEditar.Enabled = false;
                 }
                 else
@@ -313,6 +324,5 @@ namespace PortalTrabajadores.Portal
         #endregion
 
         #endregion
-
     }
 }

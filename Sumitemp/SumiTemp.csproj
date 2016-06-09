@@ -107,7 +107,18 @@
     <Content Include="Img\search.gif" />
     <Content Include="Img\Sumitemp.jpg" />
     <Content Include="Js\funciones.js" />
+    <Content Include="Js\images\calendar.gif" />
+    <Content Include="Js\images\ui-icons_444444_256x240.png" />
+    <Content Include="Js\images\ui-icons_555555_256x240.png" />
+    <Content Include="Js\images\ui-icons_777620_256x240.png" />
+    <Content Include="Js\images\ui-icons_777777_256x240.png" />
+    <Content Include="Js\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="Js\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Js\jquery-1.10.2.js" />
+    <Content Include="Js\jquery-ui.css" />
+    <Content Include="Js\jquery-ui.js" />
     <Content Include="Portal\Actualizadatos.aspx" />
+    <Content Include="Portal\AsignarAreaCargo.aspx" />
     <Content Include="Portal\Certificado.aspx" />
     <Content Include="Portal\Comprobantes.aspx" />
     <Content Include="Portal\Contactenos.aspx" />
@@ -175,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class\CnMysql.cs" />
+    <Compile Include="Class\InfoJefeEmpleado.cs" />
     <Compile Include="Class\LlenadoDropBox.cs" />
     <Compile Include="Class\ManejoLog.cs">
       <SubType>ASPXCodeBehind</SubType>
@@ -207,6 +219,13 @@
     </Compile>
     <Compile Include="Portal\Actualizadatos.aspx.designer.cs">
       <DependentUpon>Actualizadatos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\AsignarAreaCargo.aspx.cs">
+      <DependentUpon>AsignarAreaCargo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\AsignarAreaCargo.aspx.designer.cs">
+      <DependentUpon>AsignarAreaCargo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Portal\Certificado.aspx.cs">
       <DependentUpon>Certificado.aspx</DependentUpon>

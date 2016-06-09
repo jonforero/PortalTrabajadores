@@ -86,13 +86,15 @@ namespace PortalTrabajadores.Portal
         /* ****************************************************************************/
         protected void bindMenuControl(Boolean valor)
         {
+            bool objetivos = ComprobarModuloObjetivos();
+
             if (valor)
             {
                 CnMysql Conexion = new CnMysql(Cn);
                 MySqlCommand cmd = new MySqlCommand();
-                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(); 
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter();
                 DataTable dtDataTable = null;
-                DataSet dsDataSet = new DataSet();              
+                DataSet dsDataSet = new DataSet();
 
                 try
                 {
@@ -102,8 +104,8 @@ namespace PortalTrabajadores.Portal
                     sdaSqlDataAdapter.SelectCommand.Parameters.AddWithValue("@idEmpleado", Session["usuario"].ToString());
                     sdaSqlDataAdapter.SelectCommand.Parameters.AddWithValue("@Id_Empresa", "ST");
                     sdaSqlDataAdapter.SelectCommand.Parameters.AddWithValue("@TipoPortal", "T");
-                    sdaSqlDataAdapter.Fill(dsDataSet);  
-                    
+                    sdaSqlDataAdapter.Fill(dsDataSet);
+
                     dtDataTable = dsDataSet.Tables[1];
                     if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                     {
@@ -119,11 +121,26 @@ namespace PortalTrabajadores.Portal
                                 rolDataAdapter.Fill(rolDataSet);
                                 rolDataTable = rolDataSet.Tables[0];
 
-                                if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                                if (objetivos)
                                 {
-                                    MenuItem miMenuItem = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
-                                    this.MenuPrincipal.Items.Add(miMenuItem);
-                                    AddChildItem(ref miMenuItem, dtDataTable);
+                                    if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                                    {
+                                        MenuItem miMenuItem = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                                        this.MenuPrincipal.Items.Add(miMenuItem);
+                                        AddChildItem(ref miMenuItem, dtDataTable);
+                                    }
+                                }
+                                else
+                                {
+                                    if (!BloquearModObjetivos(drDataRow[2].ToString()))
+                                    {
+                                        if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                                        {
+                                            MenuItem miMenuItem = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                                            this.MenuPrincipal.Items.Add(miMenuItem);
+                                            AddChildItem(ref miMenuItem, dtDataTable);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -168,11 +185,26 @@ namespace PortalTrabajadores.Portal
                                 rolDataAdapter.Fill(rolDataSet);
                                 rolDataTable = rolDataSet.Tables[0];
 
-                                if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                                if (objetivos)
                                 {
-                                    MenuItem miMenuItem = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
-                                    this.MenuPrincipal.Items.Add(miMenuItem);
-                                    AddChildItem(ref miMenuItem, dtDataTable);
+                                    if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                                    {
+                                        MenuItem miMenuItem = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                                        this.MenuPrincipal.Items.Add(miMenuItem);
+                                        AddChildItem(ref miMenuItem, dtDataTable);
+                                    }
+                                }
+                                else
+                                {
+                                    if (!BloquearModObjetivos(drDataRow[2].ToString()))
+                                    {
+                                        if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                                        {
+                                            MenuItem miMenuItem = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                                            this.MenuPrincipal.Items.Add(miMenuItem);
+                                            AddChildItem(ref miMenuItem, dtDataTable);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -232,6 +264,97 @@ namespace PortalTrabajadores.Portal
             }
         }
         #endregion
+
+        #endregion
+
+        #region Objetivos
+
+        /// <summary>
+        /// Comprueba si la compania tiene el modulo de objetivos activos
+        /// </summary>
+        /// <returns>True si esta activo</returns>
+        public bool ComprobarModuloObjetivos()
+        {
+            CnMysql Conexion = new CnMysql(Cn);
+                
+            try
+            {
+                MySqlCommand rolCommand = new MySqlCommand("SELECT * FROM " + bd1 + ".matriz_modulostercero where idCompania = '" + Session["compania"] + "' and idEmpresa = '" + Session["idEmpresa"] + "'", Conexion.ObtenerCnMysql());
+                MySqlDataAdapter rolDataAdapter = new MySqlDataAdapter(rolCommand);
+                DataSet rolDataSet = new DataSet();
+                DataTable rolDataTable = null;
+
+                rolDataAdapter.Fill(rolDataSet);
+                rolDataTable = rolDataSet.Tables[0];
+
+                if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                {
+                    return true;
+                }
+                else 
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (Conexion.EstadoConexion() == ConnectionState.Open)
+                {
+                    Conexion.CerrarCnMysql();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Si el modulo de objetivos esta activo lo muestra en el menu, si no lo esconde
+        /// </summary>
+        /// <returns>True para desactivar el menu</returns>
+        public bool BloquearModObjetivos(string id_Menu)
+        {
+            CnMysql Conexion = new CnMysql(Cn);
+
+            try
+            {                
+                MySqlCommand rolCommand = new MySqlCommand("SELECT Descripcion FROM " + bd1 + ".options_menu WHERE idOption_Menu = " + id_Menu, Conexion.ObtenerCnMysql());
+                MySqlDataAdapter rolDataAdapter = new MySqlDataAdapter(rolCommand);
+                DataSet rolDataSet = new DataSet();
+                DataTable rolDataTable = null;
+
+                rolDataAdapter.Fill(rolDataSet);
+                rolDataTable = rolDataSet.Tables[0];
+
+                if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                {
+                    if (rolDataTable.Rows[0].ItemArray[0].ToString().Contains("Gestión Desempeño"))
+                    {
+                        return true;
+                    }
+                    else 
+                    {
+                        return false;
+                    }
+                }
+                else 
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (Conexion.EstadoConexion() == ConnectionState.Open)
+                {
+                    Conexion.CerrarCnMysql();
+                }
+            }
+        }
 
         #endregion
     }
