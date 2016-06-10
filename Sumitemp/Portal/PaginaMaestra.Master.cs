@@ -8,6 +8,7 @@ using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.Data;
+using PortalTrabajadores.Class;
 
 
 namespace PortalTrabajadores.Portal
@@ -86,8 +87,10 @@ namespace PortalTrabajadores.Portal
         /* ****************************************************************************/
         protected void bindMenuControl(Boolean valor)
         {
-            bool objetivos = ComprobarModuloObjetivos();
-
+            ConsultasGenerales consultaGeneral = new ConsultasGenerales();
+            bool objetivos = consultaGeneral.ComprobarModuloObjetivos(Session["compania"].ToString(), Session["idEmpresa"].ToString());
+            Session.Add("seguimientoPeriodo", consultaGeneral.ConsultarPeriodoSeguimiento(Session["compania"].ToString(), Session["idEmpresa"].ToString()));
+            
             if (valor)
             {
                 CnMysql Conexion = new CnMysql(Cn);
@@ -121,7 +124,7 @@ namespace PortalTrabajadores.Portal
                                 rolDataAdapter.Fill(rolDataSet);
                                 rolDataTable = rolDataSet.Tables[0];
 
-                                if (objetivos)
+                                if (!drDataRow[1].ToString().Contains("Gestión Desempeño"))
                                 {
                                     if (rolDataTable != null && rolDataTable.Rows.Count > 0)
                                     {
@@ -130,9 +133,9 @@ namespace PortalTrabajadores.Portal
                                         AddChildItem(ref miMenuItem, dtDataTable);
                                     }
                                 }
-                                else
+                                else 
                                 {
-                                    if (!BloquearModObjetivos(drDataRow[2].ToString()))
+                                    if (objetivos)
                                     {
                                         if (rolDataTable != null && rolDataTable.Rows.Count > 0)
                                         {
@@ -185,7 +188,7 @@ namespace PortalTrabajadores.Portal
                                 rolDataAdapter.Fill(rolDataSet);
                                 rolDataTable = rolDataSet.Tables[0];
 
-                                if (objetivos)
+                                if (!drDataRow[1].ToString().Contains("Gestión Desempeño"))
                                 {
                                     if (rolDataTable != null && rolDataTable.Rows.Count > 0)
                                     {
@@ -196,7 +199,7 @@ namespace PortalTrabajadores.Portal
                                 }
                                 else
                                 {
-                                    if (!BloquearModObjetivos(drDataRow[2].ToString()))
+                                    if (objetivos)
                                     {
                                         if (rolDataTable != null && rolDataTable.Rows.Count > 0)
                                         {
@@ -237,9 +240,22 @@ namespace PortalTrabajadores.Portal
             {
                 if (Convert.ToInt32(drDataRow[2]) == Convert.ToInt32(miMenuItem.Value) && Convert.ToInt32(drDataRow[0]) != Convert.ToInt32(drDataRow[2]))
                 {
-                    MenuItem miMenuItemChild = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
-                    miMenuItem.ChildItems.Add(miMenuItemChild);
-                    AddChildItem(ref miMenuItemChild, dtDataTable);
+                    if (drDataRow[1].ToString().Contains("Fijación Seguimiento 1") ||
+                        drDataRow[1].ToString().Contains("Primer Seguimiento"))
+                    {
+                        if (Session["seguimientoPeriodo"].ToString() != "1")
+                        {
+                            MenuItem miMenuItemChild = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                            miMenuItem.ChildItems.Add(miMenuItemChild);
+                            AddChildItem(ref miMenuItemChild, dtDataTable);
+                        }
+                    }
+                    else 
+                    {
+                        MenuItem miMenuItemChild = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                        miMenuItem.ChildItems.Add(miMenuItemChild);
+                        AddChildItem(ref miMenuItemChild, dtDataTable);
+                    }
                 }
             }
         }
@@ -264,97 +280,6 @@ namespace PortalTrabajadores.Portal
             }
         }
         #endregion
-
-        #endregion
-
-        #region Objetivos
-
-        /// <summary>
-        /// Comprueba si la compania tiene el modulo de objetivos activos
-        /// </summary>
-        /// <returns>True si esta activo</returns>
-        public bool ComprobarModuloObjetivos()
-        {
-            CnMysql Conexion = new CnMysql(Cn);
-                
-            try
-            {
-                MySqlCommand rolCommand = new MySqlCommand("SELECT * FROM " + bd1 + ".matriz_modulostercero where idCompania = '" + Session["compania"] + "' and idEmpresa = '" + Session["idEmpresa"] + "'", Conexion.ObtenerCnMysql());
-                MySqlDataAdapter rolDataAdapter = new MySqlDataAdapter(rolCommand);
-                DataSet rolDataSet = new DataSet();
-                DataTable rolDataTable = null;
-
-                rolDataAdapter.Fill(rolDataSet);
-                rolDataTable = rolDataSet.Tables[0];
-
-                if (rolDataTable != null && rolDataTable.Rows.Count > 0)
-                {
-                    return true;
-                }
-                else 
-                {
-                    return false;
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                if (Conexion.EstadoConexion() == ConnectionState.Open)
-                {
-                    Conexion.CerrarCnMysql();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Si el modulo de objetivos esta activo lo muestra en el menu, si no lo esconde
-        /// </summary>
-        /// <returns>True para desactivar el menu</returns>
-        public bool BloquearModObjetivos(string id_Menu)
-        {
-            CnMysql Conexion = new CnMysql(Cn);
-
-            try
-            {                
-                MySqlCommand rolCommand = new MySqlCommand("SELECT Descripcion FROM " + bd1 + ".options_menu WHERE idOption_Menu = " + id_Menu, Conexion.ObtenerCnMysql());
-                MySqlDataAdapter rolDataAdapter = new MySqlDataAdapter(rolCommand);
-                DataSet rolDataSet = new DataSet();
-                DataTable rolDataTable = null;
-
-                rolDataAdapter.Fill(rolDataSet);
-                rolDataTable = rolDataSet.Tables[0];
-
-                if (rolDataTable != null && rolDataTable.Rows.Count > 0)
-                {
-                    if (rolDataTable.Rows[0].ItemArray[0].ToString().Contains("Gestión Desempeño"))
-                    {
-                        return true;
-                    }
-                    else 
-                    {
-                        return false;
-                    }
-                }
-                else 
-                {
-                    return false;
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                if (Conexion.EstadoConexion() == ConnectionState.Open)
-                {
-                    Conexion.CerrarCnMysql();
-                }
-            }
-        }
 
         #endregion
     }

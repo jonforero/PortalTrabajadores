@@ -13,8 +13,53 @@ namespace PortalTrabajadores.Class
     {
         string CnObjetivos = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString2"].ConnectionString.ToString();
         string CnTrabajadores = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
+        string bdBasica = ConfigurationManager.AppSettings["BD1"].ToString();
         string bdTrabajadores = ConfigurationManager.AppSettings["BD2"].ToString();
         string bdModobjetivos = ConfigurationManager.AppSettings["BD3"].ToString();
+
+        /// <summary>
+        /// Comprueba si la compania tiene el modulo de objetivos activos
+        /// </summary>
+        /// <returns>True si esta activo</returns>
+        public bool ComprobarModuloObjetivos(string idCompania, string idEmpresa)
+        {
+            CnMysql Conexion = new CnMysql(CnTrabajadores);
+
+            try
+            {
+                MySqlCommand rolCommand = new MySqlCommand("SELECT * FROM " + 
+                                                            bdBasica + ".matriz_modulostercero where idCompania = '" + 
+                                                            idCompania + "' and idEmpresa = '" + 
+                                                            idEmpresa + "'", Conexion.ObtenerCnMysql());
+
+                MySqlDataAdapter rolDataAdapter = new MySqlDataAdapter(rolCommand);
+                DataSet rolDataSet = new DataSet();
+                DataTable rolDataTable = null;
+
+                rolDataAdapter.Fill(rolDataSet);
+                rolDataTable = rolDataSet.Tables[0];
+
+                if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (Conexion.EstadoConexion() == ConnectionState.Open)
+                {
+                    Conexion.CerrarCnMysql();
+                }
+            }
+        }
 
         /// <summary>
         /// Consulta el periodo seleccionado (semestre trimestre)
