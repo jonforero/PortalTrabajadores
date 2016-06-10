@@ -17,6 +17,8 @@
 
 <asp:Content ID="Content3" ContentPlaceHolderID="Container" runat="server">
     <div>
+        <p>Recuerde que todos los objetivos deben distribuir el peso y al final este debe sumar 100.</p>
+        <p>Además la meta debe ser menor al peso.</p>
         <asp:Label ID="lblInformacion" runat="server"></asp:Label></div>
     <br />
     <asp:UpdateProgress ID="upProgress" DynamicLayout="true" runat="server" AssociatedUpdatePanelID="UpdatePanel1">
@@ -32,6 +34,8 @@
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
+                        <asp:BoundField DataField="Peso" HeaderText="Peso" SortExpression="Peso" />
+                        <asp:BoundField DataField="Meta" HeaderText="Meta" SortExpression="Meta" />
                         <asp:BoundField DataField="Ano" HeaderText="Año" />
                         <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
@@ -51,6 +55,8 @@
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
+                        <asp:BoundField DataField="Peso" HeaderText="Peso" SortExpression="Peso" />
+                        <asp:BoundField DataField="Meta" HeaderText="Meta" SortExpression="Meta" />
                         <asp:BoundField DataField="Ano" HeaderText="Año" />
                     </Columns>
                 </asp:GridView>
@@ -76,10 +82,36 @@
                         <td class="CeldaTablaDatos">
                             <asp:TextBox ID="txtObjetivo" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px" />
                         </td>
+                    </tr>                    
+                    <tr>
+                        <td class="CeldaTablaDatos">
+                            <asp:Label ID="Label1" runat="server" Text="Peso:" /></td>
+                        <td class="CeldaTablaDatos">
+                            <asp:TextBox ID="txtPeso" runat="server" MaxLength="3" onkeypress="ValidaSoloNumeros()" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="CeldaTablaDatos">
+                            <asp:Label ID="Label2" runat="server" Text="Meta:" /></td>
+                        <td class="CeldaTablaDatos">
+                            <asp:TextBox ID="txtMeta" runat="server" MaxLength="3" onkeypress="ValidaSoloNumeros()" />
+                            <asp:CompareValidator ID="cValidator" 
+                                runat="server" 
+                                ErrorMessage="CompareValidator"
+                                ControlToValidate="txtMeta"
+                                ControlToCompare="txtPeso"
+                                CssClass="MensajeError" 
+                                Display="Dynamic"
+                                Operator="LessThan"
+                                Type="Integer"
+                                Text="Error: La Meta no puede ser mayor o igual al Peso"
+                                ValidationGroup="objForm">
+                            </asp:CompareValidator>
+                        </td>
                     </tr>
                     <tr class="ColorOscuro">
                         <td class="BotonTablaDatos">
-                            <asp:Button ID="BtnGuardar" runat="server" Text="Guardar" OnClick="BtnGuardar_Click" /></td>
+                            <asp:Button ID="BtnGuardar" runat="server" Text="Guardar" ValidationGroup="objForm" OnClick="BtnGuardar_Click" /></td>
                         <td class="BotonTablaDatos">
                             <asp:Button ID="BtnCancelar" runat="server" Text="Cancelar" OnClick="BtnCancel_Click" /></td>
                     </tr>

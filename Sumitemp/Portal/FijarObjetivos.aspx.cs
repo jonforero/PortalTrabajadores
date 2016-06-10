@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using PortalTrabajadores.Class;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -18,7 +19,7 @@ namespace PortalTrabajadores.Portal
         string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
         string bd3 = ConfigurationManager.AppSettings["BD3"].ToString();
         MySqlConnection MySqlCn;
-
+        
         #region Metodo Page Load
 
         /// <summary>
@@ -38,6 +39,7 @@ namespace PortalTrabajadores.Portal
                 if (!IsPostBack)
                 {
                     CnMysql Conexion = new CnMysql(Cn);
+
                     try
                     {
                         MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'FijarObjetivos.aspx' AND idEmpresa = 'ST'", Conexion.ObtenerCnMysql());
@@ -618,6 +620,9 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">evento e</param>
         protected void BtnEnviar_Click(object sender, EventArgs e)
         {
+            ConsultasGenerales ClaseConsultas = new ConsultasGenerales();
+            string sumaPeso = ClaseConsultas.ComprobarPesoObjetivos(Session["idJefeEmpleado"].ToString());
+
             if (Convert.ToInt32(Session["Min_obj"].ToString()) > this.numeroObjetivos(Session["idJefeEmpleado"].ToString()))
             {
                 this.CargarObjetivos(Session["idJefeEmpleado"].ToString());
@@ -625,9 +630,17 @@ namespace PortalTrabajadores.Portal
             }
             else
             {
-                Container_UpdatePanel2.Visible = false;
-                Container_UpdatePanel3.Visible = true;
-                UpdatePanel1.Update();
+                if (sumaPeso != "100")
+                {
+                    MensajeError("El peso (" + sumaPeso + ") no cumple con la condición de ser igual a 100, revise los objetivos.");
+                }
+                else
+                {
+                    LblMsj.Visible = false;
+                    Container_UpdatePanel2.Visible = false;
+                    Container_UpdatePanel3.Visible = true;
+                    UpdatePanel1.Update();
+                }
             }
         }
 
@@ -654,6 +667,8 @@ namespace PortalTrabajadores.Portal
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
                         cmd.Parameters.AddWithValue("@Descripcion", txtObjetivo.Text);
+                        cmd.Parameters.AddWithValue("@Peso", txtPeso.Text);
+                        cmd.Parameters.AddWithValue("@Meta", txtMeta.Text);
                         cmd.Parameters.AddWithValue("@Ano", Session["anoActivo"]);
                         cmd.Parameters.AddWithValue("@Cedula_Empleado", Session["usuario"]);
                         cmd.Parameters.AddWithValue("@Cedula_Jefe", Session["cedulaJeje"]);
@@ -691,6 +706,8 @@ namespace PortalTrabajadores.Portal
                     cmd.Parameters.AddWithValue("@idObjetivos", Session["idObjetivos"]);
                     cmd.Parameters.AddWithValue("@JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
                     cmd.Parameters.AddWithValue("@Descripcion", txtObjetivo.Text);
+                    cmd.Parameters.AddWithValue("@Peso", txtPeso.Text);
+                    cmd.Parameters.AddWithValue("@Meta", txtMeta.Text);
 
                     // Crea un parametro de salida para el SP
                     MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
@@ -715,6 +732,8 @@ namespace PortalTrabajadores.Portal
                 }
 
                 txtObjetivo.Text = string.Empty;
+                txtPeso.Text = string.Empty;
+                txtMeta.Text = string.Empty;
                 this.CargarObjetivos(Session["idJefeEmpleado"].ToString());
             }
             catch (Exception E)
@@ -737,6 +756,8 @@ namespace PortalTrabajadores.Portal
         protected void BtnCancel_Click(object sender, EventArgs e)
         {
             txtObjetivo.Text = string.Empty;
+            txtPeso.Text = string.Empty;
+            txtMeta.Text = string.Empty;
 
             LblMsj.Visible = false;
             UpdatePanel3.Update();
@@ -767,7 +788,9 @@ namespace PortalTrabajadores.Portal
                     GridViewRow gvr = (GridViewRow)(((ImageButton)e.CommandSource).NamingContainer);
                     int RowIndex = gvr.RowIndex;
 
-                    txtObjetivo.Text = gvObjetivosCreados.Rows[RowIndex].Cells[0].Text;
+                    txtObjetivo.Text = HttpUtility.HtmlDecode(gvObjetivosCreados.Rows[RowIndex].Cells[0].Text);
+                    txtPeso.Text = gvObjetivosCreados.Rows[RowIndex].Cells[1].Text;
+                    txtMeta.Text = gvObjetivosCreados.Rows[RowIndex].Cells[2].Text;
 
                     BtnGuardar.Text = "Editar";
                     Container_UpdatePanel2.Visible = true;
