@@ -637,6 +637,7 @@ namespace PortalTrabajadores.Portal
                 else
                 {
                     LblMsj.Visible = false;
+                    UpdatePanel3.Update();
                     Container_UpdatePanel2.Visible = false;
                     Container_UpdatePanel3.Visible = true;
                     UpdatePanel1.Update();

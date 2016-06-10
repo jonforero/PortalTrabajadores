@@ -50,6 +50,8 @@
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
+                        <asp:BoundField DataField="Peso" HeaderText="Peso" SortExpression="Peso" />
+                        <asp:BoundField DataField="Meta" HeaderText="Meta" SortExpression="Meta" />
                     </Columns>
                 </asp:GridView>
                 <br />

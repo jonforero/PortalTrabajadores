@@ -17,8 +17,8 @@
 
 <asp:Content ID="Content3" ContentPlaceHolderID="Container" runat="server">
     <div>
-        <p>Recuerde que todos los objetivos deben distribuir el peso y al final este debe sumar 100.</p>
-        <p>Además la meta debe ser menor al peso.</p>
+        <p>Recuerde que todos los objetivos deben distribuir el peso y al final este debe sumar 100. 
+            Tambien tenga presente que la meta debe ser menor al peso.</p>
         <asp:Label ID="lblInformacion" runat="server"></asp:Label></div>
     <br />
     <asp:UpdateProgress ID="upProgress" DynamicLayout="true" runat="server" AssociatedUpdatePanelID="UpdatePanel1">

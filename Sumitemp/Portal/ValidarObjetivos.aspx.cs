@@ -155,7 +155,6 @@ namespace PortalTrabajadores.Portal
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
                     gvEmpleadosAsociados.DataSource = dtDataTable;
-                    Session.Add("idJefeEmpleado", dtDataTable.Rows[0].ItemArray[0].ToString());
                 }
                 else
                 {
@@ -410,12 +409,13 @@ namespace PortalTrabajadores.Portal
                 int idJefeEmpleado = Convert.ToInt32(arg[0]);
                 int cedulaEmpleado = Convert.ToInt32(arg[1]);
 
+                Session.Add("idJefeEmpleado", idJefeEmpleado);
 
                 DataSet dsDataSet = new DataSet();
                 DataTable dtDataTable = null;
 
                 MySqlCommand scSqlCommand;
-                string consulta = "SELECT objetivos.Descripcion " +
+                string consulta = "SELECT objetivos.Descripcion, objetivos.Peso, objetivos.Meta " +
                                     "FROM " + bd3 + ".objetivos " +
                                     "INNER JOIN " + bd3 + ".jefeempleado " +
                                     "ON objetivos.JefeEmpleado_idJefeEmpleado = jefeempleado.idJefeEmpleado " +

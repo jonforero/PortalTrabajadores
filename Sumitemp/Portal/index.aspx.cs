@@ -34,7 +34,7 @@ namespace PortalTrabajadores.Portal
                 if (!IsPostBack)
                 {
                     CnMysql Conexion = new CnMysql(Cn);
-                    MySqlCommand scSqlCommand = new MySqlCommand("SELECT Contrasena_Activo, IdAreas, IdCargos FROM " + bd2 + ".empleados where Id_Empleado = '" + this.Session["usuario"].ToString() + "'", Conexion.ObtenerCnMysql());
+                    MySqlCommand scSqlCommand = new MySqlCommand("SELECT Contrasena_Activo, IdAreas, IdCargos, Id_Rol FROM " + bd2 + ".empleados where Id_Empleado = '" + this.Session["usuario"].ToString() + "'", Conexion.ObtenerCnMysql());
                     MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                     DataSet dsDataSet = new DataSet();
                     DataTable dtDataTable = null;
@@ -59,7 +59,8 @@ namespace PortalTrabajadores.Portal
                                 Session.Add("AsignarAreaCargo", "1");
                                 Response.Redirect("AsignarAreaCargo.aspx", false);                                
                             }
-                            else if (!info.ConsultarEstadoJefe(this.Session["usuario"].ToString())) 
+                            else if (!info.ConsultarEstadoJefe(this.Session["usuario"].ToString()) &&
+                                     dtDataTable.Rows[0].ItemArray[3].ToString() == "2") 
                             {
                                 Session.Add("Seleccionjefe", "1");
                                 Response.Redirect("Seleccionjefe.aspx", false);                                
