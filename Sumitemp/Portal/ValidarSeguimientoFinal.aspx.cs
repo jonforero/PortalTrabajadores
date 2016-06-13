@@ -154,8 +154,7 @@ namespace PortalTrabajadores.Portal
 
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
-                    gvEmpleadosAsociados.DataSource = dtDataTable;
-                    Session.Add("idJefeEmpleado", dtDataTable.Rows[0].ItemArray[0].ToString());
+                    gvEmpleadosAsociados.DataSource = dtDataTable;                    
                 }
                 else
                 {
@@ -261,7 +260,7 @@ namespace PortalTrabajadores.Portal
                 {
                     Session.Add("etapaJefeEmpleado", dtDataTable.Rows[0].ItemArray[3].ToString());
 
-                    if (dtDataTable.Rows[0].ItemArray[3].ToString() == "6")
+                    if (dtDataTable.Rows[0].ItemArray[3].ToString() == "7")
                     {
                         return true;
                     }
@@ -306,7 +305,7 @@ namespace PortalTrabajadores.Portal
                 cmd = new MySqlCommand("sp_CrearObservacion", Conexion.ObtenerCnMysql());
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
-                cmd.Parameters.AddWithValue("@Etapas_idEtapas", 3);
+                cmd.Parameters.AddWithValue("@Etapas_idEtapas", 4);
                 cmd.Parameters.AddWithValue("@Cedula", cedula);
                 cmd.Parameters.AddWithValue("@Descripcion", observacion);
                 cmd.Parameters.AddWithValue("@Fecha", DateTime.Now);
@@ -428,6 +427,50 @@ namespace PortalTrabajadores.Portal
             }
         }
 
+        /// <summary>
+        /// Comprueba el que se hayan registrado todos los seguimientos
+        /// </summary>
+        public void ComprobarEvaluaciónTotal(string idJefeEmpleado)
+        {
+            try
+            {
+                MySqlCn = new MySqlConnection(Cn2);
+                MySqlCommand scSqlCommand;
+                string consulta = "SELECT IF((SELECT COUNT(*) FROM objetivos WHERE objetivos.JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado + ") = " +
+                                  "(SELECT COUNT(*) FROM evaluacionfinal WHERE evaluacionfinal.Objetivos_JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
+                                  " AND !isnull(evaluacionfinal.Cedula_Jefe)), 1, 0) " +
+                                  "AS Evaluacion;";
+
+                scSqlCommand = new MySqlCommand(consulta, MySqlCn);
+
+                MySqlCn.Open();
+                MySqlDataReader rd = scSqlCommand.ExecuteReader();
+
+                if (rd.HasRows)
+                {
+                    if (rd.Read())
+                    {
+                        if (rd["Evaluacion"].ToString() == "1")
+                        {
+                            BtnRechazar.Visible = false;
+                            BtnAceptar.Visible = true;
+                        }
+                    }
+                }
+
+                Container_UpdatePanelObservaciones.Visible = true;
+                UpdatePanel1.Update();
+            }
+            catch (Exception ex)
+            {
+                MensajeError("El sistema no se encuentra disponible en este momento. " + ex.Message);
+            }
+            finally
+            {
+                MySqlCn.Close();
+            }
+        }
+
         #endregion
 
         #region Eventos Controles
@@ -453,6 +496,8 @@ namespace PortalTrabajadores.Portal
                 int idJefeEmpleado = Convert.ToInt32(arg[0]);
                 int cedulaEmpleado = Convert.ToInt32(arg[1]);
 
+                Session.Add("idJefeEmpleado", idJefeEmpleado);
+
                 DataSet dsDataSet = new DataSet();
                 DataTable dtDataTable = null;
 
@@ -469,15 +514,18 @@ namespace PortalTrabajadores.Portal
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
                     gvObjetivosCreados.DataSource = dtDataTable;
-                    this.CargarObservacionesEmpleado(idJefeEmpleado, cedulaEmpleado, "3");
+                    this.CargarObservacionesEmpleado(idJefeEmpleado, cedulaEmpleado, "4");
 
                     if (e.CommandName == "Evaluar")
                     {
-                        this.BtnAceptar.Visible = true;
+                        this.BtnRechazar.Visible = true;
+                        this.ComprobarEvaluaciónTotal(Session["idJefeEmpleado"].ToString());
                     }
                     else if (e.CommandName == "Revisar")
                     {
                         this.BtnAceptar.Visible = false;
+                        this.BtnRechazar.Visible = false;
+                        this.lblmensaje.Visible = false;
                     }
                 }
                 else
@@ -485,6 +533,7 @@ namespace PortalTrabajadores.Portal
                     gvObjetivosCreados.DataSource = null;
                     MensajeError("El empleado no ha realizado su evaluación");
                     this.BtnAceptar.Visible = false;
+                    this.BtnRechazar.Visible = false;
                 }
 
                 gvObjetivosCreados.DataBind();
@@ -518,7 +567,7 @@ namespace PortalTrabajadores.Portal
 
                 string idJefeEmpleado = DataBinder.Eval(e.Row.DataItem, "idJefeEmpleado").ToString();
 
-                if (this.ComprobarEstadoEtapa(idJefeEmpleado, "3"))
+                if (this.ComprobarEstadoEtapa(idJefeEmpleado, "4"))
                 {
                     btnEvaluar.Visible = true;
                     btnRevisar.Visible = false;
@@ -614,10 +663,32 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">evento e</param>
         protected void BtnAceptar_Click(object sender, EventArgs e)
         {
+            LblMsj.Visible = false;
+            UpdatePanel3.Update();
+
             this.BtnAceptar.Visible = false;
+            this.BtnRechazar.Visible = false;
             Container_UpdatePanel3.Visible = true;
             UpdatePanel1.Update();
             Session.Add("botonOpc", 4);
+        }
+
+        /// <summary>
+        /// Se rechazan los objetivos y se envia una observación
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void BtnRechazar_Click(object sender, EventArgs e)
+        {
+            LblMsj.Visible = false;
+            UpdatePanel3.Update();
+
+            this.BtnAceptar.Visible = false;
+            this.BtnRechazar.Visible = false;
+            Container_UpdatePanel3.Visible = true;
+            Container_UpdatePanelObservaciones.Visible = false;
+            UpdatePanel1.Update();
+            Session.Add("botonOpc", 3);
         }
 
         /// <summary>
@@ -627,7 +698,7 @@ namespace PortalTrabajadores.Portal
         /// <param name="e"></param>
         protected void BtnGuardar_Click(object sender, EventArgs e)
         {
-            if (this.ActualizarEtapa(3, Convert.ToInt32(Session["botonOpc"].ToString())))
+            if (this.ActualizarEtapa(4, Convert.ToInt32(Session["botonOpc"].ToString())))
             {
                 if (this.CrearObservacion(Session["usuario"].ToString(), txtObservacion.Text))
                 {
@@ -673,7 +744,7 @@ namespace PortalTrabajadores.Portal
                 Conexion.AbrirCnMysql();
                 MySqlCommand cmd;
 
-                cmd = new MySqlCommand("sp_ActualizarEvaluacion", Conexion.ObtenerCnMysql());
+                cmd = new MySqlCommand("sp_ActualizarEvaluacionJefe", Conexion.ObtenerCnMysql());
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@idObjetivos", Session["idObjetivos"]);
                 cmd.Parameters.AddWithValue("@idJefeEmpleado", Session["idJefeEmpleado"]);
@@ -701,6 +772,7 @@ namespace PortalTrabajadores.Portal
                     MensajeError("Hubo un error al crear, por favor revise con su administrador");
                 }
 
+                this.ComprobarEvaluaciónTotal(Session["idJefeEmpleado"].ToString());
                 ddlEvaluacion.SelectedIndex = 1;
                 this.CargarObjetivos(Session["idJefeEmpleado"].ToString());
             }

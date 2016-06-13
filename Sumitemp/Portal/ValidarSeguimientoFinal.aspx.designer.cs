@@ -85,6 +85,15 @@ namespace PortalTrabajadores.Portal {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl Container_UpdatePanel2;
         
         /// <summary>
+        /// Control lblmensaje.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblmensaje;
+        
+        /// <summary>
         /// Control gvObjetivosCreados.
         /// </summary>
         /// <remarks>
@@ -101,6 +110,15 @@ namespace PortalTrabajadores.Portal {
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button BtnAceptar;
+        
+        /// <summary>
+        /// Control BtnRechazar.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnRechazar;
         
         /// <summary>
         /// Control BtnRegresar.

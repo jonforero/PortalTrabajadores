@@ -10,7 +10,7 @@
 namespace PortalTrabajadores.Portal {
     
     
-    public partial class FijarSeguimientoFinal {
+    public partial class FijarSeguimiento2 {
         
         /// <summary>
         /// Control UpdatePanel2.
@@ -112,31 +112,31 @@ namespace PortalTrabajadores.Portal {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl Container_UpdatePanel2;
         
         /// <summary>
-        /// Control lblEvaluacion.
+        /// Control lblSeguimiento.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblEvaluacion;
+        protected global::System.Web.UI.WebControls.Label lblSeguimiento;
         
         /// <summary>
-        /// Control ddlEvaluacion.
+        /// Control txtSeguimiento.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlEvaluacion;
+        protected global::System.Web.UI.WebControls.TextBox txtSeguimiento;
         
         /// <summary>
-        /// Control sqlEvaluacion.
+        /// Control rfvSeguimiento.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.SqlDataSource sqlEvaluacion;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvSeguimiento;
         
         /// <summary>
         /// Control lblMeta.

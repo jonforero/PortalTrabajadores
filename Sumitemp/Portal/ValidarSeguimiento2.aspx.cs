@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 namespace PortalTrabajadores.Portal
 {
-    public partial class PeriodoExtra : System.Web.UI.Page
+    public partial class ValidarSeguimiento2 : System.Web.UI.Page
     {
         string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
         string Cn2 = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString2"].ConnectionString.ToString();
@@ -260,7 +260,7 @@ namespace PortalTrabajadores.Portal
                 {
                     Session.Add("etapaJefeEmpleado", dtDataTable.Rows[0].ItemArray[3].ToString());
 
-                    if (dtDataTable.Rows[0].ItemArray[3].ToString() == "5")
+                    if (dtDataTable.Rows[0].ItemArray[3].ToString() == "6")
                     {
                         return true;
                     }
@@ -305,7 +305,7 @@ namespace PortalTrabajadores.Portal
                 cmd = new MySqlCommand("sp_CrearObservacion", Conexion.ObtenerCnMysql());
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
-                cmd.Parameters.AddWithValue("@Etapas_idEtapas", 2);
+                cmd.Parameters.AddWithValue("@Etapas_idEtapas", 3);
                 cmd.Parameters.AddWithValue("@Cedula", cedula);
                 cmd.Parameters.AddWithValue("@Descripcion", observacion);
                 cmd.Parameters.AddWithValue("@Fecha", DateTime.Now);
@@ -416,7 +416,7 @@ namespace PortalTrabajadores.Portal
 
                 MySqlCn = new MySqlConnection(Cn2);
                 MySqlCommand scSqlCommand;
-                scSqlCommand = new MySqlCommand("sp_ConsultarObjetivosSeguimientos", MySqlCn);
+                scSqlCommand = new MySqlCommand("sp_ConsultarObjetivosSeguimientos2", MySqlCn);
                 scSqlCommand.CommandType = CommandType.StoredProcedure;
                 scSqlCommand.Parameters.AddWithValue("@idJefeEmpleado", idJefeEmpleado);                
 
@@ -427,7 +427,7 @@ namespace PortalTrabajadores.Portal
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
                     gvObjetivosCreados.DataSource = dtDataTable;
-                    this.CargarObservacionesEmpleado(idJefeEmpleado, cedulaEmpleado, "2");
+                    this.CargarObservacionesEmpleado(idJefeEmpleado, cedulaEmpleado, "3");
 
                     if (e.CommandName == "Evaluar")
                     {
@@ -479,7 +479,7 @@ namespace PortalTrabajadores.Portal
 
                 string idJefeEmpleado = DataBinder.Eval(e.Row.DataItem, "idJefeEmpleado").ToString();
 
-                if (this.ComprobarEstadoEtapa(idJefeEmpleado, "2"))
+                if (this.ComprobarEstadoEtapa(idJefeEmpleado, "3"))
                 {
                     btnEvaluar.Visible = true;
                     btnRevisar.Visible = false;
@@ -539,7 +539,7 @@ namespace PortalTrabajadores.Portal
         /// <param name="e"></param>
         protected void BtnGuardar_Click(object sender, EventArgs e)
         {
-            if (this.ActualizarEtapa(2, Convert.ToInt32(Session["botonOpc"].ToString())))
+            if (this.ActualizarEtapa(3, Convert.ToInt32(Session["botonOpc"].ToString())))
             {
                 if (this.CrearObservacion(Session["usuario"].ToString(), txtObservacion.Text))
                 {

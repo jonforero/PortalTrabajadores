@@ -23,11 +23,13 @@
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
+                        <asp:BoundField DataField="Meta" HeaderText="Meta" SortExpression="Meta" />
                         <asp:BoundField DataField="Ano" HeaderText="Año" />
                         <asp:BoundField DataField="SegDescripcion" HeaderText="Descripción seguimiento" />
+                        <asp:BoundField DataField="SegMeta" HeaderText="Avance Meta" />
                         <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:ImageButton ID="btnSeguimiento" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("id_obj") + ";" + Eval("Seguimiento") + ";" + Eval("SegDescripcion")%>' CommandName="Seguimiento" />
+                                <asp:ImageButton ID="btnSeguimiento" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("id_obj") + ";" + Eval("Seguimiento") + ";" + Eval("SegDescripcion") + ";" + Eval("SegMeta")%>' CommandName="Seguimiento" />
                                 <asp:ImageButton ID="btnOk" runat="server" ImageUrl="~/Img/ok.gif" Enabled="false" />
                             </ItemTemplate>
                             <ItemStyle HorizontalAlign="Center" />
@@ -41,9 +43,11 @@
                 <asp:GridView ID="gvObjetivosBloqueados" runat="server" AutoGenerateColumns="false">
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
-                        <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
+                        <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />                        
+                        <asp:BoundField DataField="Meta" HeaderText="Meta" SortExpression="Meta" />
                         <asp:BoundField DataField="Ano" HeaderText="Año" />
                         <asp:BoundField DataField="SegDescripcion" HeaderText="Descripción seguimiento" />
+                        <asp:BoundField DataField="SegMeta" HeaderText="Avance Meta" />
                     </Columns>
                 </asp:GridView>
             </div>
@@ -67,11 +71,45 @@
                             <asp:Label ID="lblSeguimiento" runat="server" Text="Seguimiento:" /></td>
                         <td class="CeldaTablaDatos">
                             <asp:TextBox ID="txtSeguimiento" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px" />
+                            <asp:RequiredFieldValidator ID="rfvSeguimiento" 
+                                runat="server"
+                                ErrorMessage="Debe digitar valor"
+                                CssClass="MensajeError"
+                                Display="Dynamic"
+                                ControlToValidate="txtSeguimiento"
+                                ValidationGroup="objForm"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="CeldaTablaDatos">
+                            <asp:Label ID="lblMeta" runat="server" Text="Avance de la Meta:" /></td>
+                        <td class="CeldaTablaDatos">
+                            <asp:TextBox ID="txtCien" runat="server" Text="100" style="display:none"/>
+                            <asp:TextBox ID="txtMeta" runat="server" MaxLength="3" onkeypress="return ValidaSoloNumeros(event)"/>
+                            <asp:CompareValidator ID="cValidator" 
+                                runat="server" 
+                                ErrorMessage="CompareValidator"
+                                ControlToValidate="txtMeta"
+                                ControlToCompare="txtCien"
+                                CssClass="MensajeError" 
+                                Display="Dynamic"
+                                Operator="LessThanEqual"
+                                Type="Integer"
+                                Text="Error: La Meta no puede ser mayor a 100"
+                                ValidationGroup="objForm">
+                            </asp:CompareValidator>
+                            <asp:RequiredFieldValidator ID="rfvMeta" 
+                                runat="server"
+                                ErrorMessage="Debe digitar valor"
+                                CssClass="MensajeError"
+                                Display="Dynamic"
+                                ControlToValidate="txtMeta"
+                                ValidationGroup="objForm"></asp:RequiredFieldValidator>
                         </td>
                     </tr>
                     <tr class="ColorOscuro">
                         <td class="BotonTablaDatos">
-                            <asp:Button ID="BtnGuardar" runat="server" Text="Guardar" OnClick="BtnGuardar_Click" /></td>
+                            <asp:Button ID="BtnGuardar" runat="server" ValidationGroup="objForm" Text="Guardar" OnClick="BtnGuardar_Click" /></td>
                         <td class="BotonTablaDatos">
                             <asp:Button ID="BtnCancel" runat="server" Text="Cancelar" OnClick="BtnCancel_Click" /></td>
                     </tr>

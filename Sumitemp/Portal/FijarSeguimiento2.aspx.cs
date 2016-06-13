@@ -1,5 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using PortalTrabajadores.Class;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,7 +10,7 @@ using System.Web.UI.WebControls;
 
 namespace PortalTrabajadores.Portal
 {
-    public partial class FijarSeguimientoFinal : System.Web.UI.Page
+    public partial class FijarSeguimiento2 : System.Web.UI.Page
     {
         string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
         string Cn2 = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString2"].ConnectionString.ToString();
@@ -41,7 +40,7 @@ namespace PortalTrabajadores.Portal
                     CnMysql Conexion = new CnMysql(Cn);
                     try
                     {
-                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'FijarSeguimientoFinal.aspx' AND idEmpresa = 'ST'", Conexion.ObtenerCnMysql());
+                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'FijarSeguimiento1.aspx' AND idEmpresa = 'ST'", Conexion.ObtenerCnMysql());
                         MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                         DataSet dsDataSet = new DataSet();
                         DataTable dtDataTable = null;
@@ -61,10 +60,10 @@ namespace PortalTrabajadores.Portal
                         if (this.CargarParametros())
                         {
                             //// Comprueba que este en las fechas de la etapa
-                            if (this.ComprobarFechaEtapas("4", DateTime.Now))
+                            if (this.ComprobarFechaEtapas("3", DateTime.Now))
                             {
                                 //// Comprueba si esta en una estado de la etapa valido, sino restringe la vista
-                                if (this.ComprobarEstadoEtapa(Session["idJefeEmpleado"].ToString(), "4"))
+                                if (this.ComprobarEstadoEtapa(Session["idJefeEmpleado"].ToString(), "3"))
                                 {
                                     //// Carga los objetivos Modificables
                                     this.CargarObjetivos(Session["idJefeEmpleado"].ToString());
@@ -77,11 +76,11 @@ namespace PortalTrabajadores.Portal
 
                                         if (Session["idEstadoEtapa"].ToString() == "4")
                                         {
-                                            MensajeError("Su evaluacion fue revisada por su jefe.");
+                                            MensajeError("El seguimiento fue aceptado por su jefe.");
                                         }
                                         else
                                         {
-                                            MensajeError("Alerta, su evaluación fue enviada, se carga una vista de solo lectura");
+                                            MensajeError("Alerta, su seguimiento fue enviado, se carga una vista de solo lectura");
                                         }
                                     }
                                     else
@@ -98,7 +97,7 @@ namespace PortalTrabajadores.Portal
 
                             if (Session["idEstadoEtapa"] != null)
                             {
-                                this.CargarObservaciones(Session["idJefeEmpleado"].ToString(), "4");
+                                this.CargarObservaciones(Session["idJefeEmpleado"].ToString(), "3");
                             }
                         }
                         else
@@ -106,7 +105,7 @@ namespace PortalTrabajadores.Portal
                             MensajeError("Usted no puede continuar hasta asignar un jefe, por favor revise la pagina Selección de Jefe");
                         }
 
-                        this.ComprobarEvaluacionTotal(Session["idJefeEmpleado"].ToString());
+                        this.ComprobarSeguimientoTotal(Session["idJefeEmpleado"].ToString());
                     }
                     catch (Exception E)
                     {
@@ -317,7 +316,7 @@ namespace PortalTrabajadores.Portal
                 }
                 else
                 {
-                    if (this.ComprobarEtapaAnterior(idJefeEmpleado, Session["seguimientoPeriodo"].ToString()))
+                    if (this.ComprobarEtapaAnterior(idJefeEmpleado, "2"))
                     {
                         return true;
                     }
@@ -448,7 +447,7 @@ namespace PortalTrabajadores.Portal
 
                 MySqlCn = new MySqlConnection(Cn2);
                 MySqlCommand scSqlCommand;
-                scSqlCommand = new MySqlCommand("sp_ConsultarObjetivosFinal", MySqlCn);
+                scSqlCommand = new MySqlCommand("sp_ConsultarObjetivosSeguimientos2", MySqlCn);
                 scSqlCommand.CommandType = CommandType.StoredProcedure;
                 scSqlCommand.Parameters.AddWithValue("@idJefeEmpleado", Session["idJefeEmpleado"]);
 
@@ -492,7 +491,7 @@ namespace PortalTrabajadores.Portal
 
                 MySqlCn = new MySqlConnection(Cn2);
                 MySqlCommand scSqlCommand;
-                scSqlCommand = new MySqlCommand("sp_ConsultarObjetivosFinal", MySqlCn);
+                scSqlCommand = new MySqlCommand("sp_ConsultarObjetivosSeguimientos2", MySqlCn);
                 scSqlCommand.CommandType = CommandType.StoredProcedure;
                 scSqlCommand.Parameters.AddWithValue("@idJefeEmpleado", Session["idJefeEmpleado"]);
 
@@ -578,17 +577,18 @@ namespace PortalTrabajadores.Portal
         }
 
         /// <summary>
-        /// Comprueba el que se hayan registrado todas las evaluaciones
+        /// Comprueba el que se hayan registrado todos los seguimientos
         /// </summary>
-        public void ComprobarEvaluacionTotal(string idJefeEmpleado)
+        public void ComprobarSeguimientoTotal(string idJefeEmpleado)
         {
             try
             {
                 MySqlCn = new MySqlConnection(Cn2);
                 MySqlCommand scSqlCommand;
                 string consulta = "SELECT IF((SELECT COUNT(*) FROM objetivos WHERE objetivos.JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado + ") = " +
-                                  "(SELECT COUNT(*) FROM evaluacionfinal WHERE evaluacionfinal.Objetivos_JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado + "), 1, 0) " +
-                                  "AS Evaluacion;";
+                                  "(SELECT COUNT(*) FROM seguimiento WHERE seguimiento.Objetivos_JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado + 
+                                  " AND seguimiento.Periodo = '2'), 1, 0) " +
+                                  "AS Seguimiento;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
 
@@ -599,7 +599,7 @@ namespace PortalTrabajadores.Portal
                 {
                     if (rd.Read())
                     {
-                        if (rd["Evaluacion"].ToString() == "1")
+                        if (rd["Seguimiento"].ToString() == "1")
                         {
                             BtnEnviar.Visible = true;
                         }
@@ -617,55 +617,6 @@ namespace PortalTrabajadores.Portal
             {
                 MySqlCn.Close();
             }
-        }
-
-        /// <summary>
-        /// Revisa el periodo y seguimientos, si tiene promedia para sacar el resultado
-        /// </summary>
-        /// <param name="meta"></param>
-        /// <returns></returns>
-        public int ConsultarResultado(string meta) 
-        { 
-            try 
-	        {
-                if (Session["seguimientoPeriodo"].ToString() == "1") 
-                {
-                    return Convert.ToInt32(meta);
-                }
-                else if (Session["seguimientoPeriodo"].ToString() == "2")
-                {
-                    int seg1 = 0;
-
-                    if (Session["Seg1"] != "") 
-                    {
-                        seg1 = Convert.ToInt32(Session["Seg1"].ToString());
-                    }
-
-                    return (Convert.ToInt32(meta) + seg1) / 2;
-                }
-                else
-                {
-                    int seg1 = 0;
-                    int seg2 = 0;
-
-                    if (Session["Seg1"] != "")
-                    {
-                        seg1 = Convert.ToInt32(Session["Seg1"].ToString());
-                    }
-
-                    if (Session["Seg2"] != "")
-                    {
-                        seg2 = Convert.ToInt32(Session["Seg2"].ToString());
-                    }
-
-                    return (Convert.ToInt32(meta) + seg1 + seg2) / 3;
-                }
-	        }
-	        catch (Exception ex)
-	        {
-		        this.MensajeError(ex.Message);
-                throw ex;
-	        }            
         }
 
         #endregion
@@ -699,33 +650,30 @@ namespace PortalTrabajadores.Portal
 
             try
             {
-                int resultado = this.ConsultarResultado(txtMeta.Text);
-
                 Conexion.AbrirCnMysql();
                 MySqlCommand cmd;
 
                 if (BtnGuardar.Text == "Guardar")
                 {
-                    cmd = new MySqlCommand("sp_CrearEvaluacion", Conexion.ObtenerCnMysql());
+                    cmd = new MySqlCommand("sp_CrearSeguimiento", Conexion.ObtenerCnMysql());
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Objetivos_idObjetivos", Session["idObjetivos"]);
                     cmd.Parameters.AddWithValue("@Objetivos_JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
-                    cmd.Parameters.AddWithValue("@Cedula_Empleado", Session["usuario"]);
-                    cmd.Parameters.AddWithValue("@idCalificacion_Empleado", ddlEvaluacion.SelectedValue);
+                    cmd.Parameters.AddWithValue("@Cedula", Session["usuario"]);
+                    cmd.Parameters.AddWithValue("@Descripcion", txtSeguimiento.Text);
                     cmd.Parameters.AddWithValue("@Meta", txtMeta.Text);
-                    cmd.Parameters.AddWithValue("@Resultado", resultado);
                     cmd.Parameters.AddWithValue("@Fecha", DateTime.Now);
                     cmd.Parameters.AddWithValue("@Ano", Session["anoActivo"]);
+                    cmd.Parameters.AddWithValue("@Periodo", "2");
                 }
                 else
                 {
-                    cmd = new MySqlCommand("sp_ActualizarEvaluacion", Conexion.ObtenerCnMysql());
+                    cmd = new MySqlCommand("sp_ActualizarSeguimiento", Conexion.ObtenerCnMysql());
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@idObjetivos", Session["idObjetivos"]);
-                    cmd.Parameters.AddWithValue("@idJefeEmpleado", Session["idJefeEmpleado"]);
-                    cmd.Parameters.AddWithValue("@idCalificacion_Empleado", ddlEvaluacion.SelectedValue);
+                    cmd.Parameters.AddWithValue("@Objetivos_idObjetivos", Session["idObjetivos"]);
+                    cmd.Parameters.AddWithValue("@Objetivos_JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
+                    cmd.Parameters.AddWithValue("@Descripcion", txtSeguimiento.Text);
                     cmd.Parameters.AddWithValue("@Meta", txtMeta.Text);
-                    cmd.Parameters.AddWithValue("@Resultado", resultado);
                 }
 
                 // Crea un parametro de salida para el SP
@@ -744,16 +692,20 @@ namespace PortalTrabajadores.Portal
                 {
                     if (BtnGuardar.Text == "Guardar")
                     {
-                        MensajeError("Evaluación creada correctamente");
+                        MensajeError("Seguimiento creado correctamente");
                     }
                     else
                     {
-                        MensajeError("Evaluación actualizada correctamente");
+                        MensajeError("Seguimiento actualizado correctamente");
                     }
                 }
+                else
+                {
+                    MensajeError("Hubo un error al crear, por favor revise con su administrador");
+                }
 
-                this.ComprobarEvaluacionTotal(Session["idJefeEmpleado"].ToString());
-                ddlEvaluacion.SelectedIndex = 1;
+                this.ComprobarSeguimientoTotal(Session["idJefeEmpleado"].ToString());
+                txtSeguimiento.Text = string.Empty;
                 txtMeta.Text = string.Empty;
                 this.CargarObjetivos(Session["idJefeEmpleado"].ToString());
             }
@@ -776,7 +728,7 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">evento e</param>
         protected void BtnCancel_Click(object sender, EventArgs e)
         {
-            ddlEvaluacion.SelectedIndex = 1;
+            txtSeguimiento.Text = string.Empty;
             txtMeta.Text = string.Empty;
 
             LblMsj.Visible = false;
@@ -796,42 +748,32 @@ namespace PortalTrabajadores.Portal
             LblMsj.Visible = false;
             UpdatePanel3.Update();
 
+            Container_UpdatePanel3.Visible = false;
+            UpdatePanel1.Update();
+
+            txtSeguimiento.Text = string.Empty;
+            txtMeta.Text = string.Empty;
+
             CnMysql Conexion = new CnMysql(Cn2);
             Conexion.AbrirCnMysql();
 
             try
             {
-                string[] arg = new string[6];
+                string[] arg = new string[4];
                 arg = e.CommandArgument.ToString().Split(';');
-                int idObjetivos = 0;
-                int codEvaluacion = 0;
-                int estadoEvaluacion = 0;
-
-                if (arg[0] != "")
-                {
-                    idObjetivos = Convert.ToInt32(arg[0]);
-                }
-
-                if (arg[1] != "")
-                {
-                    codEvaluacion = Convert.ToInt32(arg[1]);
-                }
-
-                if (arg[2] != "")
-                {
-                    estadoEvaluacion = Convert.ToInt32(arg[2]);
-                }
-
+                int idObjetivos = Convert.ToInt32(arg[0]);
+                int estadoSeguimiento = Convert.ToInt32(arg[1]);
+                string segDescripcion = arg[2];
                 string meta = arg[3];
-                Session.Add("Seg1", arg[4]);
-                Session.Add("Seg2", arg[5]);
+
                 Session.Add("idObjetivos", idObjetivos);
 
-                if (e.CommandName == "Evaluacion")
+                if (e.CommandName == "Seguimiento")
                 {
-                    if (estadoEvaluacion == 1)
+                    if (estadoSeguimiento == 1)
                     {
                         BtnGuardar.Text = "Editar";
+                        txtSeguimiento.Text = segDescripcion;
                         txtMeta.Text = meta;
                     }
                     else
@@ -860,22 +802,11 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">evento e de la grilla</param>
         protected void gvObjetivosCreados_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-            if (Session["seguimientoPeriodo"].ToString() == "2")
-            {
-                e.Row.Cells[2].Visible = false;
-            }
-            else if (Session["seguimientoPeriodo"].ToString() == "1")
-            {
-                e.Row.Cells[1].Visible = false;
-                e.Row.Cells[2].Visible = false;
-            }
-
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 ImageButton btnOk = (ImageButton)e.Row.FindControl("btnOk");
-                ImageButton btnEvaluacion = (ImageButton)e.Row.FindControl("btnEvaluacion");
 
-                string idJefeEmpleado = DataBinder.Eval(e.Row.DataItem, "Evaluacion").ToString();
+                string idJefeEmpleado = DataBinder.Eval(e.Row.DataItem, "Seguimiento2").ToString();
 
                 if (idJefeEmpleado == "1")
                 {
@@ -889,31 +820,13 @@ namespace PortalTrabajadores.Portal
         }
 
         /// <summary>
-        /// Al cargar la grilla se realizan modificaciones sobre las acciones
-        /// </summary>
-        /// <param name="sender">objeto sender</param>
-        /// <param name="e">evento e de la grilla</param>
-        protected void gvObjetivosBloqueados_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (Session["seguimientoPeriodo"].ToString() == "2")
-            {
-                e.Row.Cells[2].Visible = false;
-            }
-            else if (Session["seguimientoPeriodo"].ToString() == "1")
-            {
-                e.Row.Cells[1].Visible = false;
-                e.Row.Cells[2].Visible = false;
-            }
-        }
-
-        /// <summary>
         /// Guardar Observacion y enviar evento
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         protected void BtnGuardarObs_Click(object sender, EventArgs e)
         {
-            if (this.CrearObservacion(Session["usuario"].ToString(), txtObservacion.Text, 4))
+            if (this.CrearObservacion(Session["usuario"].ToString(), txtObservacion.Text, 3))
             {
                 CnMysql Conexion = new CnMysql(Cn2);
                 Conexion.AbrirCnMysql();
@@ -924,9 +837,9 @@ namespace PortalTrabajadores.Portal
                 {
                     MySqlCommand cmd = new MySqlCommand("sp_CrearEtapaJefeEmpleado", Conexion.ObtenerCnMysql());
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Etapas_idEtapas", 4);
+                    cmd.Parameters.AddWithValue("@Etapas_idEtapas", 3);
                     cmd.Parameters.AddWithValue("@JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
-                    cmd.Parameters.AddWithValue("@EstadoEtapa_idEstadoEtapa", 7);
+                    cmd.Parameters.AddWithValue("@EstadoEtapa_idEstadoEtapa", 6);
                     cmd.Parameters.AddWithValue("@Fecha", DateTime.Now);
 
                     // Crea un parametro de salida para el SP
@@ -970,6 +883,6 @@ namespace PortalTrabajadores.Portal
             }
         }
 
-        #endregion        
+        #endregion
     }
 }

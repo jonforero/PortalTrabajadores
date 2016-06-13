@@ -23,11 +23,16 @@
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
-                        <asp:BoundField DataField="Ano" HeaderText="Año" />
+                        <asp:BoundField DataField="SegMeta1" HeaderText="Primer Seg" />
+                        <asp:BoundField DataField="SegMeta2" HeaderText="Segundo Seg" />
+                        <asp:BoundField DataField="MetaEval" HeaderText="Meta Evaluacion" />
+                        <asp:BoundField DataField="ResultadoEval" HeaderText="Resultado" />                        
                         <asp:BoundField DataField="EvalDescripcion" HeaderText="Evaluación" />
+                        <asp:BoundField DataField="Ano" HeaderText="Año" />
                         <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:ImageButton ID="btnEvaluacion" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("id_obj") + ";" + Eval("CodEvaluacion")%>' CommandName="Evaluacion" />
+                                <asp:ImageButton ID="btnEvaluacion" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("id_obj") + ";" + Eval("CodEvaluacion") + ";" + 
+                                Eval("Evaluacion") + ";" + Eval("MetaEval") + ";" + Eval("SegMeta1") + ";" + Eval("SegMeta2") %>' CommandName="Evaluacion" />
                                 <asp:ImageButton ID="btnOk" runat="server" ImageUrl="~/Img/ok.gif" Enabled="false" />
                             </ItemTemplate>
                             <ItemStyle HorizontalAlign="Center" />
@@ -38,12 +43,17 @@
                 <asp:Button ID="BtnEnviar" runat="server" Text="Enviar Objetivos a jefe" Visible="false" OnClick="BtnEnviar_Click" />
             </div>
             <div id="Container_UpdatePanelBloqueado" runat="server" visible="false">
-                <asp:GridView ID="gvObjetivosBloqueados" runat="server" AutoGenerateColumns="false">
+                <asp:GridView ID="gvObjetivosBloqueados" runat="server" AutoGenerateColumns="false" OnRowDataBound="gvObjetivosBloqueados_RowDataBound">
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
-                        <asp:BoundField DataField="Ano" HeaderText="Año" />
+                        <asp:BoundField DataField="SegMeta1" HeaderText="Primer Seg" />
+                        <asp:BoundField DataField="SegMeta2" HeaderText="Segundo Seg" />
+                        <asp:BoundField DataField="MetaEval" HeaderText="Meta Evaluacion" />
+                        <asp:BoundField DataField="ResultadoEval" HeaderText="Resultado" />                        
                         <asp:BoundField DataField="EvalDescripcion" HeaderText="Evaluación" />
+                        <asp:BoundField DataField="EvalJefe" HeaderText="Evaluación Jefe" />
+                        <asp:BoundField DataField="Ano" HeaderText="Año" />
                     </Columns>
                 </asp:GridView>
             </div>
@@ -70,9 +80,36 @@
                             <asp:SqlDataSource ID="sqlEvaluacion" runat="server" ConnectionString='<%$ ConnectionStrings:trabajadoresConnectionString2 %>' ProviderName='<%$ ConnectionStrings:trabajadoresConnectionString2.ProviderName %>' SelectCommand="SELECT idCalificacion, Valor FROM calificacion"></asp:SqlDataSource>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="CeldaTablaDatos">
+                            <asp:Label ID="lblMeta" runat="server" Text="Meta Final" /></td>
+                        <td class="CeldaTablaDatos">
+                            <asp:TextBox ID="txtCien" runat="server" Text="100" style="display:none"/>
+                            <asp:TextBox ID="txtMeta" runat="server" MaxLength="3" onkeypress="return ValidaSoloNumeros(event)"/>
+                            <asp:CompareValidator ID="cValidator" 
+                                runat="server" 
+                                ErrorMessage="CompareValidator"
+                                ControlToValidate="txtMeta"
+                                ControlToCompare="txtCien"
+                                CssClass="MensajeError" 
+                                Display="Dynamic"
+                                Operator="LessThanEqual"
+                                Type="Integer"
+                                Text="Error: La Meta no puede ser mayor a 100"
+                                ValidationGroup="objForm">
+                            </asp:CompareValidator>
+                            <asp:RequiredFieldValidator ID="rfvMeta" 
+                                runat="server"
+                                ErrorMessage="Debe digitar valor"
+                                CssClass="MensajeError"
+                                Display="Dynamic"
+                                ControlToValidate="txtMeta"
+                                ValidationGroup="objForm"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
                     <tr class="ColorOscuro">
                         <td class="BotonTablaDatos">
-                            <asp:Button ID="BtnGuardar" runat="server" Text="Guardar" OnClick="BtnGuardar_Click" /></td>
+                            <asp:Button ID="BtnGuardar" runat="server" Text="Guardar" ValidationGroup="objForm" OnClick="BtnGuardar_Click" /></td>
                         <td class="BotonTablaDatos">
                             <asp:Button ID="BtnCancel" runat="server" Text="Cancelar" OnClick="BtnCancel_Click" /></td>
                     </tr>

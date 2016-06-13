@@ -51,6 +51,7 @@
                     <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Objetivos" />
                         <asp:BoundField DataField="SegDescripcion" HeaderText="Seguimiento" SortExpression="SegDescripcion" />
+                        <asp:BoundField DataField="SegMeta" HeaderText="Avance Meta" SortExpression="SegMeta" />
                     </Columns>
                 </asp:GridView>
                 <br />

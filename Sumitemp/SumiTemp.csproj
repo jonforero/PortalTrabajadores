@@ -125,6 +125,7 @@
     <Content Include="Portal\Cesantias.aspx" />
     <Content Include="Portal\EstadoFondo.aspx" />
     <Content Include="Portal\FijarSeguimiento1.aspx" />
+    <Content Include="Portal\FijarSeguimiento2.aspx" />
     <Content Include="Portal\FijarSeguimientoFinal.aspx" />
     <Content Include="Portal\index.aspx" />
     <Content Include="Portal\IngRetenciones.aspx" />
@@ -166,6 +167,7 @@
     <Content Include="Portal\Retenciones.aspx" />
     <Content Include="Portal\Seleccionjefe.aspx" />
     <Content Include="Portal\ValidarObjetivos.aspx" />
+    <Content Include="Portal\ValidarSeguimiento2.aspx" />
     <Content Include="Portal\ValidarSeguimientoFinal.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -269,6 +271,13 @@
     </Compile>
     <Compile Include="Portal\FijarSeguimiento1.aspx.designer.cs">
       <DependentUpon>FijarSeguimiento1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\FijarSeguimiento2.aspx.cs">
+      <DependentUpon>FijarSeguimiento2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\FijarSeguimiento2.aspx.designer.cs">
+      <DependentUpon>FijarSeguimiento2.aspx</DependentUpon>
     </Compile>
     <Compile Include="Portal\FijarSeguimientoFinal.aspx.cs">
       <DependentUpon>FijarSeguimientoFinal.aspx</DependentUpon>
@@ -374,6 +383,13 @@
     </Compile>
     <Compile Include="Portal\ValidarObjetivos.aspx.designer.cs">
       <DependentUpon>ValidarObjetivos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\ValidarSeguimiento2.aspx.cs">
+      <DependentUpon>ValidarSeguimiento2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\ValidarSeguimiento2.aspx.designer.cs">
+      <DependentUpon>ValidarSeguimiento2.aspx</DependentUpon>
     </Compile>
     <Compile Include="Portal\ValidarSeguimientoFinal.aspx.cs">
       <DependentUpon>ValidarSeguimientoFinal.aspx</DependentUpon>

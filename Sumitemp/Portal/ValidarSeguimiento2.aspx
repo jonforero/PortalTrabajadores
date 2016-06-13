@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Portal/PaginaMaestra.Master" AutoEventWireup="true" CodeBehind="ValidarSeguimientoFinal.aspx.cs" Inherits="PortalTrabajadores.Portal.ValidarSeguimientoFinal" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Portal/PaginaMaestra.Master" AutoEventWireup="true" CodeBehind="ValidarSeguimiento2.aspx.cs" Inherits="PortalTrabajadores.Portal.ValidarSeguimiento2" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <!-- Css para la fecha -->
@@ -46,53 +46,24 @@
                 </asp:GridView>
             </div>
             <div id="Container_UpdatePanel2" runat="server" visible="false">
-                <asp:Label runat="server" ID="lblmensaje" Text="Recuerde que si evalua todos los objetivos no podra rechazar, si desea rechazar hagalo antes de calificar."></asp:Label>
-                <p></p>
-                <asp:GridView ID="gvObjetivosCreados" runat="server" AutoGenerateColumns="false" OnRowCommand="gvObjetivosCreados_RowCommand" OnRowDataBound="gvObjetivosCreados_RowDataBound">
+                <asp:GridView ID="gvObjetivosCreados" runat="server" AutoGenerateColumns="false">
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
-                        <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
-                        <asp:BoundField DataField="Ano" HeaderText="Año" />
-                        <asp:BoundField DataField="EvalDescripcion" HeaderText="Evaluación" />
-                        <asp:BoundField DataField="Resultado" HeaderText="Resultado" />
-                        <asp:BoundField DataField="EvalDescripcionJefe" HeaderText="Evaluación Jefe" />
-                        <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
-                            <ItemTemplate>
-                                <asp:ImageButton ID="btnEvaluacion" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("id_obj") + ";" + Eval("CodEvaluacionJefe")%>' CommandName="Evaluacion" />
-                                <asp:ImageButton ID="btnOk" runat="server" ImageUrl="~/Img/ok.gif" Enabled="false" />
-                            </ItemTemplate>
-                            <ItemStyle HorizontalAlign="Center" />
-                        </asp:TemplateField>
+                        <asp:BoundField DataField="Descripcion" HeaderText="Objetivos"/>
+                        <asp:BoundField DataField="SegDescripcion1" HeaderText="Descripción Seg 1" />
+                        <asp:BoundField DataField="SegMeta1" HeaderText="Meta Seg 1" />
+                        <asp:BoundField DataField="SegDescripcion2" HeaderText="Descripción Seg 2" />
+                        <asp:BoundField DataField="SegMeta2" HeaderText="Avance Seg" />
                     </Columns>
                 </asp:GridView>
                 <br />
-                <asp:Button ID="BtnAceptar" runat="server" Text="Aceptar Seguimiento" Visible="false" OnClick="BtnAceptar_Click" />
+                <asp:Button ID="BtnAceptar" runat="server" Text="Aceptar Seguimiento" Visible="false" OnClick="BtnAceptar_Click"/>
                 <asp:Button ID="BtnRechazar" runat="server" Text="Rechazar y realizar observación" Visible="false" OnClick="BtnRechazar_Click" />
                 <asp:Button ID="BtnRegresar" runat="server" Text="Regresar" OnClick="BtnRegresar_Click" />
             </div>
-            <div id="Container_UpdatePanelEval" runat="server" visible="false">
-                <br />
-                <table id="TablaDatos">
-                    <tr>
-                        <th colspan="2">Seleccione su calificación</th>
-                    </tr>
-                    <tr>
-                        <td class="CeldaTablaDatos">
-                            <asp:Label ID="lblEvaluacion" runat="server" Text="Calificación:" /></td>
-                        <td class="CeldaTablaDatos">
-                            <asp:DropDownList ID="ddlEvaluacion" runat="server" DataSourceID="sqlEvaluacion" DataTextField="Valor" DataValueField="idCalificacion"></asp:DropDownList>
-                            <asp:SqlDataSource ID="sqlEvaluacion" runat="server" ConnectionString='<%$ ConnectionStrings:trabajadoresConnectionString2 %>' ProviderName='<%$ ConnectionStrings:trabajadoresConnectionString2.ProviderName %>' SelectCommand="SELECT idCalificacion, Valor FROM calificacion"></asp:SqlDataSource>
-                        </td>
-                    </tr>
-                    <tr class="ColorOscuro">
-                        <td class="BotonTablaDatos">
-                            <asp:Button ID="BtnEvaluar" runat="server" Text="Guardar" OnClick="BtnEvaluar_Click" /></td>
-                    </tr>
-                </table>
-            </div>
             <div id="Container_UpdatePanel3" runat="server" visible="false">
                 <br />
-                <table id="TablaDatos2">
+                <table id="TablaDatos">
                     <tr>
                         <th>Observaciones</th>
                     </tr>

@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Portal/PaginaMaestra.Master" AutoEventWireup="true" CodeBehind="index.aspx.cs" Inherits="PortalTrabajadores.Portal.index1" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="Container" runat="server">
     <Article class="PaginaInicio">
         <!--h2>Bienvenidos!!!</h2-->
@@ -20,4 +22,9 @@
             <img src="../Img/Banner.png" alt="Banner publicitario" />
         </div>
     </Article>
+    <div style="display:none">
+        <div id="msjAdvertencia" title="">
+            <div id="mensaje"></div>
+        </div>
+    </div>
 </asp:Content>

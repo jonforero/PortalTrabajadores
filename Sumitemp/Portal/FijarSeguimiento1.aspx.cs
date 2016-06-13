@@ -586,7 +586,8 @@ namespace PortalTrabajadores.Portal
                 MySqlCn = new MySqlConnection(Cn2);
                 MySqlCommand scSqlCommand;
                 string consulta = "SELECT IF((SELECT COUNT(*) FROM objetivos WHERE objetivos.JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado + ") = " +
-                                  "(SELECT COUNT(*) FROM seguimiento WHERE seguimiento.Objetivos_JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado + "), 1, 0) " +
+                                  "(SELECT COUNT(*) FROM seguimiento WHERE seguimiento.Objetivos_JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
+                                  " AND seguimiento.Periodo = '1'), 1, 0) " + 
                                   "AS Seguimiento;";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
@@ -629,6 +630,9 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">evento e</param>
         protected void BtnEnviar_Click(object sender, EventArgs e)
         {
+            LblMsj.Visible = false;
+            UpdatePanel3.Update();
+
             Container_UpdatePanel2.Visible = false;
             Container_UpdatePanel3.Visible = true;
             UpdatePanel1.Update();
@@ -657,8 +661,10 @@ namespace PortalTrabajadores.Portal
                     cmd.Parameters.AddWithValue("@Objetivos_JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
                     cmd.Parameters.AddWithValue("@Cedula", Session["usuario"]);
                     cmd.Parameters.AddWithValue("@Descripcion", txtSeguimiento.Text);
+                    cmd.Parameters.AddWithValue("@Meta", txtMeta.Text);
                     cmd.Parameters.AddWithValue("@Fecha", DateTime.Now);
                     cmd.Parameters.AddWithValue("@Ano", Session["anoActivo"]);
+                    cmd.Parameters.AddWithValue("@Periodo", "1");
                 }
                 else
                 {
@@ -667,6 +673,7 @@ namespace PortalTrabajadores.Portal
                     cmd.Parameters.AddWithValue("@Objetivos_idObjetivos", Session["idObjetivos"]);
                     cmd.Parameters.AddWithValue("@Objetivos_JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
                     cmd.Parameters.AddWithValue("@Descripcion", txtSeguimiento.Text);
+                    cmd.Parameters.AddWithValue("@Meta", txtMeta.Text);
                 }
 
                 // Crea un parametro de salida para el SP
@@ -699,6 +706,7 @@ namespace PortalTrabajadores.Portal
 
                 this.ComprobarSeguimientoTotal(Session["idJefeEmpleado"].ToString());
                 txtSeguimiento.Text = string.Empty;
+                txtMeta.Text = string.Empty;
                 this.CargarObjetivos(Session["idJefeEmpleado"].ToString());
             }
             catch (Exception E)
@@ -721,6 +729,7 @@ namespace PortalTrabajadores.Portal
         protected void BtnCancel_Click(object sender, EventArgs e)
         {
             txtSeguimiento.Text = string.Empty;
+            txtMeta.Text = string.Empty;
 
             LblMsj.Visible = false;
             UpdatePanel3.Update();
@@ -739,16 +748,23 @@ namespace PortalTrabajadores.Portal
             LblMsj.Visible = false;
             UpdatePanel3.Update();
 
+            Container_UpdatePanel3.Visible = false;
+            UpdatePanel1.Update();
+
+            txtSeguimiento.Text = string.Empty;
+            txtMeta.Text = string.Empty;
+
             CnMysql Conexion = new CnMysql(Cn2);
             Conexion.AbrirCnMysql();
 
             try
             {
-                string[] arg = new string[3];
+                string[] arg = new string[4];
                 arg = e.CommandArgument.ToString().Split(';');
                 int idObjetivos = Convert.ToInt32(arg[0]);
                 int estadoSeguimiento = Convert.ToInt32(arg[1]);
                 string segDescripcion = arg[2];
+                string meta = arg[3];
 
                 Session.Add("idObjetivos", idObjetivos);
 
@@ -758,6 +774,7 @@ namespace PortalTrabajadores.Portal
                     {
                         BtnGuardar.Text = "Editar";
                         txtSeguimiento.Text = segDescripcion;
+                        txtMeta.Text = meta;
                     }
                     else
                     {

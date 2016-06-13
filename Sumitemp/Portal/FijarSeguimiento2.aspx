@@ -1,5 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Portal/PaginaMaestra.Master" AutoEventWireup="true" CodeBehind="FijarObjetivos.aspx.cs" Inherits="PortalTrabajadores.Portal.Objetivos" %>
-
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Portal/PaginaMaestra.Master" AutoEventWireup="true" CodeBehind="FijarSeguimiento2.aspx.cs" Inherits="PortalTrabajadores.Portal.FijarSeguimiento2" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <!-- Css para la fecha -->
     <link href="../CSS/CSSCallapsePanel.css" rel="stylesheet" type="text/css" />
@@ -16,48 +15,42 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="Container" runat="server">
-    <div>
-        <p>Recuerde que todos los objetivos deben distribuir el peso y al final este debe sumar 100. 
-            Tambien tenga presente que la meta debe ser menor al peso.</p>
-        <asp:Label ID="lblInformacion" runat="server"></asp:Label></div>
-    <br />
-    <asp:UpdateProgress ID="upProgress" DynamicLayout="true" runat="server" AssociatedUpdatePanelID="UpdatePanel1">
-        <ProgressTemplate>
-            <div class="loader">
-            </div>
-        </ProgressTemplate>
-    </asp:UpdateProgress>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
             <div id="Container_UpdatePanel1" runat="server" visible="true" style="margin-top: 15px">
-                <asp:GridView ID="gvObjetivosCreados" runat="server" AutoGenerateColumns="false" OnRowCommand="gvObjetivosCreados_RowCommand">
+                <asp:GridView ID="gvObjetivosCreados" runat="server" AutoGenerateColumns="false" OnRowCommand="gvObjetivosCreados_RowCommand" OnRowDataBound="gvObjetivosCreados_RowDataBound">
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
-                        <asp:BoundField DataField="Peso" HeaderText="Peso" SortExpression="Peso" />
                         <asp:BoundField DataField="Meta" HeaderText="Meta" SortExpression="Meta" />
                         <asp:BoundField DataField="Ano" HeaderText="Año" />
+                        <asp:BoundField DataField="SegDescripcion1" HeaderText="Descripción Seg 1" />
+                        <asp:BoundField DataField="SegMeta1" HeaderText="Meta Seg 1" />
+                        <asp:BoundField DataField="SegDescripcion2" HeaderText="Descripción Seg 2" />
+                        <asp:BoundField DataField="SegMeta2" HeaderText="Avance Seg" />
                         <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:ImageButton ID="btnUpdate" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("idObjetivos")%>' CommandName="Editar" />
-                                <asp:ImageButton ID="btnDelete" runat="server" ImageUrl="~/Img/delete.gif" CommandArgument='<%#Eval("idObjetivos")%>' CommandName="Eliminar" />
+                                <asp:ImageButton ID="btnSeguimiento" runat="server" ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("id_obj") + ";" + Eval("Seguimiento2") + ";" + Eval("SegDescripcion2") + ";" + Eval("SegMeta2")%>' CommandName="Seguimiento" />
+                                <asp:ImageButton ID="btnOk" runat="server" ImageUrl="~/Img/ok.gif" Enabled="false" />
                             </ItemTemplate>
                             <ItemStyle HorizontalAlign="Center" />
                         </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
                 <br />
-                <asp:Button ID="BtnCrear" runat="server" Text="Crear Objetivo" Visible="false" OnClick="BtnCrear_Click" />
                 <asp:Button ID="BtnEnviar" runat="server" Text="Enviar Objetivos a jefe" Visible="false" OnClick="BtnEnviar_Click" />
             </div>
             <div id="Container_UpdatePanelBloqueado" runat="server" visible="false">
                 <asp:GridView ID="gvObjetivosBloqueados" runat="server" AutoGenerateColumns="false">
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
-                        <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
-                        <asp:BoundField DataField="Peso" HeaderText="Peso" SortExpression="Peso" />
+                        <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />                        
                         <asp:BoundField DataField="Meta" HeaderText="Meta" SortExpression="Meta" />
                         <asp:BoundField DataField="Ano" HeaderText="Año" />
+                        <asp:BoundField DataField="SegDescripcion1" HeaderText="Descripción Seg 1" />
+                        <asp:BoundField DataField="SegMeta1" HeaderText="Meta Seg 1" />
+                        <asp:BoundField DataField="SegDescripcion2" HeaderText="Descripción Seg 2" />
+                        <asp:BoundField DataField="SegMeta2" HeaderText="Avance Seg" />
                     </Columns>
                 </asp:GridView>
             </div>
@@ -74,64 +67,38 @@
                 <br />
                 <table id="TablaDatos">
                     <tr>
-                        <th colspan="2">Objetivos</th>
+                        <th colspan="2">Digite su seguimiento</th>
                     </tr>
                     <tr>
                         <td class="CeldaTablaDatos">
-                            <asp:Label ID="lblObjetivo" runat="server" Text="Objetivo:" /></td>
+                            <asp:Label ID="lblSeguimiento" runat="server" Text="Seguimiento:" /></td>
                         <td class="CeldaTablaDatos">
-                            <asp:TextBox ID="txtObjetivo" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px" />
-                            <asp:RequiredFieldValidator ID="rfvObjetivo" 
+                            <asp:TextBox ID="txtSeguimiento" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px" />
+                            <asp:RequiredFieldValidator ID="rfvSeguimiento" 
                                 runat="server"
                                 ErrorMessage="Debe digitar valor"
                                 CssClass="MensajeError"
                                 Display="Dynamic"
-                                ControlToValidate="txtObjetivo"
+                                ControlToValidate="txtSeguimiento"
                                 ValidationGroup="objForm"></asp:RequiredFieldValidator>
                         </td>
-                    </tr>                    
+                    </tr>
                     <tr>
                         <td class="CeldaTablaDatos">
-                            <asp:Label ID="lblPeso" runat="server" Text="Peso:" /></td>
+                            <asp:Label ID="lblMeta" runat="server" Text="Avance de la Meta:" /></td>
                         <td class="CeldaTablaDatos">
-                            <asp:TextBox ID="txtPeso" runat="server" MaxLength="3" onkeypress="return ValidaSoloNumeros(event)" />
-                            <asp:TextBox ID="txtCien" runat="server" Text="100" style="display:none"/>                            
-                            <asp:CompareValidator ID="CompareValidator1" 
+                            <asp:TextBox ID="txtCien" runat="server" Text="100" style="display:none"/>
+                            <asp:TextBox ID="txtMeta" runat="server" MaxLength="3" onkeypress="return ValidaSoloNumeros(event)"/>
+                            <asp:CompareValidator ID="cValidator" 
                                 runat="server" 
                                 ErrorMessage="CompareValidator"
-                                ControlToValidate="txtPeso"
+                                ControlToValidate="txtMeta"
                                 ControlToCompare="txtCien"
                                 CssClass="MensajeError" 
                                 Display="Dynamic"
                                 Operator="LessThanEqual"
                                 Type="Integer"
-                                Text="Error: El Peso no puede ser mayor a 100"
-                                ValidationGroup="objForm">
-                            </asp:CompareValidator>
-                            <asp:RequiredFieldValidator ID="rfvPeso" 
-                                runat="server"
-                                ErrorMessage="Debe digitar valor"
-                                CssClass="MensajeError"
-                                Display="Dynamic"
-                                ControlToValidate="txtPeso"
-                                ValidationGroup="objForm"></asp:RequiredFieldValidator>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="CeldaTablaDatos">
-                            <asp:Label ID="lblMeta" runat="server" Text="Meta:" /></td>
-                        <td class="CeldaTablaDatos">
-                            <asp:TextBox ID="txtMeta" runat="server" MaxLength="3" onkeypress="return ValidaSoloNumeros(event)" />
-                            <asp:CompareValidator ID="cValidator" 
-                                runat="server" 
-                                ErrorMessage="CompareValidator"
-                                ControlToValidate="txtMeta"
-                                ControlToCompare="txtPeso"
-                                CssClass="MensajeError" 
-                                Display="Dynamic"
-                                Operator="LessThan"
-                                Type="Integer"
-                                Text="Error: La Meta no puede ser mayor o igual al Peso"
+                                Text="Error: La Meta no puede ser mayor a 100"
                                 ValidationGroup="objForm">
                             </asp:CompareValidator>
                             <asp:RequiredFieldValidator ID="rfvMeta" 
@@ -145,9 +112,9 @@
                     </tr>
                     <tr class="ColorOscuro">
                         <td class="BotonTablaDatos">
-                            <asp:Button ID="BtnGuardar" runat="server" Text="Guardar" ValidationGroup="objForm" OnClick="BtnGuardar_Click" /></td>
+                            <asp:Button ID="BtnGuardar" runat="server" ValidationGroup="objForm" Text="Guardar" OnClick="BtnGuardar_Click" /></td>
                         <td class="BotonTablaDatos">
-                            <asp:Button ID="BtnCancelar" runat="server" Text="Cancelar" OnClick="BtnCancel_Click" /></td>
+                            <asp:Button ID="BtnCancel" runat="server" Text="Cancelar" OnClick="BtnCancel_Click" /></td>
                     </tr>
                 </table>
             </div>
@@ -170,7 +137,7 @@
             </div>
         </ContentTemplate>
         <Triggers>
-            <asp:AsyncPostBackTrigger ControlID="BtnCrear" />
+            <asp:AsyncPostBackTrigger ControlID="gvObjetivosCreados" />
         </Triggers>
     </asp:UpdatePanel>
 </asp:Content>
