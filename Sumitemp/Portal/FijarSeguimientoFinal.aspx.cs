@@ -636,7 +636,7 @@ namespace PortalTrabajadores.Portal
                 {
                     int seg1 = 0;
 
-                    if (Session["Seg1"] != "") 
+                    if (Session["Seg1"].ToString() != "") 
                     {
                         seg1 = Convert.ToInt32(Session["Seg1"].ToString());
                     }
@@ -648,12 +648,12 @@ namespace PortalTrabajadores.Portal
                     int seg1 = 0;
                     int seg2 = 0;
 
-                    if (Session["Seg1"] != "")
+                    if (Session["Seg1"].ToString() != "")
                     {
                         seg1 = Convert.ToInt32(Session["Seg1"].ToString());
                     }
 
-                    if (Session["Seg2"] != "")
+                    if (Session["Seg2"].ToString() != "")
                     {
                         seg2 = Convert.ToInt32(Session["Seg2"].ToString());
                     }

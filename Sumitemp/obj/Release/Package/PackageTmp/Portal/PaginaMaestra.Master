@@ -7,6 +7,8 @@
 <head runat="server">
     <meta charset="utf-8" />
     <title>Servicio en línea trabajadores</title>
+    <!-- Libreria jQuery -->
+    <script type='text/javascript' src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <asp:ContentPlaceHolder ID="head" runat="server" />
     <!-- Hoja de estilos para normalizar los estilos -->
 	<link type='text/css' rel='stylesheet' href='../CSS/normalize.css'>
@@ -17,10 +19,7 @@
 	<!-- Hoja de estilos propia -->
 	<link type='text/css' rel='stylesheet' href='../CSS/main_style.css'>
 
-    <link type='text/css' rel='stylesheet' href='../CSS/Loading.css'>
-
-    <!-- Libreria jQuery -->
-    <script type='text/javascript' src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <link type='text/css' rel='stylesheet' href='../CSS/Loading.css'>    
 </head>
 <body>
     <form id="form1" runat="server">
