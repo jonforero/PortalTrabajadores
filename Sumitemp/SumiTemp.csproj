@@ -89,6 +89,8 @@
     <Content Include="CSS\VentanaModal.css" />
     <Content Include="CSS\main_style.css" />
     <Content Include="Html\SumiTemp.html" />
+    <Content Include="Img\add.gif" />
+    <Content Include="Img\Alert.png" />
     <Content Include="Img\Banner.png" />
     <Content Include="Img\delete.gif" />
     <Content Include="Img\edit.gif" />
@@ -106,6 +108,7 @@
     <Content Include="Img\printButton.png" />
     <Content Include="Img\search.gif" />
     <Content Include="Img\Sumitemp.jpg" />
+    <Content Include="Img\unchecked.png" />
     <Content Include="Js\funciones.js" />
     <Content Include="Js\images\calendar.gif" />
     <Content Include="Js\images\ui-icons_444444_256x240.png" />
@@ -124,6 +127,7 @@
     <Content Include="Portal\Contactenos.aspx" />
     <Content Include="Portal\Cesantias.aspx" />
     <Content Include="Portal\EstadoFondo.aspx" />
+    <Content Include="Portal\EvaluarCompetencias.aspx" />
     <Content Include="Portal\FijarSeguimiento1.aspx" />
     <Content Include="Portal\FijarSeguimiento2.aspx" />
     <Content Include="Portal\FijarSeguimientoFinal.aspx" />
@@ -264,6 +268,13 @@
     </Compile>
     <Compile Include="Portal\EstadoFondo.aspx.designer.cs">
       <DependentUpon>EstadoFondo.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\EvaluarCompetencias.aspx.cs">
+      <DependentUpon>EvaluarCompetencias.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\EvaluarCompetencias.aspx.designer.cs">
+      <DependentUpon>EvaluarCompetencias.aspx</DependentUpon>
     </Compile>
     <Compile Include="Portal\FijarSeguimiento1.aspx.cs">
       <DependentUpon>FijarSeguimiento1.aspx</DependentUpon>

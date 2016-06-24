@@ -1,0 +1,605 @@
+﻿using MySql.Data.MySqlClient;
+using PortalTrabajadores.Class;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace PortalTrabajadores.Portal
+{
+    public partial class EvaluarCompetencias : System.Web.UI.Page
+    {
+        string CnTrabajadores = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
+        string CnCompetencias = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString3"].ConnectionString.ToString();
+        string bdBasica = ConfigurationManager.AppSettings["BD1"].ToString();
+        string bdTrabajadores = ConfigurationManager.AppSettings["BD2"].ToString();
+        string bdObjetivos = ConfigurationManager.AppSettings["BD3"].ToString();
+        string bdCompetencias = ConfigurationManager.AppSettings["BD4"].ToString();
+
+        MySqlConnection MySqlCn;
+        ConsultasGenerales consultas;
+
+        #region Metodo Page Load
+
+        /// <summary>
+        /// Carga de la pagina
+        /// </summary>
+        /// <param name="sender">Objeto sender</param>
+        /// <param name="e">Evento e</param>
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            consultas = new ConsultasGenerales();
+
+            if (Session["usuario"] == null)
+            {
+                //Redirecciona a la pagina de login en caso de que el usuario no se halla autenticado
+                Response.Redirect("~/Login.aspx");
+            }
+            else
+            {
+                if (!IsPostBack)
+                {
+                    CnMysql Conexion = new CnMysql(CnTrabajadores);
+                    try
+                    {
+                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bdBasica + ".Options_Menu WHERE url = 'EvaluarCompetencias.aspx' AND idEmpresa = 'ST'", Conexion.ObtenerCnMysql());
+                        MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
+                        DataSet dsDataSet = new DataSet();
+                        DataTable dtDataTable = null;
+
+                        Conexion.AbrirCnMysql();
+                        sdaSqlDataAdapter.Fill(dsDataSet);
+                        dtDataTable = dsDataSet.Tables[0];
+                        if (dtDataTable != null && dtDataTable.Rows.Count > 0)
+                        {
+                            this.lblTitulo.Text = dtDataTable.Rows[0].ItemArray[0].ToString();
+                        }
+
+                        string anio = consultas.ObtenerPeriodoActivo(Session["idEmpresa"].ToString(),
+                                                                     Session["compania"].ToString());
+
+                        if (anio != "0")
+                        {
+                            Session.Add("anoActivo", anio);
+                            this.CargarEmpleados(Session["usuario"].ToString(), Session["compania"].ToString());
+                        }
+                        else
+                        {
+                            MensajeError("No hay un periodo activo en el momento");
+                        }
+                    }
+                    catch (Exception E)
+                    {
+                        MensajeError("Ha ocurrido el siguiente error: " + E.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    }
+                    finally
+                    {
+                        Conexion.CerrarCnMysql();
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Metodo MensajeError
+
+        /// <summary>
+        /// Carga el mensaje de error
+        /// </summary>
+        /// <param name="Msj">Mensaje que se muestra</param>
+        public void MensajeError(string Msj)
+        {
+            LblMsj.Text = Msj;
+            LblMsj.Visible = true;
+            UpdatePanel3.Update();
+        }
+
+        /// <summary>
+        /// Limpia los mensajes
+        /// </summary>
+        public void LimpiarMensaje() 
+        {
+            LblMsj.Visible = false;
+            UpdatePanel3.Update();
+        }
+
+        #endregion
+
+        #region Parametros
+
+        /// <summary>
+        /// Carga los empleados asociados al jefe
+        /// </summary>
+        /// <param name="cedulaJefe">Cedula Jefe</param>
+        /// <param name="idCompania">Id Compañia</param>
+        public void CargarEmpleados(string cedulaJefe, string idCompania)
+        {
+            this.LimpiarMensaje();
+
+            try
+            {
+                DataTable dtDataTable = consultas.ConsultarTrabajadoresXJefe(idCompania,
+                                                                             cedulaJefe,
+                                                                             Session["anoActivo"].ToString());
+
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
+                {
+                    gvEmpleadosAsociados.DataSource = dtDataTable;
+                }
+                else
+                {
+                    gvEmpleadosAsociados.DataSource = null;
+                    MensajeError("No tiene empleados asociados");
+                }
+
+                gvEmpleadosAsociados.DataBind();
+                txtCalificacion.Text = string.Empty;
+                Container_UpdatePanel1.Visible = true;
+                Container_UpdatePanel2.Visible = false;
+                Container_UpdatePanel3.Visible = false;
+                UpdatePanel1.Update();
+            }
+            catch (Exception ex)
+            {
+                MensajeError("El sistema no se encuentra disponible en este momento. " + ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region Eventos Controles
+
+        /// <summary>
+        /// Maneja los eventos de la grilla empleados
+        /// </summary>
+        /// <param name="sender">Objeto sender</param>
+        /// <param name="e">evento e de la grilla</param>
+        protected void gvEmpleadosAsociados_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            this.LimpiarMensaje();
+
+            try
+            {
+                string[] arg = new string[2];
+                arg = e.CommandArgument.ToString().Split(';');
+                int idJefeEmpleado = Convert.ToInt32(arg[0]);
+                int cedulaEmpleado = Convert.ToInt32(arg[1]);
+
+                Session.Add("idJefeEmpleado", idJefeEmpleado);
+                Session.Add("cedulaEmpleado", cedulaEmpleado);
+
+                DataTable dtDataTable = consultas.ConsultarCargosTrabajador(cedulaEmpleado);
+
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
+                {
+                    gvCompetencias.DataSource = dtDataTable;
+
+                    lblCargo.Text = "El cargo del usuario " + dtDataTable.Rows[0][1].ToString() +
+                                    " es " + dtDataTable.Rows[0][3].ToString();
+
+                    if (e.CommandName == "Evaluar")
+                    {
+                        this.BtnAceptar.Visible = true;
+                    }
+                }
+                else
+                {
+                    gvCompetencias.DataSource = null;
+                    MensajeError("Error al cargar la información del usuario, por favor comuniquese con su administrador");
+                    this.BtnAceptar.Visible = false;
+                }
+
+                gvCompetencias.DataBind();
+            }
+            catch (Exception E)
+            {
+                MensajeError("Ha ocurrido el siguiente error: " + E.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            }
+            finally
+            {
+                Container_UpdatePanel1.Visible = false;
+                Container_UpdatePanel2.Visible = true;
+                UpdatePanel1.Update();
+            }
+        }
+
+        /// <summary>
+        /// Al cargar la grilla se realizan modificaciones sobre las acciones
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e de la grilla</param>
+        protected void gvEmpleadosAsociados_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                ImageButton btnEvaluar = (ImageButton)e.Row.FindControl("btnEvaluar");
+                ImageButton btnAlerta = (ImageButton)e.Row.FindControl("btnAlerta");
+                ImageButton btnOk = (ImageButton)e.Row.FindControl("btnOk");
+
+                string idCargos = DataBinder.Eval(e.Row.DataItem, "IdCargos").ToString();
+                string cedulaJefe = DataBinder.Eval(e.Row.DataItem, "Cedula_Jefe").ToString();
+                string cedulaEmpleado = DataBinder.Eval(e.Row.DataItem, "Cedula_Empleado").ToString();
+
+                if (idCargos != string.Empty)
+                {
+                    if (consultas.EvaluacionCompetencia(Session["compania"].ToString(),
+                                                        "ST",
+                                                        cedulaJefe,
+                                                        cedulaEmpleado))
+                    {
+                        btnEvaluar.Visible = false;
+                        btnAlerta.Visible = false;
+                        btnOk.Visible = true;
+                    }
+                    else
+                    {
+                        btnEvaluar.Visible = true;
+                        btnAlerta.Visible = false;
+                        btnOk.Visible = false;
+                    }
+                }
+                else
+                {
+                    btnEvaluar.Visible = false;
+                    btnAlerta.Visible = true;
+                    btnOk.Visible = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Acepta los objetivos y los envia al empleado
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void BtnAceptar_Click(object sender, EventArgs e)
+        {
+            this.LimpiarMensaje();
+
+            this.BtnAceptar.Visible = false;
+            Container_UpdatePanel3.Visible = true;
+            UpdatePanel1.Update();
+            Session.Add("botonOpc", 4);
+        }
+
+        /// <summary>
+        /// Guarda la observacion
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void BtnCalificar_Click(object sender, EventArgs e)
+        {
+            this.LimpiarMensaje();
+
+            try
+            {
+                int res;
+
+                if (BtnCalificar.Text != "Editar")
+                {
+                    res = consultas.CrearEvalCargoCompetencias(Convert.ToInt32(Session["idEvaluacionCompetencia"]),
+                                                               Convert.ToInt32(Session["idCargos"]),
+                                                               Convert.ToInt32(Session["idCompetencia"]),
+                                                               Convert.ToInt32(txtCalificacion.Text));
+                }
+                else
+                {
+                    res = consultas.ActualizarCalificacion(Convert.ToInt32(Session["idEvaluacionCompetencia"]),
+                                                           Convert.ToInt32(Session["idCargos"]),
+                                                           Convert.ToInt32(Session["idCompetencia"]),
+                                                           Convert.ToInt32(txtCalificacion.Text));
+                }
+
+                if (res == 0)
+                {
+                    MensajeError("Hubo un error al ingresar la información.");
+                }
+                else
+                {
+                    MensajeError("Calificación Recibida.");
+                }
+
+                DataTable dtDataTable = consultas.ConsultarCargosTrabajador(Convert.ToInt32(Session["cedulaEmpleado"]));
+                gvCompetencias.DataSource = dtDataTable;
+                gvCompetencias.DataBind();
+
+                lblCargo.Text = "El cargo del usuario " + dtDataTable.Rows[0][1].ToString() +
+                                " es " + dtDataTable.Rows[0][2].ToString();
+
+                Container_UpdatePanel3.Visible = false;
+                Container_UpdatePanel2.Visible = true;
+                UpdatePanel1.Update();
+            }
+            catch (Exception E)
+            {
+                MensajeError("Ha ocurrido el siguiente error: " + E.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            }
+        }
+
+        /// <summary>
+        /// Regresa a la pantalla de empleados
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void BtnRegresar_Click(object sender, EventArgs e)
+        {
+            this.LimpiarMensaje();
+            this.CargarEmpleados(Session["usuario"].ToString(), Session["compania"].ToString());
+        }
+
+        /// <summary>
+        /// Regresa a la pantalla de competencias
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void BtnRegresarCal_Click(object sender, EventArgs e)
+        {
+            this.LimpiarMensaje();
+            Container_UpdatePanel3.Visible = false;
+            Container_UpdatePanel2.Visible = true;
+            UpdatePanel1.Update();
+        }
+
+        /// <summary>
+        /// Maneja los eventos de la grilla competencias
+        /// </summary>
+        /// <param name="sender">Objeto sender</param>
+        /// <param name="e">evento e de la grilla</param>
+        protected void gvCompetencias_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            this.LimpiarMensaje();
+
+            CnMysql Conexion = new CnMysql(CnCompetencias);
+            Conexion.AbrirCnMysql();
+
+            try
+            {
+                string[] arg = new string[3];
+                arg = e.CommandArgument.ToString().Split(';');
+                int idCompetencia = Convert.ToInt32(arg[0]);
+                int idCargos = Convert.ToInt32(arg[1]);
+                int idEvaluacionCompetencia = 0;
+
+                if (arg[2] != "") 
+                {
+                    idEvaluacionCompetencia = Convert.ToInt32(arg[2]);
+                    Session.Add("idEvaluacionCompetencia", idCargos);
+                }
+
+                Session.Add("idCompetencia", idCompetencia);
+                Session.Add("idCargos", idCargos);
+
+                GridViewRow gvr = (GridViewRow)(((ImageButton)e.CommandSource).NamingContainer);
+                int RowIndex = gvr.RowIndex;
+
+                if (e.CommandName == "Evaluar")
+                {
+                    if (idEvaluacionCompetencia == 0)
+                    {
+                        idEvaluacionCompetencia = consultas.CrearEvaluacionCompetencia(
+                                                                 Convert.ToInt32(Session["usuario"].ToString()),
+                                                                 Convert.ToInt32(Session["cedulaEmpleado"].ToString()),
+                                                                 idCargos,
+                                                                 false,
+                                                                 Session["anoActivo"].ToString(),
+                                                                 Session["compania"].ToString(),
+                                                                 Session["idEmpresa"].ToString());
+                    }
+
+                    Session.Add("idEvaluacionCompetencia", idEvaluacionCompetencia);
+
+                    lblCompetencia.Text = gvCompetencias.Rows[RowIndex].Cells[0].Text;
+                    BtnCalificar.Text = "Calificar";
+                    Container_UpdatePanel2.Visible = false;
+                    Container_UpdatePanel3.Visible = true;
+                    UpdatePanel1.Update();
+                }
+                else if (e.CommandName == "Plan")
+                {
+                    lblCompetenciaG.Text = gvCompetencias.Rows[RowIndex].Cells[0].Text;
+                    lblCalificacionG.Text = gvCompetencias.Rows[RowIndex].Cells[1].Text;
+
+                    DataTable planes = consultas.ConsultarPlanes(idCargos, idCompetencia);
+
+                    if (planes == null)
+                    {
+                        Container_UpdatePanel2.Visible = false;
+                        Container_UpdatePanel5.Visible = true;
+                        BtnCerrarPlanComp.Visible = true;
+                        UpdatePanel1.Update();
+                    }
+                    else 
+                    {
+                        gvPlanes.DataSource = planes;
+                        gvPlanes.DataBind();
+                        Container_UpdatePanel2.Visible = false;
+                        Container_UpdatePanel4.Visible = true;
+                        BtnCerrarPlan.Visible = true;
+                        UpdatePanel1.Update();
+                    }
+                    
+                    ScriptManager.RegisterStartupScript(Page, GetType(), "Javascript", "javascript:CargarCalendario(); ", true);
+                }
+                else if (e.CommandName == "Editar")
+                {
+                    lblCompetencia.Text = gvCompetencias.Rows[RowIndex].Cells[0].Text;
+                    txtCalificacion.Text = gvCompetencias.Rows[RowIndex].Cells[1].Text;
+                    BtnCalificar.Text = "Editar";
+                    Container_UpdatePanel2.Visible = false;
+                    Container_UpdatePanel3.Visible = true;
+                    UpdatePanel1.Update();
+                }
+            }
+            catch (Exception E)
+            {
+                MensajeError("Ha ocurrido el siguiente error: " + E.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            }
+            finally
+            {
+                Conexion.CerrarCnMysql();
+            }
+        }
+
+        /// <summary>
+        /// Al cargar la grilla se realizan modificaciones sobre las acciones
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e de la grilla</param>
+        protected void gvCompetencias_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                ImageButton btnCalificar = (ImageButton)e.Row.FindControl("btnCalificar");
+                ImageButton btnFin = (ImageButton)e.Row.FindControl("btnFin");
+                ImageButton btnPlan = (ImageButton)e.Row.FindControl("btnPlan");
+
+                string idEvaluacionCompetencia = DataBinder.Eval(e.Row.DataItem, "idEvaluacionCompetencia").ToString();
+                string idCompetencia = DataBinder.Eval(e.Row.DataItem, "idCompetencia").ToString();
+                string idCargo = DataBinder.Eval(e.Row.DataItem, "idCargos").ToString();
+                string calificacion = DataBinder.Eval(e.Row.DataItem, "Calificacion").ToString();
+
+                if (calificacion != string.Empty)
+                {
+                    bool eval = consultas.ConsultarCalificacionRango(Session["compania"].ToString(),
+                                                                     Session["idEmpresa"].ToString(),
+                                                                     idEvaluacionCompetencia,
+                                                                     idCargo,
+                                                                     idCompetencia);
+
+                    if (eval)
+                    {
+                        btnCalificar.Visible = false;
+                        btnFin.Visible = true;
+                        btnPlan.Visible = false;
+                    }
+                    else
+                    {
+                        btnCalificar.Visible = false;
+                        btnFin.Visible = false;
+                        btnPlan.Visible = true;
+                    }
+                }
+                else
+                {
+                    btnCalificar.Visible = true;
+                    btnFin.Visible = false;
+                    btnPlan.Visible = false;
+                }
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Si quiere calificar a un empleado y finalizar del plan de desarrollo 
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void BtnRegCalificar_Click(object sender, EventArgs e)
+        {
+            this.LimpiarMensaje();
+
+            lblCompetencia.Text = lblCompetenciaG.Text;
+            txtCalificacion.Text = lblCalificacionG.Text;
+            BtnCalificar.Text = "Editar";
+            Container_UpdatePanel4.Visible = false;
+            Container_UpdatePanel5.Visible = false;
+            Container_UpdatePanel3.Visible = true;
+            UpdatePanel1.Update();
+        }
+
+        /// <summary>
+        /// Crea un nuevo plan
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void BtnCrearPlan_Click(object sender, EventArgs e)
+        {
+            this.LimpiarMensaje();
+
+            Container_UpdatePanel4.Visible = false;
+            Container_UpdatePanel5.Visible = true;
+            BtnCerrarPlan.Visible = true;
+            UpdatePanel1.Update();
+
+            ScriptManager.RegisterStartupScript(Page, GetType(), "Javascript", "javascript:CargarCalendario(); ", true);
+        }
+
+        /// <summary>
+        /// Registra un plan nuevo
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void BtnGuardarPlan_Click(object sender, EventArgs e)
+        {
+            this.LimpiarMensaje();
+
+            try
+            {
+                int res;
+
+                res = consultas.CrearPlanDesarrollo(txtPlan.Text,
+                                                    DateTime.Parse(txtFecha.Text),
+                                                    Convert.ToInt32(Session["idCargos"]),
+                                                    Convert.ToInt32(Session["idCompetencia"]));
+
+                if (res == 0)
+                {
+                    MensajeError("Hubo un error al crear el Plan");
+                    Container_UpdatePanel5.Visible = false;
+                    Container_UpdatePanel2.Visible = true;                    
+                }
+                else
+                {
+                    DataTable planes = consultas.ConsultarPlanes(Convert.ToInt32(Session["idCargos"]),
+                                                                 Convert.ToInt32(Session["idCompetencia"]));
+                    gvPlanes.DataSource = planes;
+                    gvPlanes.DataBind();
+                    Container_UpdatePanel4.Visible = true;
+                    Container_UpdatePanel5.Visible = false;
+                    BtnCerrarPlan.Visible = true;
+                    MensajeError("Calificación Recibida.");
+                }
+
+                UpdatePanel1.Update();
+            }
+            catch (Exception E)
+            {
+                MensajeError("Ha ocurrido el siguiente error: " + E.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            }
+        }
+
+        /// <summary>
+        /// Regresa a la pantalla de plan
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void BtnCerrarPlan_Click(object sender, EventArgs e)
+        {
+            this.LimpiarMensaje();
+            BtnCerrarPlan.Visible = false;
+            Container_UpdatePanel4.Visible = false;
+            Container_UpdatePanel2.Visible = true;
+            UpdatePanel1.Update();
+        }
+
+        /// <summary>
+        /// Regresa a la pantalla de competencia
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void BtnCerrarPlanComp_Click(object sender, EventArgs e)
+        {
+            this.LimpiarMensaje();
+            BtnCerrarPlanComp.Visible = false;
+            Container_UpdatePanel5.Visible = false;
+            Container_UpdatePanel2.Visible = true;
+            UpdatePanel1.Update();
+        }
+    }
+}

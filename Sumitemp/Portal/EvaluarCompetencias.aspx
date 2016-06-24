@@ -1,0 +1,222 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Portal/PaginaMaestra.Master" AutoEventWireup="true" CodeBehind="EvaluarCompetencias.aspx.cs" Inherits="PortalTrabajadores.Portal.EvaluarCompetencias" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <link rel="stylesheet" href="../Js/jquery-ui.css">
+    <script src="../Js/jquery-ui.js"></script>
+    <!-- Css para la fecha -->
+    <link href="../CSS/CSSCallapsePanel.css" rel="stylesheet" type="text/css" />
+    <!-- Js De Los campos de Textos -->
+    <script src="../Js/funciones.js" type="text/javascript"></script>
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContainerTitulo" runat="server">
+    <asp:UpdatePanel ID="UpdatePanel2" runat="server">
+        <ContentTemplate>
+            <asp:Label ID="lblTitulo" runat="server" />
+        </ContentTemplate>
+    </asp:UpdatePanel>
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="Container" runat="server">
+    <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
+        <ContentTemplate>
+            <div id="Container_UpdatePanel1" runat="server" visible="true">
+                <asp:GridView ID="gvEmpleadosAsociados" runat="server" AutoGenerateColumns="false" 
+                    OnRowCommand="gvEmpleadosAsociados_RowCommand" 
+                    OnRowDataBound="gvEmpleadosAsociados_RowDataBound">
+                    <AlternatingRowStyle CssClass="ColorOscuro" />
+                    <Columns>
+                        <asp:BoundField DataField="Cedula_Empleado" HeaderText="Cedula Empleado" SortExpression="Cedula_Empleado" />
+                        <asp:BoundField DataField="Nombres_Completos_Empleado" HeaderText="Nombre" />
+                        <asp:BoundField DataField="IdCargos" HeaderText="Cargos" Visible="false" />
+                        <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
+                            <ItemTemplate>
+                                <asp:ImageButton ID="btnEvaluar" runat="server" ImageUrl="~/Img/search.gif" CommandArgument='<%#Eval("idJefeEmpleado") + ";" + Eval("Cedula_Empleado")%>' CommandName="Evaluar" ToolTip="Revisar"/>
+                                <asp:ImageButton ID="btnOk" runat="server" ImageUrl="~/Img/ok.gif" Visible="false" Enabled="false" />
+                                <asp:ImageButton ID="btnAlerta" runat="server" ImageUrl="~/Img/Alert.png" Visible="false" Enabled="false" ToolTip="No tiene cargo asociado"/>
+                            </ItemTemplate>
+                            <ItemStyle HorizontalAlign="Center" />
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
+                <br />
+            </div>
+            <div id="Container_UpdatePanel2" runat="server" visible="false">
+                <asp:Label ID="lblCargo" runat="server" Text="" CssClass="TextCentrado"></asp:Label>
+                <asp:GridView ID="gvCompetencias" runat="server" AutoGenerateColumns="false"
+                    OnRowCommand="gvCompetencias_RowCommand" 
+                    OnRowDataBound="gvCompetencias_RowDataBound">
+                    <AlternatingRowStyle CssClass="ColorOscuro" />
+                    <Columns>
+                        <asp:BoundField DataField="Competencia" HeaderText="Competencia" />
+                        <asp:BoundField DataField="Calificacion" HeaderText="Calificacion" />
+                        <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
+                            <ItemTemplate>
+                                <asp:ImageButton ID="btnCalificar" runat="server"
+                                    ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("idCompetencia") + ";" + Eval("IdCargos") + ";" + Eval("idEvaluacionCompetencia")%>' 
+                                    CommandName="Evaluar" ToolTip="Evaluar"/>
+                                <asp:ImageButton ID="btnFin" runat="server" 
+                                    ImageUrl="~/Img/ok.gif" Visible="false" 
+                                    CommandArgument='<%#Eval("idCompetencia") + ";" + Eval("IdCargos") + ";" + Eval("idEvaluacionCompetencia")%>' 
+                                    CommandName="Editar" />
+                                <asp:ImageButton ID="btnPlan" runat="server" 
+                                    ImageUrl="~/Img/add.gif" Visible="false" 
+                                    CommandArgument='<%#Eval("idCompetencia") + ";" + Eval("IdCargos") + ";" + Eval("idEvaluacionCompetencia")%>' 
+                                    CommandName="Plan" ToolTip="No cumple el objetivo, puede crearle un plan de desarrollo"/>
+                            </ItemTemplate>
+                            <ItemStyle HorizontalAlign="Center" />
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
+                <br />
+                <asp:Button ID="BtnAceptar" runat="server" Text="Finalizar" Visible="false" OnClick="BtnAceptar_Click" />
+                <asp:Button ID="BtnRegresar" runat="server" Text="Regresar" OnClick="BtnRegresar_Click" />
+                <table>
+                    <tr>
+                        <td><asp:ImageButton ID="btnEval" runat="server" ImageUrl="~/Img/edit.gif" Enabled="false"/></td>
+                        <td>Carga el menu para calificar la competencia</td>                        
+                    </tr>
+                    <tr>
+                        <td><asp:ImageButton ID="btnO" runat="server" ImageUrl="~/Img/ok.gif" Enabled="false"/></td>                        
+                        <td>Indica que la competencia calificada esta por encima del rango impuesto</td>                        
+                    </tr>
+                    <tr>
+                        <td><asp:ImageButton ID="btnP" runat="server" ImageUrl="~/Img/add.gif" Enabled="false"/></td>
+                        <td>Indica que la competencia calificada es menor al rango impuesto, lo que le permite crearle un plan de desarrollo</td>
+                    </tr>
+                </table>
+            </div>
+            <div id="Container_UpdatePanel3" runat="server" visible="false">
+                <asp:Label ID="lblCompetenciaG" runat="server" Text="" Style="display:none"></asp:Label>
+                <asp:Label ID="lblCalificacionG" runat="server" Text="" Style="display:none"></asp:Label>
+                <table id="TablaDatos">
+                    <tr>                        
+                        <th colspan="2">Califique la competencia</th>
+                    </tr>
+                    <tr>
+                        <td class="CeldaTablaDatos">
+                            <asp:Label ID="lblCompetencia" runat="server" />
+                        </td>
+                        <td class="CeldaTablaDatos">
+                            <asp:TextBox ID="txtCien" runat="server" Text="100" style="display:none"/>
+                            <asp:TextBox ID="txtCalificacion" runat="server" MaxLength="3" onkeypress="return ValidaSoloNumeros(event)"/>
+                            <asp:CompareValidator ID="cValidator" 
+                                runat="server" 
+                                ErrorMessage="CompareValidator"
+                                ControlToValidate="txtCalificacion"
+                                ControlToCompare="txtCien"
+                                CssClass="MensajeError" 
+                                Display="Dynamic"
+                                Operator="LessThanEqual"
+                                Type="Integer"
+                                Text="Error: La Meta no puede ser mayor a 100"
+                                ValidationGroup="objForm">
+                            </asp:CompareValidator>
+                            <asp:RequiredFieldValidator ID="rfvMeta" 
+                                runat="server"
+                                ErrorMessage="Debe digitar valor"
+                                CssClass="MensajeError"
+                                Display="Dynamic"
+                                ControlToValidate="txtCalificacion"
+                                ValidationGroup="objForm"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr class="ColorOscuro">
+                        <td class="BotonTablaDatos">
+                            <asp:Button ID="BtnCalificar" runat="server" Text="Calificar" ValidationGroup="objForm" OnClick="BtnCalificar_Click" />
+                        </td>
+                        <td class="BotonTablaDatos">
+                            <asp:Button ID="BtnRegresarCal" runat="server" Text="Regresar" OnClick="BtnRegresarCal_Click" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="Container_UpdatePanel4" runat="server" visible="false">
+                <asp:GridView ID="gvPlanes" runat="server" AutoGenerateColumns="false">
+                    <AlternatingRowStyle CssClass="ColorOscuro" />
+                    <Columns>
+                        <asp:BoundField DataField="plan" HeaderText="Plan" />
+                        <asp:BoundField DataField="fechaCumplimiento" HeaderText="Calificacion" DataFormatString="{0:dd/MM/yyyy}"/>
+                        <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
+                            <ItemTemplate>
+                                <asp:ImageButton ID="btnSeguimiento" runat="server"
+                                    ImageUrl="~/Img/add.gif" CommandArgument='<%#Eval("idPlanEstrategico")%>' 
+                                    CommandName="Seguimiento" ToolTip="Seguimiento"/>
+                                <asp:ImageButton ID="btnFinPlan" runat="server" 
+                                    ImageUrl="~/Img/unchecked.png"
+                                    CommandArgument='<%#Eval("idPlanEstrategico")%>' 
+                                    CommandName="Fin" ToolTip="Finalizar Plan"/>
+                                <asp:ImageButton ID="btnPlanOk" runat="server" 
+                                    ImageUrl="~/Img/ok.gif" Visible="false"
+                                    CommandArgument='<%#Eval("idPlanEstrategico")%>' 
+                                    CommandName="Fin" />
+                            </ItemTemplate>
+                            <ItemStyle HorizontalAlign="Center" />
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>             
+                <asp:Button ID="BtnRegCalificar" runat="server" Text="Calificar" OnClick="BtnRegCalificar_Click" />
+                <asp:Button ID="BtnCrearPlan" runat="server" Text="Crear nuevo plan" OnClick="BtnCrearPlan_Click" />
+                <asp:Button ID="BtnRegCompetencia" runat="server" Text="Regresar" OnClick="BtnCerrarPlan_Click" />
+            </div>
+            <div id="Container_UpdatePanel5" runat="server" visible="false">
+                Ingrese un plan de desarrollo
+                <table id="TablaDatos">
+                    <tr>
+                        <th colspan="2">Plan de Desarrollo la competencia</th>
+                    </tr>
+                    <tr>
+                        <td class="CeldaTablaDatos">
+                            Plan de Desarrollo
+                        </td>
+                        <td class="CeldaTablaDatos">
+                            <asp:TextBox ID="txtPlan" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px" />
+                            <asp:RequiredFieldValidator ID="rfvPlan" 
+                                runat="server"
+                                ErrorMessage="Debe digitar información del Plan"
+                                CssClass="MensajeError"
+                                Display="Dynamic"
+                                ControlToValidate="txtPlan"
+                                ValidationGroup="objForm"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="CeldaTablaDatos">
+                            Fecha de cumplimiento
+                        </td>
+                        <td class="CeldaTablaDatos">
+                            <asp:TextBox ID="txtFecha" style="width:140px; margin-right: 10px" runat="server" CssClass="jqCalendar" onkeypress="return ValidaSoloNumerosFecha(event)"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="rfvFecha" 
+                                runat="server"
+                                ErrorMessage="Debe seleccionar una fecha"
+                                CssClass="MensajeError"
+                                Display="Dynamic"
+                                ControlToValidate="txtFecha"
+                                ValidationGroup="objForm"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr class="ColorOscuro">
+                        <td class="BotonTablaDatos" colspan="2">
+                            <asp:Button ID="BtnGuardarPlan" runat="server" Text="Crear Plan" ValidationGroup="objForm" OnClick="BtnGuardarPlan_Click" />
+                            <asp:Button ID="BtnCerrarPlan" runat="server" Text="Regresar" OnClick="BtnCerrarPlan_Click" Visible="false"/>
+                            <asp:Button ID="BtnCerrarPlanComp" runat="server" Text="Regresar" OnClick="BtnCerrarPlanComp_Click" Visible="false"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </ContentTemplate>
+        <Triggers>
+            <asp:AsyncPostBackTrigger ControlID="gvEmpleadosAsociados" />
+            <asp:AsyncPostBackTrigger ControlID="gvCompetencias" />            
+        </Triggers>
+    </asp:UpdatePanel>
+</asp:Content>
+
+<asp:Content ID="Content4" ContentPlaceHolderID="Errores" runat="server">
+    <asp:UpdatePanel ID="UpdatePanel3" runat="server" UpdateMode="Conditional">
+        <ContentTemplate>
+            <asp:Label ID="LblMsj" runat="server" Text="LabelMsjError" Visible="False"></asp:Label>
+        </ContentTemplate>
+    </asp:UpdatePanel>
+</asp:Content>
+
