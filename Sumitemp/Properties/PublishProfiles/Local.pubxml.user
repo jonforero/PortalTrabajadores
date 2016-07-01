@@ -85,7 +85,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="bin/PortalTrabajadores.dll">
-      <publishTime>06/25/2016 08:37:00</publishTime>
+      <publishTime>07/01/2016 01:00:34</publishTime>
     </File>
     <File Include="bin/pt/AjaxControlToolkit.resources.dll">
       <publishTime>01/01/0001 00:00:00</publishTime>
@@ -127,7 +127,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>04/04/2016 22:39:28</publishTime>
     </File>
     <File Include="CSS/main_style.css">
-      <publishTime>06/22/2016 22:12:48</publishTime>
+      <publishTime>06/29/2016 21:56:06</publishTime>
     </File>
     <File Include="CSS/normalize.css">
       <publishTime>04/04/2016 22:39:28</publishTime>
@@ -313,7 +313,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>04/04/2016 22:39:28</publishTime>
     </File>
     <File Include="Portal/AsignarAreaCargo.aspx">
-      <publishTime>06/08/2016 19:05:26</publishTime>
+      <publishTime>06/30/2016 00:04:00</publishTime>
     </File>
     <File Include="Portal/CambioContrasena.aspx">
       <publishTime>10/01/2014 23:07:36</publishTime>
@@ -346,19 +346,19 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>04/04/2016 22:39:28</publishTime>
     </File>
     <File Include="Portal/EvaluarCompetencias.aspx">
-      <publishTime>06/25/2016 08:07:47</publishTime>
+      <publishTime>07/01/2016 00:57:31</publishTime>
     </File>
     <File Include="Portal/FijarObjetivos.aspx">
-      <publishTime>06/11/2016 16:48:16</publishTime>
+      <publishTime>06/30/2016 21:09:42</publishTime>
     </File>
     <File Include="Portal/FijarSeguimiento1.aspx">
-      <publishTime>06/11/2016 16:52:20</publishTime>
+      <publishTime>06/30/2016 21:41:55</publishTime>
     </File>
     <File Include="Portal/FijarSeguimiento2.aspx">
-      <publishTime>06/11/2016 19:15:15</publishTime>
+      <publishTime>06/30/2016 22:07:01</publishTime>
     </File>
     <File Include="Portal/FijarSeguimientoFinal.aspx">
-      <publishTime>06/12/2016 18:41:23</publishTime>
+      <publishTime>06/30/2016 22:37:35</publishTime>
     </File>
     <File Include="Portal/index.aspx">
       <publishTime>06/02/2016 23:53:59</publishTime>
@@ -400,16 +400,16 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>06/08/2016 20:01:40</publishTime>
     </File>
     <File Include="Portal/ValidarObjetivos.aspx">
-      <publishTime>06/09/2016 22:21:19</publishTime>
+      <publishTime>06/30/2016 21:17:29</publishTime>
     </File>
     <File Include="Portal/ValidarSeguimiento1.aspx">
-      <publishTime>06/11/2016 16:19:37</publishTime>
+      <publishTime>06/30/2016 22:14:49</publishTime>
     </File>
     <File Include="Portal/ValidarSeguimiento2.aspx">
-      <publishTime>06/12/2016 16:42:38</publishTime>
+      <publishTime>06/30/2016 22:15:03</publishTime>
     </File>
     <File Include="Portal/ValidarSeguimientoFinal.aspx">
-      <publishTime>06/12/2016 17:38:38</publishTime>
+      <publishTime>06/30/2016 22:57:39</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
       <publishTime>09/05/2014 10:15:32</publishTime>

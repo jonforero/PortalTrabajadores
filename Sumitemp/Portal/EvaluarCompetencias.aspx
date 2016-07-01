@@ -18,6 +18,12 @@
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="Container" runat="server">
+    <asp:UpdateProgress ID="upProgress" DynamicLayout="true" runat="server" AssociatedUpdatePanelID="UpdatePanel1">
+        <ProgressTemplate>
+            <div class="loader">
+            </div>
+        </ProgressTemplate>
+    </asp:UpdateProgress>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
             <div id="Container_UpdatePanel1" runat="server" visible="true">
