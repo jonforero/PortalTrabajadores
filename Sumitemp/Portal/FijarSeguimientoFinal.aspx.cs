@@ -19,6 +19,7 @@ namespace PortalTrabajadores.Portal
         string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
         string bd3 = ConfigurationManager.AppSettings["BD3"].ToString();
         MySqlConnection MySqlCn;
+        ConsultasGenerales claseConsultas;
 
         #region Metodo Page Load
 
@@ -29,6 +30,8 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">Evento e</param>
         protected void Page_Load(object sender, EventArgs e)
         {
+            claseConsultas = new ConsultasGenerales();
+
             if (Session["usuario"] == null)
             {
                 //Redirecciona a la pagina de login en caso de que el usuario no se halla autenticado
@@ -398,19 +401,7 @@ namespace PortalTrabajadores.Portal
         {
             try
             {
-                DataSet dsDataSet = new DataSet();
-                DataTable dtDataTable = null;
-
-                MySqlCn = new MySqlConnection(Cn);
-                MySqlCommand scSqlCommand;
-                string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = "
-                                + idJefeEmpleado + " AND Etapas_idEtapas = "
-                                + etapa + " Order by Orden;";
-
-                scSqlCommand = new MySqlCommand(consulta, MySqlCn);
-                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
-                sdaSqlDataAdapter.Fill(dsDataSet);
-                dtDataTable = dsDataSet.Tables[0];
+                DataTable dtDataTable = claseConsultas.ConsultarObservaciones(idJefeEmpleado, etapa);
 
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
@@ -624,41 +615,41 @@ namespace PortalTrabajadores.Portal
         /// </summary>
         /// <param name="meta"></param>
         /// <returns></returns>
-        public int ConsultarResultado(string meta) 
+        public double ConsultarResultado(string meta) 
         { 
             try 
 	        {
                 if (Session["seguimientoPeriodo"].ToString() == "1") 
                 {
-                    return Convert.ToInt32(meta);
+                    return Convert.ToDouble(meta);
                 }
                 else if (Session["seguimientoPeriodo"].ToString() == "2")
                 {
-                    int seg1 = 0;
+                    double seg1 = 0;
 
                     if (Session["Seg1"].ToString() != "") 
                     {
-                        seg1 = Convert.ToInt32(Session["Seg1"].ToString());
+                        seg1 = Convert.ToDouble(Session["Seg1"].ToString()) * 100;
                     }
 
-                    return (Convert.ToInt32(meta) + seg1) / 2;
+                    return (Convert.ToDouble(meta) + seg1) / 2;
                 }
                 else
                 {
-                    int seg1 = 0;
-                    int seg2 = 0;
+                    double seg1 = 0;
+                    double seg2 = 0;
 
                     if (Session["Seg1"].ToString() != "")
                     {
-                        seg1 = Convert.ToInt32(Session["Seg1"].ToString());
+                        seg1 = Convert.ToDouble(Session["Seg1"].ToString()) * 100;
                     }
 
                     if (Session["Seg2"].ToString() != "")
                     {
-                        seg2 = Convert.ToInt32(Session["Seg2"].ToString());
+                        seg2 = Convert.ToDouble(Session["Seg2"].ToString()) * 100;
                     }
 
-                    return (Convert.ToInt32(meta) + seg1 + seg2) / 3;
+                    return (Convert.ToDouble(meta) + seg1 + seg2) / 3;
                 }
 	        }
 	        catch (Exception ex)
@@ -699,7 +690,7 @@ namespace PortalTrabajadores.Portal
 
             try
             {
-                int resultado = this.ConsultarResultado(txtMeta.Text);
+                double resultado = this.ConsultarResultado(txtMeta.Text);
 
                 Conexion.AbrirCnMysql();
                 MySqlCommand cmd;
@@ -712,8 +703,8 @@ namespace PortalTrabajadores.Portal
                     cmd.Parameters.AddWithValue("@Objetivos_JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
                     cmd.Parameters.AddWithValue("@Cedula_Empleado", Session["usuario"]);
                     cmd.Parameters.AddWithValue("@idCalificacion_Empleado", ddlEvaluacion.SelectedValue);
-                    cmd.Parameters.AddWithValue("@Meta", txtMeta.Text);
-                    cmd.Parameters.AddWithValue("@Resultado", resultado);
+                    cmd.Parameters.AddWithValue("@Meta", Convert.ToDouble(txtMeta.Text) / 100);
+                    cmd.Parameters.AddWithValue("@Resultado", resultado / 100);
                     cmd.Parameters.AddWithValue("@Fecha", DateTime.Now);
                     cmd.Parameters.AddWithValue("@Ano", Session["anoActivo"]);
                 }
@@ -724,8 +715,8 @@ namespace PortalTrabajadores.Portal
                     cmd.Parameters.AddWithValue("@idObjetivos", Session["idObjetivos"]);
                     cmd.Parameters.AddWithValue("@idJefeEmpleado", Session["idJefeEmpleado"]);
                     cmd.Parameters.AddWithValue("@idCalificacion_Empleado", ddlEvaluacion.SelectedValue);
-                    cmd.Parameters.AddWithValue("@Meta", txtMeta.Text);
-                    cmd.Parameters.AddWithValue("@Resultado", resultado);
+                    cmd.Parameters.AddWithValue("@Meta", Convert.ToDouble(txtMeta.Text) / 100);
+                    cmd.Parameters.AddWithValue("@Resultado", resultado / 100);
                 }
 
                 // Crea un parametro de salida para el SP
@@ -822,7 +813,13 @@ namespace PortalTrabajadores.Portal
                     estadoEvaluacion = Convert.ToInt32(arg[2]);
                 }
 
-                string meta = arg[3];
+                string meta = string.Empty;
+
+                if (arg[3] != "")
+                {
+                    meta = (Convert.ToDouble(arg[3]) * 100).ToString();
+                }
+
                 Session.Add("Seg1", arg[4]);
                 Session.Add("Seg2", arg[5]);
                 Session.Add("idObjetivos", idObjetivos);

@@ -23,10 +23,10 @@
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
-                        <asp:BoundField DataField="SegMeta1" HeaderText="Primer Seg" />
-                        <asp:BoundField DataField="SegMeta2" HeaderText="Segundo Seg" />
-                        <asp:BoundField DataField="MetaEval" HeaderText="Meta Evaluacion" />
-                        <asp:BoundField DataField="ResultadoEval" HeaderText="Resultado" />                        
+                        <asp:BoundField DataField="SegMeta1" HeaderText="Primer Seg" DataFormatString="{0:P0}" HtmlEncode="false"/>
+                        <asp:BoundField DataField="SegMeta2" HeaderText="Segundo Seg" DataFormatString="{0:P0}" HtmlEncode="false"/>
+                        <asp:BoundField DataField="MetaEval" HeaderText="Meta Evaluacion" DataFormatString="{0:P0}" HtmlEncode="false"/>
+                        <asp:BoundField DataField="ResultadoEval" HeaderText="Resultado" DataFormatString="{0:P0}" HtmlEncode="false"/>                     
                         <asp:BoundField DataField="EvalDescripcion" HeaderText="Evaluación" />
                         <asp:BoundField DataField="Ano" HeaderText="Año" />
                         <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
@@ -47,10 +47,10 @@
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
-                        <asp:BoundField DataField="SegMeta1" HeaderText="Primer Seg" />
-                        <asp:BoundField DataField="SegMeta2" HeaderText="Segundo Seg" />
-                        <asp:BoundField DataField="MetaEval" HeaderText="Meta Evaluacion" />
-                        <asp:BoundField DataField="ResultadoEval" HeaderText="Resultado" />                        
+                        <asp:BoundField DataField="SegMeta1" HeaderText="Primer Seg" DataFormatString="{0:P0}" HtmlEncode="false"/>
+                        <asp:BoundField DataField="SegMeta2" HeaderText="Segundo Seg" DataFormatString="{0:P0}"/>
+                        <asp:BoundField DataField="MetaEval" HeaderText="Meta Evaluacion" DataFormatString="{0:P0}"/>
+                        <asp:BoundField DataField="ResultadoEval" HeaderText="Resultado" DataFormatString="{0:P0}"/>                        
                         <asp:BoundField DataField="EvalDescripcion" HeaderText="Evaluación" />
                         <asp:BoundField DataField="EvalJefe" HeaderText="Evaluación Jefe" />
                         <asp:BoundField DataField="Ano" HeaderText="Año" />
@@ -62,7 +62,7 @@
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Observaciones" SortExpression="Descripcion" />
-                        <asp:BoundField DataField="Cedula" HeaderText="Cedula" SortExpression="Cedula" />
+                        <asp:BoundField DataField="Nombre" HeaderText="Usuario" SortExpression="Nombre" />
                     </Columns>
                 </asp:GridView>
             </div>
@@ -72,7 +72,7 @@
                     <tr>
                         <th colspan="2">Seleccione su calificación</th>
                     </tr>
-                    <tr>
+                    <tr class="ColorOscuro">
                         <td class="CeldaTablaDatos">
                             <asp:Label ID="lblEvaluacion" runat="server" Text="Calificación:" /></td>
                         <td class="CeldaTablaDatos">
@@ -84,20 +84,11 @@
                         <td class="CeldaTablaDatos">
                             <asp:Label ID="lblMeta" runat="server" Text="Meta Final" /></td>
                         <td class="CeldaTablaDatos">
-                            <asp:TextBox ID="txtCien" runat="server" Text="100" style="display:none"/>
-                            <asp:TextBox ID="txtMeta" runat="server" MaxLength="3" onkeypress="return ValidaSoloNumeros(event)"/>
-                            <asp:CompareValidator ID="cValidator" 
-                                runat="server" 
-                                ErrorMessage="CompareValidator"
-                                ControlToValidate="txtMeta"
-                                ControlToCompare="txtCien"
-                                CssClass="MensajeError" 
-                                Display="Dynamic"
-                                Operator="LessThanEqual"
-                                Type="Integer"
-                                Text="Error: La Meta no puede ser mayor a 100"
-                                ValidationGroup="objForm">
-                            </asp:CompareValidator>
+                            <asp:TextBox ID="txtMeta" runat="server" onkeypress="return ValidaSoloNumeros(event)"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
                             <asp:RequiredFieldValidator ID="rfvMeta" 
                                 runat="server"
                                 ErrorMessage="Debe digitar valor"
@@ -121,14 +112,21 @@
                     <tr>
                         <th>Observaciones</th>
                     </tr>
-                    <tr>
+                    <tr  class="ColorOscuro">
                         <td class="CeldaTablaDatos">
                             <asp:TextBox ID="txtObservacion" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px" />
                         </td>
                     </tr>
-                    <tr class="ColorOscuro">
+                    <tr  class="ColorOscuro">
+                        <td colspan="2">
+                            <asp:RequiredFieldValidator id="rfvObservacion" ValidationGroup="userForm"
+                                ControlToValidate="txtObservacion" ErrorMessage="Debe Ingresar una observación" 
+                                Display="Dynamic" runat="server" CssClass="MensajeError"/>
+                        </td>
+                    </tr>
+                    <tr>
                         <td class="BotonTablaDatos">
-                            <asp:Button ID="BtnGuardarObs" runat="server" Text="Enviar" OnClick="BtnGuardarObs_Click" /></td>
+                            <asp:Button ID="BtnGuardarObs" runat="server" Text="Enviar" ValidationGroup="userForm" OnClick="BtnGuardarObs_Click" /></td>
                     </tr>
                 </table>
             </div>

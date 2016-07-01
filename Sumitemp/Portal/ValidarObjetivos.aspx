@@ -41,7 +41,7 @@
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Observaciones" SortExpression="Descripcion" />                        
-                        <asp:BoundField DataField="Cedula" HeaderText="Cedula" SortExpression="Cedula" />
+                        <asp:BoundField DataField="Nombre" HeaderText="Usuario" SortExpression="Nombre" />
                     </Columns>
                 </asp:GridView>
             </div>
@@ -51,7 +51,7 @@
                     <Columns>
                         <asp:BoundField DataField="Descripcion" HeaderText="Objetivos" SortExpression="Descripcion" />
                         <asp:BoundField DataField="Peso" HeaderText="Peso" SortExpression="Peso" />
-                        <asp:BoundField DataField="Meta" HeaderText="Meta" SortExpression="Meta" />
+                        <asp:BoundField DataField="Meta" HeaderText="Meta" DataFormatString="{0:P0}" HtmlEncode="false"/>
                     </Columns>
                 </asp:GridView>
                 <br />
@@ -70,9 +70,16 @@
                             <asp:TextBox ID="txtObservacion" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px" />
                         </td>
                     </tr>
+                    <tr>
+                        <td colspan="2">
+                            <asp:RequiredFieldValidator id="rfvObservacion" ValidationGroup="userForm"
+                                ControlToValidate="txtObservacion" ErrorMessage="Debe Ingresar una observación" 
+                                Display="Dynamic" runat="server" CssClass="MensajeError"/>
+                        </td>
+                    </tr>
                     <tr class="ColorOscuro">
                         <td class="BotonTablaDatos">
-                            <asp:Button ID="BtnGuardar" runat="server" Text="Enviar" OnClick="BtnGuardar_Click" /></td>
+                            <asp:Button ID="BtnGuardar" runat="server" Text="Enviar" ValidationGroup="userForm" OnClick="BtnGuardar_Click" /></td>
                     </tr>
                 </table>
             </div>

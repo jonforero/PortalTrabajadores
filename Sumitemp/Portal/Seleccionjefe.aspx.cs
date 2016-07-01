@@ -15,6 +15,7 @@ namespace PortalTrabajadores.Portal
     public partial class Seleccionjefe : System.Web.UI.Page
     {
         string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
+        string Cn2 = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString2"].ConnectionString.ToString();
         string bd1 = ConfigurationManager.AppSettings["BD1"].ToString();
         string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
         string bd3 = ConfigurationManager.AppSettings["BD3"].ToString();
@@ -180,7 +181,7 @@ namespace PortalTrabajadores.Portal
         /* ********************************************************************************************************/
         protected void BtnEditar_Click(object sender, EventArgs e)
         {
-            CnMysql Conexion = new CnMysql(Cn);
+            CnMysql Conexion = new CnMysql(Cn2);
             int res = 0;
 
             try

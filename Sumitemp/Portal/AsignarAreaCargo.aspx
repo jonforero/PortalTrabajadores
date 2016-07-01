@@ -76,6 +76,14 @@
                         </td>
                     </tr>
                     <tr>
+                        <td colspan="2">
+                            <asp:RequiredFieldValidator id="rfvArea" ValidationGroup="userForm"
+                                ControlToValidate="ddlArea" ErrorMessage="Seleccione Area" 
+                                Display="Dynamic" InitialValue="0" runat="server"
+                                CssClass="MensajeError"/>
+                        </td>
+                    </tr>
+                    <tr>
                         <td class="CeldaTablaDatos">
                             <asp:Label ID="lblCargo" runat="server" Text="Cargo" />
                         </td>
@@ -84,8 +92,17 @@
                         </td>
                     </tr>
                     <tr>
+                        <td colspan="2">
+                            <asp:RequiredFieldValidator id="rfvCargo" ValidationGroup="userForm"
+                                ControlToValidate="ddlCargo" ErrorMessage="Seleccione Cargo" 
+                                Display="Dynamic" InitialValue="0" runat="server"
+                                CssClass="MensajeError"/>
+                        </td>
+                    </tr>
+                    <tr>
                         <td colspan="2" class="BotonTablaDatos">
-                            <asp:Button ID="BtnEditar" runat="server" Text="Guardar Información" ValidationGroup="userForm" OnClick="BtnEditar_Click"/></td>                        
+                            <asp:Button ID="BtnEditar" runat="server" Text="Guardar Información" 
+                                ValidationGroup="userForm" OnClick="BtnEditar_Click"/></td>                        
                     </tr>
                 </table>
             </div>

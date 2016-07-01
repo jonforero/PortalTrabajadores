@@ -139,6 +139,15 @@ namespace PortalTrabajadores.Portal {
         protected global::System.Web.UI.WebControls.DropDownList ddlArea;
         
         /// <summary>
+        /// Control rfvArea.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvArea;
+        
+        /// <summary>
         /// Control lblCargo.
         /// </summary>
         /// <remarks>
@@ -155,6 +164,15 @@ namespace PortalTrabajadores.Portal {
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlCargo;
+        
+        /// <summary>
+        /// Control rfvCargo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCargo;
         
         /// <summary>
         /// Control BtnEditar.

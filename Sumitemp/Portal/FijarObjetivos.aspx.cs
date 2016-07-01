@@ -19,7 +19,8 @@ namespace PortalTrabajadores.Portal
         string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
         string bd3 = ConfigurationManager.AppSettings["BD3"].ToString();
         MySqlConnection MySqlCn;
-        
+        ConsultasGenerales claseConsultas;
+
         #region Metodo Page Load
 
         /// <summary>
@@ -29,6 +30,8 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">Evento e</param>
         protected void Page_Load(object sender, EventArgs e)
         {
+            claseConsultas = new ConsultasGenerales();
+
             if (Session["usuario"] == null)
             {
                 //Redirecciona a la pagina de login en caso de que el usuario no se halla autenticado
@@ -504,19 +507,7 @@ namespace PortalTrabajadores.Portal
         {
             try
             {
-                DataSet dsDataSet = new DataSet();
-                DataTable dtDataTable = null;
-
-                MySqlCn = new MySqlConnection(Cn);
-                MySqlCommand scSqlCommand;
-                string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
-                                  " AND Etapas_idEtapas = " + etapa +
-                                  " Order by Orden;";
-
-                scSqlCommand = new MySqlCommand(consulta, MySqlCn);
-                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
-                sdaSqlDataAdapter.Fill(dsDataSet);
-                dtDataTable = dsDataSet.Tables[0];
+                DataTable dtDataTable = claseConsultas.ConsultarObservaciones(idJefeEmpleado, etapa);
 
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
@@ -620,8 +611,7 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">evento e</param>
         protected void BtnEnviar_Click(object sender, EventArgs e)
         {
-            ConsultasGenerales ClaseConsultas = new ConsultasGenerales();
-            string sumaPeso = ClaseConsultas.ComprobarPesoObjetivos(Session["idJefeEmpleado"].ToString());
+            string sumaPeso = claseConsultas.ComprobarPesoObjetivos(Session["idJefeEmpleado"].ToString());
 
             if (Convert.ToInt32(Session["Min_obj"].ToString()) > this.numeroObjetivos(Session["idJefeEmpleado"].ToString()))
             {
@@ -669,7 +659,7 @@ namespace PortalTrabajadores.Portal
                         cmd.Parameters.AddWithValue("@JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
                         cmd.Parameters.AddWithValue("@Descripcion", txtObjetivo.Text);
                         cmd.Parameters.AddWithValue("@Peso", txtPeso.Text);
-                        cmd.Parameters.AddWithValue("@Meta", txtMeta.Text);
+                        cmd.Parameters.AddWithValue("@Meta", Convert.ToDouble(txtMeta.Text) / 100);
                         cmd.Parameters.AddWithValue("@Ano", Session["anoActivo"]);
                         cmd.Parameters.AddWithValue("@Cedula_Empleado", Session["usuario"]);
                         cmd.Parameters.AddWithValue("@Cedula_Jefe", Session["cedulaJeje"]);
@@ -708,7 +698,7 @@ namespace PortalTrabajadores.Portal
                     cmd.Parameters.AddWithValue("@JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
                     cmd.Parameters.AddWithValue("@Descripcion", txtObjetivo.Text);
                     cmd.Parameters.AddWithValue("@Peso", txtPeso.Text);
-                    cmd.Parameters.AddWithValue("@Meta", txtMeta.Text);
+                    cmd.Parameters.AddWithValue("@Meta", Convert.ToDouble(txtMeta.Text) / 100);
 
                     // Crea un parametro de salida para el SP
                     MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
@@ -791,7 +781,7 @@ namespace PortalTrabajadores.Portal
 
                     txtObjetivo.Text = HttpUtility.HtmlDecode(gvObjetivosCreados.Rows[RowIndex].Cells[0].Text);
                     txtPeso.Text = gvObjetivosCreados.Rows[RowIndex].Cells[1].Text;
-                    txtMeta.Text = gvObjetivosCreados.Rows[RowIndex].Cells[2].Text;
+                    txtMeta.Text = gvObjetivosCreados.Rows[RowIndex].Cells[2].Text.Replace(".", string.Empty).Replace(" ", string.Empty).Replace("%", string.Empty);
 
                     BtnGuardar.Text = "Editar";
                     Container_UpdatePanel2.Visible = true;

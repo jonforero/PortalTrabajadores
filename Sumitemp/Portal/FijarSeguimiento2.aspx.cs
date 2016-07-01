@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using PortalTrabajadores.Class;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -18,6 +19,7 @@ namespace PortalTrabajadores.Portal
         string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
         string bd3 = ConfigurationManager.AppSettings["BD3"].ToString();
         MySqlConnection MySqlCn;
+        ConsultasGenerales claseConsultas;
 
         #region Metodo Page Load
 
@@ -28,6 +30,8 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">Evento e</param>
         protected void Page_Load(object sender, EventArgs e)
         {
+            claseConsultas = new ConsultasGenerales();
+
             if (Session["usuario"] == null)
             {
                 //Redirecciona a la pagina de login en caso de que el usuario no se halla autenticado
@@ -397,19 +401,7 @@ namespace PortalTrabajadores.Portal
         {
             try
             {
-                DataSet dsDataSet = new DataSet();
-                DataTable dtDataTable = null;
-
-                MySqlCn = new MySqlConnection(Cn);
-                MySqlCommand scSqlCommand;
-                string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = "
-                                + idJefeEmpleado + " AND Etapas_idEtapas = "
-                                + etapa + " Order by Orden;";
-
-                scSqlCommand = new MySqlCommand(consulta, MySqlCn);
-                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
-                sdaSqlDataAdapter.Fill(dsDataSet);
-                dtDataTable = dsDataSet.Tables[0];
+                DataTable dtDataTable = claseConsultas.ConsultarObservaciones(idJefeEmpleado, etapa);
 
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
@@ -586,7 +578,7 @@ namespace PortalTrabajadores.Portal
                 MySqlCn = new MySqlConnection(Cn2);
                 MySqlCommand scSqlCommand;
                 string consulta = "SELECT IF((SELECT COUNT(*) FROM objetivos WHERE objetivos.JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado + ") = " +
-                                  "(SELECT COUNT(*) FROM seguimiento WHERE seguimiento.Objetivos_JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado + 
+                                  "(SELECT COUNT(*) FROM seguimiento WHERE seguimiento.Objetivos_JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
                                   " AND seguimiento.Periodo = '2'), 1, 0) " +
                                   "AS Seguimiento;";
 
@@ -661,7 +653,7 @@ namespace PortalTrabajadores.Portal
                     cmd.Parameters.AddWithValue("@Objetivos_JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
                     cmd.Parameters.AddWithValue("@Cedula", Session["usuario"]);
                     cmd.Parameters.AddWithValue("@Descripcion", txtSeguimiento.Text);
-                    cmd.Parameters.AddWithValue("@Meta", txtMeta.Text);
+                    cmd.Parameters.AddWithValue("@Meta", Convert.ToDouble(txtMeta.Text) / 100);
                     cmd.Parameters.AddWithValue("@Fecha", DateTime.Now);
                     cmd.Parameters.AddWithValue("@Ano", Session["anoActivo"]);
                     cmd.Parameters.AddWithValue("@Periodo", "2");
@@ -673,7 +665,7 @@ namespace PortalTrabajadores.Portal
                     cmd.Parameters.AddWithValue("@Objetivos_idObjetivos", Session["idObjetivos"]);
                     cmd.Parameters.AddWithValue("@Objetivos_JefeEmpleado_idJefeEmpleado", Session["idJefeEmpleado"]);
                     cmd.Parameters.AddWithValue("@Descripcion", txtSeguimiento.Text);
-                    cmd.Parameters.AddWithValue("@Meta", txtMeta.Text);
+                    cmd.Parameters.AddWithValue("@Meta", Convert.ToDouble(txtMeta.Text) / 100);
                 }
 
                 // Crea un parametro de salida para el SP
@@ -764,7 +756,12 @@ namespace PortalTrabajadores.Portal
                 int idObjetivos = Convert.ToInt32(arg[0]);
                 int estadoSeguimiento = Convert.ToInt32(arg[1]);
                 string segDescripcion = arg[2];
-                string meta = arg[3];
+                string meta = string.Empty;
+
+                if (arg[3] != "")
+                {
+                    meta = (Convert.ToDouble(arg[3]) * 100).ToString();
+                }
 
                 Session.Add("idObjetivos", idObjetivos);
 

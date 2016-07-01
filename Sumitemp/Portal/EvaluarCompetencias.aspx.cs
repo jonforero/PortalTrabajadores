@@ -189,7 +189,7 @@ namespace PortalTrabajadores.Portal
                     if (e.CommandName == "Revisar")
                     {
                         this.BtnAceptar.Visible = false;
-                    }                    
+                    }   
                 }
                 else
                 {
@@ -373,30 +373,43 @@ namespace PortalTrabajadores.Portal
                     Session.Add("idEvaluacionCompetencia", idEvaluacionCompetencia);
                 }
 
-                if (calificacion != string.Empty)
+                bool estado = consultas.EvaluacionCompetencia(Session["compania"].ToString(),
+                                                              "ST",
+                                                              Session["usuario"].ToString(),
+                                                              Session["cedulaEmpleado"].ToString());
+                if (!estado)
                 {
-                    bool eval = consultas.ConsultarCalificacionRango(Session["compania"].ToString(),
-                                                                     Session["idEmpresa"].ToString(),
-                                                                     idEvaluacionCompetencia,
-                                                                     idCargo,
-                                                                     idCompetencia);
-
-                    if (eval)
+                    if (calificacion != string.Empty)
                     {
-                        btnCalificar.Visible = false;
-                        btnFin.Visible = true;
-                        btnPlan.Visible = false;
+                        bool eval = consultas.ConsultarCalificacionRango(Session["compania"].ToString(),
+                                                                         Session["idEmpresa"].ToString(),
+                                                                         idEvaluacionCompetencia,
+                                                                         idCargo,
+                                                                         idCompetencia);
+
+                        if (!eval)
+                        {
+                            btnCalificar.Visible = false;
+                            btnFin.Visible = true;
+                            btnPlan.Visible = false;
+                        }
+                        else
+                        {
+                            btnCalificar.Visible = false;
+                            btnFin.Visible = false;
+                            btnPlan.Visible = true;
+                        }
                     }
                     else
                     {
-                        btnCalificar.Visible = false;
+                        btnCalificar.Visible = true;
                         btnFin.Visible = false;
-                        btnPlan.Visible = true;
+                        btnPlan.Visible = false;
                     }
                 }
-                else
+                else 
                 {
-                    btnCalificar.Visible = true;
+                    btnCalificar.Visible = false;
                     btnFin.Visible = false;
                     btnPlan.Visible = false;
                 }
@@ -604,7 +617,7 @@ namespace PortalTrabajadores.Portal
 
                 string idPlanEstrategico = DataBinder.Eval(e.Row.DataItem, "idPlanEstrategico").ToString();
 
-                bool estadoPlan = consultas.EvaluacionCompetencia(Convert.ToInt32(idPlanEstrategico));
+                bool estadoPlan = consultas.EvaluacionPlan(Convert.ToInt32(idPlanEstrategico));
 
                 if (estadoPlan)
                 {
@@ -649,6 +662,8 @@ namespace PortalTrabajadores.Portal
         protected void BtnCrearPlan_Click(object sender, EventArgs e)
         {
             this.LimpiarMensaje();
+            txtPlan.Text = string.Empty;
+            txtFecha.Text = string.Empty;
 
             Container_UpdatePanel4.Visible = false;
             Container_UpdatePanel5.Visible = true;
@@ -708,8 +723,7 @@ namespace PortalTrabajadores.Portal
                     gvPlanes.DataBind();
                     Container_UpdatePanel4.Visible = true;
                     Container_UpdatePanel5.Visible = false;
-                    BtnCerrarPlan.Visible = true;
-
+                    
                     if (BtnGuardarPlan.Text != "Editar Plan")
                     {
                         MensajeError("Plan Creado Correctamente.");
@@ -720,6 +734,8 @@ namespace PortalTrabajadores.Portal
                     }
                 }
 
+                BtnCerrarPlan.Visible = false;
+                BtnCerrarPlanComp.Visible = false;
                 UpdatePanel1.Update();
             }
             catch (Exception E)
@@ -737,8 +753,9 @@ namespace PortalTrabajadores.Portal
         {
             this.LimpiarMensaje();
             BtnCerrarPlan.Visible = false;
-            Container_UpdatePanel4.Visible = false;
-            Container_UpdatePanel2.Visible = true;
+            Container_UpdatePanel5.Visible = false;
+            Container_UpdatePanel6.Visible = false;
+            Container_UpdatePanel4.Visible = true;
             UpdatePanel1.Update();
         }
 
@@ -751,7 +768,9 @@ namespace PortalTrabajadores.Portal
         {
             this.LimpiarMensaje();
             BtnCerrarPlanComp.Visible = false;
+            Container_UpdatePanel4.Visible = false;
             Container_UpdatePanel5.Visible = false;
+            Container_UpdatePanel6.Visible = false;
             Container_UpdatePanel2.Visible = true;
             UpdatePanel1.Update();
         }

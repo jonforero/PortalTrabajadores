@@ -58,6 +58,7 @@
                     <Columns>
                         <asp:BoundField DataField="Competencia" HeaderText="Competencia" />
                         <asp:BoundField DataField="Calificacion" HeaderText="Calificacion" />
+                        <asp:BoundField DataField="nvlCompetencia" HeaderText="Nivel Competencia" />
                         <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
                                 <asp:ImageButton ID="btnCalificar" runat="server"
@@ -171,7 +172,7 @@
                 </asp:GridView>
                 <asp:Button ID="BtnRegCalificar" runat="server" Text="Calificar" OnClick="BtnRegCalificar_Click" />
                 <asp:Button ID="BtnCrearPlan" runat="server" Text="Crear nuevo plan" OnClick="BtnCrearPlan_Click" />
-                <asp:Button ID="BtnRegCompetencia" runat="server" Text="Regresar" OnClick="BtnCerrarPlan_Click" />
+                <asp:Button ID="BtnRegCompetencia" runat="server" Text="Regresar" OnClick="BtnCerrarPlanComp_Click" />
             </div>
             <div id="Container_UpdatePanel5" runat="server" visible="false">
                 Ingrese un plan de desarrollo

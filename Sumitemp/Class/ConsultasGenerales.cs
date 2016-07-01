@@ -179,6 +179,57 @@ namespace PortalTrabajadores.Class
 
         #endregion
 
+        #region Objetivos
+
+        /// <summary>
+        /// Devuelve los trabajadores que tiene un jefe
+        /// </summary>
+        public DataTable ConsultarObservaciones(string idJefeEmpleado, string etapa)
+        {
+            CnMysql Conexion = new CnMysql(CnObjetivos);
+
+            try
+            {
+                Conexion.AbrirCnMysql();
+                string consulta;
+
+                consulta = "SELECT *, (SELECT em.Nombres_Completos_Empleado " +
+                           "FROM pru_trabajadores.empleados as em " +
+                           "WHERE em.Id_Empleado = ob.Cedula) as Nombre " +
+                           "FROM " + bdModobjetivos + ".observaciones as ob" +
+                           " WHERE JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
+                           " AND Etapas_idEtapas = " + etapa +
+                           " Order by Orden;";
+
+                MySqlCommand cmd = new MySqlCommand(consulta, Conexion.ObtenerCnMysql());
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(cmd);
+                DataSet dsDataSet = new DataSet();
+                DataTable dtDataTable = null;
+
+                sdaSqlDataAdapter.Fill(dsDataSet);
+                dtDataTable = dsDataSet.Tables[0];
+
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
+                {
+                    return dtDataTable;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Conexion.CerrarCnMysql();
+            }
+        }
+
+        #endregion
+
         #region Competencias
 
         /// <summary>
@@ -360,7 +411,7 @@ namespace PortalTrabajadores.Class
         /// <summary>
         /// Consulta si el usuario ya tiene creada una evaluacion
         /// </summary>
-        public bool EvaluacionCompetencia(string idCompania, string idEmpresa, string cedulaJefe, string cedulaEmpleado) 
+        public bool EvaluacionCompetencia(string idCompania, string idEmpresa, string cedulaJefe, string cedulaEmpleado)
         {
             CnMysql Conexion = new CnMysql(CnObjetivos);
 
@@ -398,8 +449,8 @@ namespace PortalTrabajadores.Class
         }
 
         /// <summary>
-       /// Consulta si la calificacion esta dentro del rango
-       /// </summary>
+        /// Consulta si la calificacion esta dentro del rango
+        /// </summary>
         public bool ConsultarCalificacionRango(string idCompania, string idEmpresa, string idEvaluacionCompetencia, string idCargo, string idCompetencia)
         {
             CnMysql Conexion = new CnMysql(CnCompetencias);
@@ -417,26 +468,8 @@ namespace PortalTrabajadores.Class
 
                 if (rd.Read())
                 {
-                    int cal = Convert.ToInt32(rd["calificacion"].ToString());
-                    int rMax = Convert.ToInt32(rd["rangoMax"].ToString());
-                    int rMin = Convert.ToInt32(rd["rangoMin"].ToString());
-
-                    if (cal >= rMax) 
-                    {
-                        return true;
-                    }
-                    else if (cal < rMin) 
-                    {
-                        return false;
-                    }
-                    else if (cal > rMin) 
-                    {
-                        return true;
-                    }
-                    else 
-                    {
-                        return false;
-                    }                    
+                    bool res = (rd["planDesarrollo"].ToString() == "1") ? true : false;
+                    return res;                    
                 }
                 else
                 {
@@ -456,7 +489,7 @@ namespace PortalTrabajadores.Class
         /// <summary>
         /// Consulta el estado de una competencia
         /// </summary>
-        public bool EvaluacionCompetencia(int idPlanEstrategico)
+        public bool EvaluacionPlan(int idPlanEstrategico)
         {
             CnMysql Conexion = new CnMysql(CnObjetivos);
 
@@ -489,7 +522,7 @@ namespace PortalTrabajadores.Class
                 Conexion.CerrarCnMysql();
             }
         }
-        
+
         /// <summary>
         /// Crea una evaluacion para un usuario
         /// </summary>
@@ -710,7 +743,7 @@ namespace PortalTrabajadores.Class
                         return 0;
                     }
                 }
-                else 
+                else
                 {
                     return 0;
                 }
@@ -858,7 +891,7 @@ namespace PortalTrabajadores.Class
                 //Actualizo la conexion entre eval y plan de desarrollo
                 if (res != 0)
                 {
-                    return res;                    
+                    return res;
                 }
                 else
                 {

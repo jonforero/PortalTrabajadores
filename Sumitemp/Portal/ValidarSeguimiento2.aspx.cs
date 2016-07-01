@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using PortalTrabajadores.Class;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -18,6 +19,7 @@ namespace PortalTrabajadores.Portal
         string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
         string bd3 = ConfigurationManager.AppSettings["BD3"].ToString();
         MySqlConnection MySqlCn;
+        ConsultasGenerales claseConsultas;
 
         #region Metodo Page Load
 
@@ -28,6 +30,8 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">Evento e</param>
         protected void Page_Load(object sender, EventArgs e)
         {
+            claseConsultas = new ConsultasGenerales();
+
             if (Session["usuario"] == null)
             {
                 //Redirecciona a la pagina de login en caso de que el usuario no se halla autenticado
@@ -40,7 +44,7 @@ namespace PortalTrabajadores.Portal
                     CnMysql Conexion = new CnMysql(Cn);
                     try
                     {
-                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'ValidarSeguimiento1.aspx' AND idEmpresa = 'ST'", Conexion.ObtenerCnMysql());
+                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'ValidarSeguimiento2.aspx' AND idEmpresa = 'ST'", Conexion.ObtenerCnMysql());
                         MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                         DataSet dsDataSet = new DataSet();
                         DataTable dtDataTable = null;
@@ -343,23 +347,11 @@ namespace PortalTrabajadores.Portal
         /// Observaciones del jefe
         /// </summary>
         /// <param name="idJefeEmpleado">Id del JefeEmpleado</param>
-        public void CargarObservacionesEmpleado(int idJefeEmpleado, int cedulaEmpleado, string etapa)
+        public void CargarObservacionesEmpleado(string idJefeEmpleado, string etapa)
         {
             try
             {
-                DataSet dsDataSet = new DataSet();
-                DataTable dtDataTable = null;
-
-                MySqlCn = new MySqlConnection(Cn);
-                MySqlCommand scSqlCommand;
-                string consulta = "SELECT * FROM " + bd3 + ".observaciones where JefeEmpleado_idJefeEmpleado = " + idJefeEmpleado +
-                                  " AND Etapas_idEtapas = " + etapa +
-                                  " Order by Orden;";
-
-                scSqlCommand = new MySqlCommand(consulta, MySqlCn);
-                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
-                sdaSqlDataAdapter.Fill(dsDataSet);
-                dtDataTable = dsDataSet.Tables[0];
+                DataTable dtDataTable = claseConsultas.ConsultarObservaciones(idJefeEmpleado, etapa);
 
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
@@ -377,10 +369,6 @@ namespace PortalTrabajadores.Portal
             catch (Exception ex)
             {
                 MensajeError("El sistema no se encuentra disponible en este momento. " + ex.Message);
-            }
-            finally
-            {
-                MySqlCn.Close();
             }
         }
 
@@ -427,7 +415,7 @@ namespace PortalTrabajadores.Portal
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
                     gvObjetivosCreados.DataSource = dtDataTable;
-                    this.CargarObservacionesEmpleado(idJefeEmpleado, cedulaEmpleado, "3");
+                    this.CargarObservacionesEmpleado(idJefeEmpleado.ToString(), "3");
 
                     if (e.CommandName == "Evaluar")
                     {

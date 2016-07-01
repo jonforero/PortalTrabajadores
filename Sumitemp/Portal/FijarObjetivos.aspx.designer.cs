@@ -229,15 +229,6 @@ namespace PortalTrabajadores.Portal {
         protected global::System.Web.UI.WebControls.TextBox txtMeta;
         
         /// <summary>
-        /// Control cValidator.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CompareValidator cValidator;
-        
-        /// <summary>
         /// Control rfvMeta.
         /// </summary>
         /// <remarks>
@@ -281,6 +272,15 @@ namespace PortalTrabajadores.Portal {
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtObservacion;
+        
+        /// <summary>
+        /// Control rfvObservacion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvObservacion;
         
         /// <summary>
         /// Control BtnGuardarObs.
