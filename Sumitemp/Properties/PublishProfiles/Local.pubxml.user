@@ -85,7 +85,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="bin/PortalTrabajadores.dll">
-      <publishTime>07/01/2016 01:00:34</publishTime>
+      <publishTime>07/05/2016 23:45:52</publishTime>
     </File>
     <File Include="bin/pt/AjaxControlToolkit.resources.dll">
       <publishTime>01/01/0001 00:00:00</publishTime>
@@ -127,7 +127,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>04/04/2016 22:39:28</publishTime>
     </File>
     <File Include="CSS/main_style.css">
-      <publishTime>06/29/2016 21:56:06</publishTime>
+      <publishTime>07/03/2016 15:30:39</publishTime>
     </File>
     <File Include="CSS/normalize.css">
       <publishTime>04/04/2016 22:39:28</publishTime>
@@ -346,7 +346,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>04/04/2016 22:39:28</publishTime>
     </File>
     <File Include="Portal/EvaluarCompetencias.aspx">
-      <publishTime>07/01/2016 00:57:31</publishTime>
+      <publishTime>07/05/2016 23:37:45</publishTime>
     </File>
     <File Include="Portal/FijarObjetivos.aspx">
       <publishTime>06/30/2016 21:09:42</publishTime>

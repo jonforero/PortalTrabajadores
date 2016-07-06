@@ -22,6 +22,53 @@ namespace PortalTrabajadores.Class
         #region Generales
 
         /// <summary>
+        /// Devuelve el inicio de sesion
+        /// </summary>
+        /// "(Activo_Empleado = 'A' OR Activo_Empleado = '1') and " +
+        public DataTable InicioSesion(string usuario, string pass)
+        {
+            CnMysql Conexion = new CnMysql(CnObjetivos);
+
+            try
+            {
+                Conexion.AbrirCnMysql();
+                string consulta;
+
+                consulta = "SELECT Id_Empleado, Id_Rol, Nombres_Empleado, " +
+                           "Companias_idCompania, Companias_idEmpresa " +
+                           "FROM " + bdTrabajadores + ".empleados " +
+                           "where Id_Empleado = '" + usuario + "' and " +
+                           "Contrasena_Empleado = '" + pass + "' and " +
+                           "(Companias_idEmpresa = 'ST' or Companias_idEmpresa = 'SB')";
+
+                MySqlCommand cmd = new MySqlCommand(consulta, Conexion.ObtenerCnMysql());
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(cmd);
+                DataSet dsDataSet = new DataSet();
+                DataTable dtDataTable = null;
+
+                sdaSqlDataAdapter.Fill(dsDataSet);
+                dtDataTable = dsDataSet.Tables[0];
+
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
+                {
+                    return dtDataTable;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Conexion.CerrarCnMysql();
+            }
+        }
+
+        /// <summary>
         /// Comprueba si la compania tiene el modulo de objetivos activos
         /// </summary>
         /// <returns>True si esta activo</returns>
@@ -368,6 +415,88 @@ namespace PortalTrabajadores.Class
         }
 
         /// <summary>
+        /// Devuelve los planes de una competencia
+        /// </summary>
+        public DataTable ConsultarPlanesIdPlan(int idPlanEstrategico)
+        {
+            CnMysql Conexion = new CnMysql(CnCompetencias);
+
+            try
+            {
+                Conexion.AbrirCnMysql();
+                string consulta;
+
+                consulta = "SELECT * FROM " + bdModCompetencias + ".planestrategico p " +
+                           "WHERE p.idPlanEstrategico = " + idPlanEstrategico + ";";
+
+                MySqlCommand cmd = new MySqlCommand(consulta, Conexion.ObtenerCnMysql());
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(cmd);
+                DataSet dsDataSet = new DataSet();
+                DataTable dtDataTable = null;
+                sdaSqlDataAdapter.Fill(dsDataSet);
+                dtDataTable = dsDataSet.Tables[0];
+
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
+                {
+                    return dtDataTable;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception E)
+            {
+                throw E;
+            }
+            finally
+            {
+                Conexion.CerrarCnMysql();
+            }
+        }
+
+        /// <summary>
+        /// Devuelve evaluacion plan
+        /// </summary>
+        public DataTable ConsultarEvalPlan(int idEvaluacionCompetencia)
+        {
+            CnMysql Conexion = new CnMysql(CnCompetencias);
+
+            try
+            {
+                Conexion.AbrirCnMysql();
+                string consulta;
+
+                consulta = "SELECT * FROM " + bdModCompetencias + ".evaluacionplan p " +
+                           "WHERE p.idEvaluacionCompetencia = " + idEvaluacionCompetencia + ";";
+
+                MySqlCommand cmd = new MySqlCommand(consulta, Conexion.ObtenerCnMysql());
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(cmd);
+                DataSet dsDataSet = new DataSet();
+                DataTable dtDataTable = null;
+                sdaSqlDataAdapter.Fill(dsDataSet);
+                dtDataTable = dsDataSet.Tables[0];
+
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
+                {
+                    return dtDataTable;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception E)
+            {
+                throw E;
+            }
+            finally
+            {
+                Conexion.CerrarCnMysql();
+            }
+        }
+
+        /// <summary>
         /// Devuelve los seguimientos de un plan
         /// </summary>
         public DataTable ConsultarSeguimiento(int idPlanEstrategico)
@@ -468,8 +597,26 @@ namespace PortalTrabajadores.Class
 
                 if (rd.Read())
                 {
-                    bool res = (rd["planDesarrollo"].ToString() == "1") ? true : false;
-                    return res;                    
+                    int cal = Convert.ToInt32(rd["calificacion"].ToString());
+                    int rMax = Convert.ToInt32(rd["rangoMax"].ToString());
+                    int rMin = Convert.ToInt32(rd["rangoMin"].ToString());
+
+                    if (cal >= rMax)
+                    {
+                        return true;
+                    }
+                    else if (cal < rMin)
+                    {
+                        return false;
+                    }
+                    else if (cal > rMin)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
                 else
                 {
@@ -737,6 +884,84 @@ namespace PortalTrabajadores.Class
                     if (res2 != 0)
                     {
                         return res2;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch (Exception E)
+            {
+                throw E;
+            }
+            finally
+            {
+                Conexion.CerrarCnMysql();
+            }
+        }
+
+        /// <summary>
+        /// Crea una plan de desarrollo
+        /// </summary>
+        public int CrearPlanGeneral(string plan, DateTime fecha, int idEval)
+        {
+            CnMysql Conexion = new CnMysql(CnCompetencias);
+            int res = 0;
+            int res2 = 0;
+
+            try
+            {
+                Conexion.AbrirCnMysql();
+                MySqlCommand cmd;
+
+                cmd = new MySqlCommand("sp_CrearPlan", Conexion.ObtenerCnMysql());
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@plan", plan);
+                cmd.Parameters.AddWithValue("@fechaCumplimiento", fecha);
+                cmd.Parameters.AddWithValue("@estadoPlan", false);
+
+                // Crea un parametro de salida para el SP
+                MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                cmd.Parameters.Add(outputIdParam);
+                cmd.ExecuteNonQuery();
+
+                //Almacena la respuesta de la variable de retorno del SP
+                res = int.Parse(outputIdParam.Value.ToString());
+
+                //Actualizo la conexion entre eval y plan de desarrollo
+                if (res != 0)
+                {
+                    MySqlCommand cmd2;
+
+                    cmd2 = new MySqlCommand("sp_ActualizarEvalPlan", Conexion.ObtenerCnMysql());
+                    cmd2.CommandType = CommandType.StoredProcedure;
+                    cmd2.Parameters.AddWithValue("@idEvaluacionCompetencia", idEval);
+                    cmd2.Parameters.AddWithValue("@idPlanEstrategico", res);
+
+                    // Crea un parametro de salida para el SP
+                    MySqlParameter outputIdParam2 = new MySqlParameter("@respuesta", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    cmd2.Parameters.Add(outputIdParam2);
+                    cmd2.ExecuteNonQuery();
+
+                    //Almacena la respuesta de la variable de retorno del SP
+                    res2 = int.Parse(outputIdParam2.Value.ToString());
+
+                    if (res2 != 0)
+                    {
+                        return res;
                     }
                     else
                     {

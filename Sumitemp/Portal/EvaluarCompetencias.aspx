@@ -37,16 +37,16 @@
                         <asp:BoundField DataField="IdCargos" HeaderText="Cargos" Visible="false" />
                         <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:ImageButton ID="btnEvaluar" runat="server" 
-                                    ImageUrl="~/Img/search.gif" 
-                                    CommandArgument='<%#Eval("idJefeEmpleado") + ";" + Eval("Cedula_Empleado")%>' 
+                                <asp:ImageButton ID="btnEvaluar" runat="server"
+                                    ImageUrl="~/Img/search.gif"
+                                    CommandArgument='<%#Eval("idJefeEmpleado") + ";" + Eval("Cedula_Empleado")%>'
                                     CommandName="Evaluar" ToolTip="Revisar" />
-                                <asp:ImageButton ID="btnOk" runat="server" 
-                                    ImageUrl="~/Img/ok.gif" Visible="false" 
-                                    CommandArgument='<%#Eval("idJefeEmpleado") + ";" + Eval("Cedula_Empleado")%>' 
-                                    CommandName="Revisar"/>
-                                <asp:ImageButton ID="btnAlerta" runat="server" 
-                                    ImageUrl="~/Img/Alert.png" Visible="false" 
+                                <asp:ImageButton ID="btnOk" runat="server"
+                                    ImageUrl="~/Img/ok.gif" Visible="false"
+                                    CommandArgument='<%#Eval("idJefeEmpleado") + ";" + Eval("Cedula_Empleado")%>'
+                                    CommandName="Revisar" />
+                                <asp:ImageButton ID="btnAlerta" runat="server"
+                                    ImageUrl="~/Img/Alert.png" Visible="false"
                                     Enabled="false" ToolTip="No tiene cargo asociado" />
                             </ItemTemplate>
                             <ItemStyle HorizontalAlign="Center" />
@@ -63,6 +63,7 @@
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
                         <asp:BoundField DataField="Competencia" HeaderText="Competencia" />
+                        <asp:BoundField DataField="NivelRequerido" HeaderText="Nivel Requerido" />
                         <asp:BoundField DataField="Calificacion" HeaderText="Calificacion" />
                         <asp:BoundField DataField="nvlCompetencia" HeaderText="Nivel Competencia" />
                         <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
@@ -84,9 +85,40 @@
                     </Columns>
                 </asp:GridView>
                 <br />
+                <asp:GridView ID="gvPlanGeneral" runat="server" AutoGenerateColumns="false"
+                    OnRowCommand="gvPlanGeneral_RowCommand"
+                    OnRowDataBound="gvPlanGeneral_RowDataBound">
+                    <AlternatingRowStyle CssClass="ColorOscuro" />
+                    <Columns>
+                        <asp:BoundField DataField="plan" HeaderText="Plan" />
+                        <asp:BoundField DataField="fechaCumplimiento" HeaderText="Fecha Cumplimiento" DataFormatString="{0:yyyy/MM/dd}" />
+                        <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
+                            <ItemTemplate>
+                                <asp:ImageButton ID="btnSeguimientoG" runat="server"
+                                    ImageUrl="~/Img/add.gif" CommandArgument='<%#Eval("idPlanEstrategico")%>'
+                                    CommandName="Seguimiento" ToolTip="Seguimiento" />
+                                <asp:ImageButton ID="btnEditPlanG" runat="server"
+                                    ImageUrl="~/Img/edit.gif" CommandArgument='<%#Eval("idPlanEstrategico")%>'
+                                    CommandName="Editar" ToolTip="Editar Plan" />
+                                <asp:ImageButton ID="btnFinPlanG" runat="server"
+                                    ImageUrl="~/Img/unchecked.png"
+                                    CommandArgument='<%#Eval("idPlanEstrategico")%>'
+                                    CommandName="Fin" ToolTip="Finalizar Plan" />
+                                <asp:ImageButton ID="btnPlanOkG" runat="server"
+                                    ImageUrl="~/Img/ok.gif" Visible="false" Enabled="false" />
+                            </ItemTemplate>
+                            <ItemStyle HorizontalAlign="Center" />
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
+                <br />
+                <asp:Button ID="BtnCargarPlanGeneral" runat="server" Text="Crear Plan General" Visible="false" OnClick="BtnCargarPlanGeneral_Click" />
                 <asp:Button ID="BtnAceptar" runat="server" Text="Finalizar" Visible="false" OnClick="BtnAceptar_Click" />
                 <asp:Button ID="BtnRegresar" runat="server" Text="Regresar" OnClick="BtnRegresar_Click" />
                 <table>
+                    <tr>
+                        <td colspan="2">Para crear un plan de desarrollo general, califique al menos una competencia</td>
+                    </tr>
                     <tr>
                         <td>
                             <asp:ImageButton ID="btnEval" runat="server" ImageUrl="~/Img/edit.gif" Enabled="false" /></td>
@@ -101,6 +133,19 @@
                         <td>
                             <asp:ImageButton ID="btnP" runat="server" ImageUrl="~/Img/add.gif" Enabled="false" /></td>
                         <td>Indica que la competencia calificada es menor al rango impuesto, lo que le permite crearle un plan de desarrollo</td>
+                    </tr>
+                    <tr>
+                        <td>Niveles creados</td>
+                        <td>
+                            <asp:GridView ID="gvNivelesCreados" CssClass="tablaInfo" runat="server" AutoGenerateColumns="false">
+                                <AlternatingRowStyle CssClass="ColorOscuro" />
+                                <Columns>
+                                    <asp:BoundField DataField="nombre" HeaderText="Nivel" />
+                                    <asp:BoundField DataField="rangoMin" HeaderText="Minimo" />
+                                    <asp:BoundField DataField="rangoMax" HeaderText="Máximo" />
+                                </Columns>
+                            </asp:GridView>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -150,6 +195,7 @@
                 </table>
             </div>
             <div id="Container_UpdatePanel4" runat="server" visible="false">
+                <asp:Label ID="lblPlanDesarrollo" runat="server" Text="" CssClass="TextCentrado"></asp:Label>
                 <asp:GridView ID="gvPlanes" runat="server" AutoGenerateColumns="false"
                     OnRowCommand="gvPlanes_RowCommand"
                     OnRowDataBound="gvPlanes_RowDataBound">
@@ -176,6 +222,7 @@
                         </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
+                <br />
                 <asp:Button ID="BtnRegCalificar" runat="server" Text="Calificar" OnClick="BtnRegCalificar_Click" />
                 <asp:Button ID="BtnCrearPlan" runat="server" Text="Crear nuevo plan" OnClick="BtnCrearPlan_Click" />
                 <asp:Button ID="BtnRegCompetencia" runat="server" Text="Regresar" OnClick="BtnCerrarPlanComp_Click" />
@@ -228,7 +275,7 @@
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
                         <asp:BoundField DataField="seguimiento" HeaderText="Seguimiento" />
-                        <asp:BoundField DataField="fecha" HeaderText="Fecha Seguimiento" DataFormatString="{0:yyyy/MM/dd}" />                        
+                        <asp:BoundField DataField="fecha" HeaderText="Fecha Seguimiento" DataFormatString="{0:yyyy/MM/dd}" />
                     </Columns>
                 </asp:GridView>
                 <table id="TablaDatos">
@@ -248,11 +295,58 @@
                                 ControlToValidate="txtSeguimiento"
                                 ValidationGroup="objForm"></asp:RequiredFieldValidator>
                         </td>
-                    </tr>                    
+                    </tr>
                     <tr class="ColorOscuro">
                         <td class="BotonTablaDatos" colspan="2">
                             <asp:Button ID="BtnGuardarSeg" runat="server" Text="Crear Seguimiento" ValidationGroup="objForm" OnClick="BtnGuardarSeg_Click" />
-                            <asp:Button ID="BtnRegresarSeg" runat="server" Text="Regresar" OnClick="BtnRegresarSeg_Click"/>
+                            <asp:Button ID="BtnRegresarSeg" runat="server" Text="Regresar" OnClick="BtnRegresarSeg_Click" />
+                            <asp:Button ID="BtnRegresarComp" runat="server" Visible="false" Text="Regresar" OnClick="btnRegresarGeneral_Click" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="Container_UpdatePanelPlan1" runat="server" visible="false">
+                Ingrese el plan de desarrollo general para el empleado
+                <table id="TablaDatos">
+                    <tr>
+                        <th colspan="2">Plan de desarrollo general</th>
+                    </tr>
+                    <tr>
+                        <td class="CeldaTablaDatos">Plan de Desarrollo
+                        </td>
+                        <td class="CeldaTablaDatos">
+                            <asp:TextBox ID="txtPlanGeneral" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px" />
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2"
+                                runat="server"
+                                ErrorMessage="Debe digitar información del Plan"
+                                CssClass="MensajeError"
+                                Display="Dynamic"
+                                ControlToValidate="txtPlanGeneral"
+                                ValidationGroup="objForm2"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="CeldaTablaDatos">Fecha de cumplimiento
+                        </td>
+                        <td class="CeldaTablaDatos">
+                            <asp:TextBox ID="txtFechaGeneral" Style="width: 140px; margin-right: 10px"
+                                runat="server" CssClass="jqCalendar"
+                                onkeypress="return ValidaSoloNumerosFecha(event)"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3"
+                                runat="server"
+                                ErrorMessage="Debe seleccionar una fecha"
+                                CssClass="MensajeError"
+                                Display="Dynamic"
+                                ControlToValidate="txtFechaGeneral"
+                                ValidationGroup="objForm2"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr class="ColorOscuro">
+                        <td class="BotonTablaDatos" colspan="2">
+                            <asp:Button ID="btnCrearPlanGeneral" runat="server" Text="Crear Plan"
+                                ValidationGroup="objForm2" OnClick="BtnCrearPlanGeneral_Click" />
+                            <asp:Button ID="btnRegresarGeneral" runat="server" Text="Regresar"
+                                OnClick="btnRegresarGeneral_Click" />
                         </td>
                     </tr>
                 </table>

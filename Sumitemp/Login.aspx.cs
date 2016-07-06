@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using PortalTrabajadores.Class;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -14,6 +15,7 @@ namespace PortalTrabajadores.Portal
     {
         string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
         string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
+        ConsultasGenerales consultas;
 
         #region Definicion de los Metodos de la Clase
 
@@ -34,19 +36,14 @@ namespace PortalTrabajadores.Portal
         protected void btnlogin_Click(object sender, EventArgs e)
         {
             Page.Validate();
-            CnMysql Conexion = new CnMysql(Cn);
+            consultas = new ConsultasGenerales();
+
             try
             {
-                MySqlCommand scSqlCommand = new MySqlCommand("SELECT Id_Empleado, Id_Rol, Nombres_Empleado, Companias_idCompania, Companias_idEmpresa FROM " + bd2 + ".empleados where Id_Empleado = '" + this.txtuser.Text + "' and Contrasena_Empleado = '" + this.txtPass.Text + "' and (Companias_idEmpresa = 'ST' or Companias_idEmpresa = 'SB')", Conexion.ObtenerCnMysql());
-                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
-                DataSet dsDataSet = new DataSet();
-                DataTable dtDataTable = null;
                 //Asegura que los controles de la pagina hayan sido validados
                 if (Page.IsValid)
                 {
-                    Conexion.AbrirCnMysql();
-                    sdaSqlDataAdapter.Fill(dsDataSet);
-                    dtDataTable = dsDataSet.Tables[0];
+                    DataTable dtDataTable = consultas.InicioSesion(txtuser.Text, txtPass.Text);
 
                     if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                     {
@@ -69,10 +66,6 @@ namespace PortalTrabajadores.Portal
             catch(Exception ex) 
             {
                 MensajeError("El sistema no se encuentra disponible en este momento. Intente más tarde.");
-            }
-            finally
-            {
-                Conexion.CerrarCnMysql();
             }
         }
         #endregion

@@ -102,7 +102,7 @@ namespace PortalTrabajadores.Portal
         /// <summary>
         /// Limpia los mensajes
         /// </summary>
-        public void LimpiarMensaje() 
+        public void LimpiarMensaje()
         {
             LblMsj.Visible = false;
             UpdatePanel3.Update();
@@ -150,6 +150,71 @@ namespace PortalTrabajadores.Portal
             }
         }
 
+        /// <summary>
+        /// Carga la niveles
+        /// </summary>
+        private void CargarNiveles()
+        {
+            this.LimpiarMensaje();
+            CnMysql MysqlCn = new CnMysql(CnCompetencias);
+
+            try
+            {
+                DataTable dtDataTable = null;
+                MysqlCn.AbrirCnMysql();
+                dtDataTable = MysqlCn.ConsultarRegistros("SELECT * FROM " + bdCompetencias + ".nivelcompetencias"
+                                                         + " where idCompania = '" + Session["compania"]
+                                                         + "' and ano = '" + Session["anoActivo"]
+                                                         + "' and idEmpresa = '" + Session["idEmpresa"] + "';");
+
+                Session.Add("DataNivel", dtDataTable);
+
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
+                {
+                    gvNivelesCreados.DataSource = dtDataTable;
+                }
+                else
+                {
+                    gvNivelesCreados.DataSource = null;
+                }
+
+                gvNivelesCreados.DataBind();
+                Container_UpdatePanel2.Visible = false;
+                UpdatePanel1.Update();
+            }
+            catch (Exception E)
+            {
+                MensajeError("Ha ocurrido el siguiente error: " + E.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name + " Sin RED");
+            }
+            finally
+            {
+                MysqlCn.CerrarCnMysql();
+            }
+        }
+
+        /// <summary>
+        /// Carga el plan general de un empleado
+        /// </summary>
+        /// <param name="idPlan">Id Plan</param>
+        private void CargarPlanGeneral(int idPlan)
+        {
+            DataTable planes = consultas.ConsultarPlanesIdPlan(idPlan);
+
+            if (planes != null)
+            {
+                gvPlanGeneral.DataSource = planes;
+                BtnCargarPlanGeneral.Visible = false;
+            }
+            else 
+            {
+                gvPlanGeneral.DataSource = null;
+                BtnCargarPlanGeneral.Visible = true;
+            }
+            
+            gvPlanGeneral.DataBind();
+            UpdatePanel1.Update();
+        }
+
         #endregion
 
         #region Eventos Controles
@@ -189,7 +254,34 @@ namespace PortalTrabajadores.Portal
                     if (e.CommandName == "Revisar")
                     {
                         this.BtnAceptar.Visible = false;
-                    }   
+                    }
+
+                    //// Consultamos si la evaluación creo plan
+                    Session.Add("btnPlanGeneral", true);
+                    int idEval = (!string.IsNullOrEmpty(dtDataTable.Rows[0][7].ToString()) ?
+                                  Convert.ToInt32(dtDataTable.Rows[0][7].ToString()) : 0);
+
+                    if (idEval != 0)
+                    {
+                        BtnCargarPlanGeneral.Visible = true;
+                        DataTable datos = consultas.ConsultarEvalPlan(idEval);
+
+                        if (datos != null)
+                        {
+                            this.CargarPlanGeneral(Convert.ToInt32(datos.Rows[0][1].ToString()));
+                            Session["btnPlanGeneral"] = false;
+                            BtnCargarPlanGeneral.Visible = false;
+                        }
+                        else 
+                        {
+                            gvPlanGeneral.DataSource = null;
+                            gvPlanGeneral.DataBind();
+                        }
+                    }                    
+
+                    //// Consultamos si la evaluación creo plan
+                    
+                    this.CargarNiveles();
                 }
                 else
                 {
@@ -330,6 +422,7 @@ namespace PortalTrabajadores.Portal
                         Container_UpdatePanel4.Visible = true;
                         BtnCerrarPlan.Visible = true;
                         UpdatePanel1.Update();
+                        lblPlanDesarrollo.Text = "Competencia: " + lblCompetenciaG.Text;
                     }
 
                     ScriptManager.RegisterStartupScript(Page, GetType(), "Javascript", "javascript:CargarCalendario(); ", true);
@@ -337,7 +430,7 @@ namespace PortalTrabajadores.Portal
                 else if (e.CommandName == "Editar")
                 {
                     lblCompetencia.Text = gvCompetencias.Rows[RowIndex].Cells[0].Text;
-                    txtCalificacion.Text = gvCompetencias.Rows[RowIndex].Cells[1].Text;
+                    txtCalificacion.Text = gvCompetencias.Rows[RowIndex].Cells[2].Text;
                     BtnCalificar.Text = "Editar";
                     Container_UpdatePanel2.Visible = false;
                     Container_UpdatePanel3.Visible = true;
@@ -368,7 +461,7 @@ namespace PortalTrabajadores.Portal
                 string idCargo = DataBinder.Eval(e.Row.DataItem, "idCargos").ToString();
                 string calificacion = DataBinder.Eval(e.Row.DataItem, "Calificacion").ToString();
 
-                if (idEvaluacionCompetencia != "") 
+                if (idEvaluacionCompetencia != "")
                 {
                     Session.Add("idEvaluacionCompetencia", idEvaluacionCompetencia);
                 }
@@ -387,7 +480,7 @@ namespace PortalTrabajadores.Portal
                                                                          idCargo,
                                                                          idCompetencia);
 
-                        if (!eval)
+                        if (eval)
                         {
                             btnCalificar.Visible = false;
                             btnFin.Visible = true;
@@ -407,7 +500,7 @@ namespace PortalTrabajadores.Portal
                         btnPlan.Visible = false;
                     }
                 }
-                else 
+                else
                 {
                     btnCalificar.Visible = false;
                     btnFin.Visible = false;
@@ -493,6 +586,7 @@ namespace PortalTrabajadores.Portal
                 }
                 else
                 {
+                    BtnCargarPlanGeneral.Visible = Convert.ToBoolean(Session["btnPlanGeneral"]);
                     MensajeError("Calificación Recibida.");
                 }
 
@@ -506,6 +600,8 @@ namespace PortalTrabajadores.Portal
                 Container_UpdatePanel3.Visible = false;
                 Container_UpdatePanel2.Visible = true;
                 UpdatePanel1.Update();
+
+                txtCalificacion.Text = string.Empty;
             }
             catch (Exception E)
             {
@@ -521,6 +617,7 @@ namespace PortalTrabajadores.Portal
         protected void BtnRegresarCal_Click(object sender, EventArgs e)
         {
             this.LimpiarMensaje();
+            txtCalificacion.Text = string.Empty;
             Container_UpdatePanel3.Visible = false;
             Container_UpdatePanel2.Visible = true;
             UpdatePanel1.Update();
@@ -673,7 +770,7 @@ namespace PortalTrabajadores.Portal
 
             ScriptManager.RegisterStartupScript(Page, GetType(), "Javascript", "javascript:CargarCalendario(); ", true);
         }
-        
+
         /// <summary>
         /// Registra un plan nuevo
         /// </summary>
@@ -686,7 +783,7 @@ namespace PortalTrabajadores.Portal
             try
             {
                 int res;
-                
+
                 if (BtnGuardarPlan.Text != "Editar Plan")
                 {
                     res = consultas.CrearPlanDesarrollo(txtPlan.Text,
@@ -694,7 +791,7 @@ namespace PortalTrabajadores.Portal
                                                         Convert.ToInt32(Session["idCargos"]),
                                                         Convert.ToInt32(Session["idCompetencia"]));
                 }
-                else 
+                else
                 {
                     res = consultas.ActualizarCalificacion(Convert.ToInt32(Session["idPlanEstrategico"]),
                                                            txtPlan.Text,
@@ -707,7 +804,7 @@ namespace PortalTrabajadores.Portal
                     {
                         MensajeError("Hubo un error al crear el Plan");
                     }
-                    else 
+                    else
                     {
                         MensajeError("Hubo un error al editar el Plan");
                     }
@@ -723,15 +820,17 @@ namespace PortalTrabajadores.Portal
                     gvPlanes.DataBind();
                     Container_UpdatePanel4.Visible = true;
                     Container_UpdatePanel5.Visible = false;
-                    
+
                     if (BtnGuardarPlan.Text != "Editar Plan")
                     {
                         MensajeError("Plan Creado Correctamente.");
                     }
-                    else 
+                    else
                     {
                         MensajeError("Plan Actualizado.");
                     }
+
+                    lblPlanDesarrollo.Text = "Competencia: " + lblCompetenciaG.Text;
                 }
 
                 BtnCerrarPlan.Visible = false;
@@ -829,6 +928,221 @@ namespace PortalTrabajadores.Portal
             UpdatePanel1.Update();
         }
 
-        #endregion        
+        #endregion
+
+        /// <summary>
+        /// Carga el formulario de plan general
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void BtnCargarPlanGeneral_Click(object sender, EventArgs e)
+        {
+            this.LimpiarMensaje();
+            txtPlanGeneral.Text = string.Empty;
+            txtFechaGeneral.Text = string.Empty;
+
+            Container_UpdatePanel2.Visible = false;
+            Container_UpdatePanelPlan1.Visible = true;
+            UpdatePanel1.Update();
+
+            ScriptManager.RegisterStartupScript(Page, GetType(), "Javascript", "javascript:CargarCalendario(); ", true);
+        }
+
+        /// <summary>
+        /// Comandos de la fila plan general
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void gvPlanGeneral_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            this.LimpiarMensaje();
+
+            try
+            {
+                int idPlanDesarrollo = 0;
+
+                if (e.CommandArgument.ToString() != "")
+                {
+                    idPlanDesarrollo = Convert.ToInt32(e.CommandArgument);
+                    Session.Add("idPlanEstrategico", idPlanDesarrollo);
+                }
+
+                GridViewRow gvr = (GridViewRow)(((ImageButton)e.CommandSource).NamingContainer);
+                int RowIndex = gvr.RowIndex;
+
+                if (e.CommandName == "Seguimiento")
+                {
+                    DataTable seguimiento = consultas.ConsultarSeguimiento(idPlanDesarrollo);
+
+                    gvSeguimiento.DataSource = seguimiento;
+                    gvSeguimiento.DataBind();
+                    Container_UpdatePanel2.Visible = false;
+                    Container_UpdatePanel6.Visible = true;
+                    BtnRegresarComp.Visible = true;
+                    BtnRegresarSeg.Visible = false;
+                    UpdatePanel1.Update();
+                }
+                else if (e.CommandName == "Editar")
+                {
+                    txtPlanGeneral.Text = HttpUtility.HtmlDecode(gvPlanGeneral.Rows[RowIndex].Cells[0].Text);
+                    txtFechaGeneral.Text = DateTime.Parse(gvPlanGeneral.Rows[RowIndex].Cells[1].Text).ToString("yyyy/MM/dd");
+
+                    Container_UpdatePanel2.Visible = false;
+                    Container_UpdatePanelPlan1.Visible = true;
+                    btnCrearPlanGeneral.Text = "Editar Plan";
+                    UpdatePanel1.Update();
+
+                    ScriptManager.RegisterStartupScript(Page, GetType(), "Javascript", "javascript:CargarCalendario(); ", true);
+                }
+                else if (e.CommandName == "Fin")
+                {
+                    int estado = consultas.ActualizarEstadoPlan(idPlanDesarrollo, true);
+
+                    if (estado != 0)
+                    {
+                        this.CargarPlanGeneral(idPlanDesarrollo);
+                        Container_UpdatePanel2.Visible = true;
+                        Container_UpdatePanelPlan1.Visible = false;
+                        this.MensajeError("Estado del plan actualizado");
+                    }
+                    else
+                    {
+                        Container_UpdatePanel2.Visible = true;
+                        Container_UpdatePanelPlan1.Visible = false;
+                        this.MensajeError("Error al actualizar el estado del plan");
+                    }
+
+                    UpdatePanel1.Update();
+                }
+            }
+            catch (Exception E)
+            {
+                MensajeError("Ha ocurrido el siguiente error: " + E.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            }
+        }
+
+        /// <summary>
+        /// Databound de la fila plan general
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void gvPlanGeneral_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                ImageButton btnSeguimiento = (ImageButton)e.Row.FindControl("btnSeguimientoG");
+                ImageButton btnEditPlan = (ImageButton)e.Row.FindControl("btnEditPlanG");
+                ImageButton btnFinPlan = (ImageButton)e.Row.FindControl("btnFinPlanG");
+                ImageButton btnPlanOk = (ImageButton)e.Row.FindControl("btnPlanOkG");
+
+                string idPlanEstrategico = DataBinder.Eval(e.Row.DataItem, "idPlanEstrategico").ToString();
+
+                bool estadoPlan = consultas.EvaluacionPlan(Convert.ToInt32(idPlanEstrategico));
+
+                if (estadoPlan)
+                {
+                    btnSeguimiento.Visible = false;
+                    btnEditPlan.Visible = false;
+                    btnFinPlan.Visible = false;
+                    btnPlanOk.Visible = true;
+                }
+                else
+                {
+                    btnSeguimiento.Visible = true;
+                    btnEditPlan.Visible = true;
+                    btnFinPlan.Visible = true;
+                    btnPlanOk.Visible = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Crea un plan general
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void BtnCrearPlanGeneral_Click(object sender, EventArgs e)
+        {
+            this.LimpiarMensaje();
+
+            try
+            {
+                int res;
+
+                if (btnCrearPlanGeneral.Text != "Editar Plan")
+                {
+                    res = consultas.CrearPlanGeneral(txtPlanGeneral.Text,
+                                                    DateTime.Parse(txtFechaGeneral.Text),
+                                                    Convert.ToInt32(Session["idEvaluacionCompetencia"]));
+                }
+                else
+                {
+                    res = consultas.ActualizarCalificacion(Convert.ToInt32(Session["idPlanEstrategico"]),
+                                                           txtPlanGeneral.Text,
+                                                           DateTime.Parse(txtFechaGeneral.Text));
+
+                    if (res != 0) 
+                    { 
+                        res = Convert.ToInt32(Session["idPlanEstrategico"]);
+                    }
+                }
+
+                if (res == 0)
+                {
+                    if (btnCrearPlanGeneral.Text != "Editar Plan")
+                    {
+                        MensajeError("Hubo un error al crear el Plan General");
+                    }
+                    else
+                    {
+                        MensajeError("Hubo un error al editar el Plan General");
+                    }
+
+                    Container_UpdatePanelPlan1.Visible = false;
+                    Container_UpdatePanel2.Visible = true;
+                }
+                else
+                {
+                    this.CargarPlanGeneral(res);
+
+                    Container_UpdatePanel2.Visible = true;
+                    Container_UpdatePanelPlan1.Visible = false;
+
+                    if (btnCrearPlanGeneral.Text != "Editar Plan")
+                    {
+                        MensajeError("Plan Creado Correctamente.");
+                    }
+                    else
+                    {
+                        MensajeError("Plan Actualizado.");
+                    }
+                }
+
+                UpdatePanel1.Update();
+            }
+            catch (Exception E)
+            {
+                MensajeError("Ha ocurrido el siguiente error: " + E.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            }
+        }
+
+        /// <summary>
+        /// Regresa a las competencias
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void btnRegresarGeneral_Click(object sender, EventArgs e)
+        {
+            this.LimpiarMensaje();
+            txtPlanGeneral.Text = string.Empty;
+            txtFechaGeneral.Text = string.Empty;
+
+            Container_UpdatePanel2.Visible = true;
+            Container_UpdatePanel6.Visible = false;
+            Container_UpdatePanelPlan1.Visible = false;
+            BtnRegresarComp.Visible = false;
+            BtnRegresarSeg.Visible = true;
+            UpdatePanel1.Update();
+        }
     }
 }
