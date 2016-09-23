@@ -46,7 +46,7 @@ namespace PortalTrabajadores.Portal
                     CnMysql Conexion = new CnMysql(CnTrabajadores);
                     try
                     {
-                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bdBasica + ".Options_Menu WHERE url = 'EvaluarCompetencias.aspx' AND idEmpresa = 'ST'", Conexion.ObtenerCnMysql());
+                        MySqlCommand scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bdBasica + ".Options_Menu WHERE url = 'EvaluarCompetencias.aspx'", Conexion.ObtenerCnMysql());
                         MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                         DataSet dsDataSet = new DataSet();
                         DataTable dtDataTable = null;

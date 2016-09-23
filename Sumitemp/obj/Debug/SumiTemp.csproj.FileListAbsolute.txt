@@ -142,6 +142,7 @@ D:\Sumi\PortalTrabajadores\Sumitemp\bin\HtmlAgilityPack.pdb
 D:\Sumi\PortalTrabajadores\Sumitemp\bin\HtmlAgilityPack.xml
 D:\Sumi\PortalTrabajadores\Sumitemp\bin\itextsharp.xml
 D:\Sumi\PortalTrabajadores\Sumitemp\bin\es\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Sumi\PortalTrabajadores\Sumitemp\obj\Debug\SumiTemp.csprojResolveAssemblyReference.cache
 D:\Sumi\PortalTrabajadores\Sumitemp\obj\Debug\RdlCompile.cache
 D:\Sumi\PortalTrabajadores\Sumitemp\obj\Debug\RdlCompile.compiled
 D:\Sumi\PortalTrabajadores\Sumitemp\obj\Debug\PortalTrabajadores.dll

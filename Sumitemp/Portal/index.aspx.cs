@@ -33,6 +33,10 @@ namespace PortalTrabajadores.Portal
             {
                 if (!IsPostBack)
                 {
+                    ConsultasGenerales consultaGeneral = new ConsultasGenerales();
+                    bool objetivos = consultaGeneral.ComprobarModuloObjetivos(Session["compania"].ToString(), Session["idEmpresa"].ToString());
+                    bool comp = consultaGeneral.ComprobarModuloCompetencias(Session["compania"].ToString(), Session["idEmpresa"].ToString());
+            
                     CnMysql Conexion = new CnMysql(Cn);
                     MySqlCommand scSqlCommand = new MySqlCommand("SELECT Contrasena_Activo, IdAreas, IdCargos, Id_Rol FROM " + bd2 + ".empleados where Id_Empleado = '" + this.Session["usuario"].ToString() + "'", Conexion.ObtenerCnMysql());
                     MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
@@ -56,8 +60,11 @@ namespace PortalTrabajadores.Portal
                             else if (dtDataTable.Rows[0].ItemArray[1].ToString() == "" ||
                                      dtDataTable.Rows[0].ItemArray[2].ToString() == "")
                             {
-                                Session.Add("AsignarAreaCargo", "1");
-                                Response.Redirect("AsignarAreaCargo.aspx", false);                                
+                                if (objetivos || comp)
+                                {
+                                    Session.Add("AsignarAreaCargo", "1");
+                                    Response.Redirect("AsignarAreaCargo.aspx", false);
+                                }
                             }
                             else if (!info.ConsultarEstadoJefe(this.Session["usuario"].ToString()) &&
                                      dtDataTable.Rows[0].ItemArray[3].ToString() == "2") 

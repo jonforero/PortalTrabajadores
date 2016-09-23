@@ -85,7 +85,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="bin/PortalTrabajadores.dll">
-      <publishTime>07/05/2016 23:45:52</publishTime>
+      <publishTime>09/22/2016 21:34:54</publishTime>
     </File>
     <File Include="bin/pt/AjaxControlToolkit.resources.dll">
       <publishTime>01/01/0001 00:00:00</publishTime>
@@ -313,7 +313,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>04/04/2016 22:39:28</publishTime>
     </File>
     <File Include="Portal/AsignarAreaCargo.aspx">
-      <publishTime>06/30/2016 00:04:00</publishTime>
+      <publishTime>09/21/2016 22:06:41</publishTime>
     </File>
     <File Include="Portal/CambioContrasena.aspx">
       <publishTime>10/01/2014 23:07:36</publishTime>
@@ -379,7 +379,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>04/04/2016 22:39:28</publishTime>
     </File>
     <File Include="Portal/PaginaMaestra.Master">
-      <publishTime>06/24/2016 00:15:38</publishTime>
+      <publishTime>09/22/2016 01:04:26</publishTime>
     </File>
     <File Include="Portal/PrimeraContrasena.aspx">
       <publishTime>04/04/2016 22:39:28</publishTime>

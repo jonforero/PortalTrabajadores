@@ -54,6 +54,22 @@ namespace PortalTrabajadores.Portal
                         Session.Add("compania", dtDataTable.Rows[0].ItemArray[3].ToString());
                         Session.Add("idEmpresa", dtDataTable.Rows[0].ItemArray[4].ToString());
 
+                        if (dtDataTable.Rows[0].ItemArray[5] != null)
+                        {
+                            if (dtDataTable.Rows[0].ItemArray[5].ToString() != string.Empty)
+                            {
+                                Session.Add("Externo", Convert.ToBoolean(dtDataTable.Rows[0].ItemArray[5]));
+                            }
+                            else
+                            {
+                                Session.Add("Externo", false);
+                            }
+                        }
+                        else
+                        {
+                            Session.Add("Externo", false);                            
+                        }
+
                         //redirecciona al usuario a la pagina principal del Portal
                         Response.Redirect("~/Portal/index.aspx", false);
                     }

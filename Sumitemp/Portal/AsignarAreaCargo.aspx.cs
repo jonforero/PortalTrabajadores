@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using PortalTrabajadores.Class;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

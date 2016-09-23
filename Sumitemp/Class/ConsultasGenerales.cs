@@ -35,7 +35,7 @@ namespace PortalTrabajadores.Class
                 string consulta;
 
                 consulta = "SELECT Id_Empleado, Id_Rol, Nombres_Empleado, " +
-                           "Companias_idCompania, Companias_idEmpresa " +
+                           "Companias_idCompania, Companias_idEmpresa, Externo " +
                            "FROM " + bdTrabajadores + ".empleados " +
                            "where Id_Empleado = '" + usuario + "' and " +
                            "Contrasena_Empleado = '" + pass + "' and " +
@@ -81,7 +81,51 @@ namespace PortalTrabajadores.Class
                 MySqlCommand rolCommand = new MySqlCommand("SELECT * FROM " +
                                                             bdBasica + ".matriz_modulostercero where idCompania = '" +
                                                             idCompania + "' and idEmpresa = '" +
-                                                            idEmpresa + "'", Conexion.ObtenerCnMysql());
+                                                            idEmpresa + "' and idModulo = 1", Conexion.ObtenerCnMysql());
+
+                MySqlDataAdapter rolDataAdapter = new MySqlDataAdapter(rolCommand);
+                DataSet rolDataSet = new DataSet();
+                DataTable rolDataTable = null;
+
+                rolDataAdapter.Fill(rolDataSet);
+                rolDataTable = rolDataSet.Tables[0];
+
+                if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (Conexion.EstadoConexion() == ConnectionState.Open)
+                {
+                    Conexion.CerrarCnMysql();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Comprueba si la compania tiene el modulo de objetivos activos
+        /// </summary>
+        /// <returns>True si esta activo</returns>
+        public bool ComprobarModuloCompetencias(string idCompania, string idEmpresa)
+        {
+            CnMysql Conexion = new CnMysql(CnTrabajadores);
+
+            try
+            {
+                MySqlCommand rolCommand = new MySqlCommand("SELECT * FROM " +
+                                                            bdBasica + ".matriz_modulostercero where idCompania = '" +
+                                                            idCompania + "' and idEmpresa = '" +
+                                                            idEmpresa + "' and idModulo = 2", Conexion.ObtenerCnMysql());
 
                 MySqlDataAdapter rolDataAdapter = new MySqlDataAdapter(rolCommand);
                 DataSet rolDataSet = new DataSet();
