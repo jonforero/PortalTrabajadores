@@ -10,7 +10,6 @@ using System.Configuration;
 using System.Data;
 using PortalTrabajadores.Class;
 
-
 namespace PortalTrabajadores.Portal
 {
     #region Definicion de la Clase Pagina Maestra
@@ -203,6 +202,7 @@ namespace PortalTrabajadores.Portal
                 DataSet dsDataSet = new DataSet();
                 DataTable dtDataTable = null;
                 CnMysql Conexion = new CnMysql(Cn);
+
                 try
                 {
                     dsDataSet = (DataSet)Session["Menu"];
