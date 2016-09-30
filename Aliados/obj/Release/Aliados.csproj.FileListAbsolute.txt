@@ -102,3 +102,22 @@ D:\Proyectos\Sumi Nuevos\PortalTrabajadores\PortalTrabajadores\Aliados\obj\Relea
 D:\Proyectos\Sumi Nuevos\PortalTrabajadores\PortalTrabajadores\Aliados\obj\Release\RdlCompile.compiled
 D:\Proyectos\Sumi Nuevos\PortalTrabajadores\PortalTrabajadores\Aliados\obj\Release\PortalTrabajadores.dll
 D:\Proyectos\Sumi Nuevos\PortalTrabajadores\PortalTrabajadores\Aliados\obj\Release\PortalTrabajadores.pdb
+D:\Sumi\PortalTrabajadores\Aliados\bin\PortalTrabajadores.dll.config
+D:\Sumi\PortalTrabajadores\Aliados\bin\PortalTrabajadores.dll
+D:\Sumi\PortalTrabajadores\Aliados\bin\PortalTrabajadores.pdb
+D:\Sumi\PortalTrabajadores\Aliados\bin\EntityFramework.dll
+D:\Sumi\PortalTrabajadores\Aliados\bin\EntityFramework.SqlServer.dll
+D:\Sumi\PortalTrabajadores\Aliados\bin\HtmlAgilityPack.dll
+D:\Sumi\PortalTrabajadores\Aliados\bin\itextsharp.dll
+D:\Sumi\PortalTrabajadores\Aliados\bin\Microsoft.QualityTools.Testing.Fakes.dll
+D:\Sumi\PortalTrabajadores\Aliados\bin\EntityFramework.xml
+D:\Sumi\PortalTrabajadores\Aliados\bin\EntityFramework.SqlServer.xml
+D:\Sumi\PortalTrabajadores\Aliados\bin\HtmlAgilityPack.pdb
+D:\Sumi\PortalTrabajadores\Aliados\bin\HtmlAgilityPack.xml
+D:\Sumi\PortalTrabajadores\Aliados\bin\itextsharp.xml
+D:\Sumi\PortalTrabajadores\Aliados\bin\es\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Sumi\PortalTrabajadores\Aliados\obj\Release\Aliados.csprojResolveAssemblyReference.cache
+D:\Sumi\PortalTrabajadores\Aliados\obj\Release\RdlCompile.cache
+D:\Sumi\PortalTrabajadores\Aliados\obj\Release\RdlCompile.compiled
+D:\Sumi\PortalTrabajadores\Aliados\obj\Release\PortalTrabajadores.dll
+D:\Sumi\PortalTrabajadores\Aliados\obj\Release\PortalTrabajadores.pdb
