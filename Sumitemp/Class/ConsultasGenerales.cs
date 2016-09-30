@@ -69,6 +69,45 @@ namespace PortalTrabajadores.Class
         }
 
         /// <summary>
+        /// Comprueba si la compania esta activa
+        /// </summary>
+        /// <returns>True si esta activo</returns>
+        public bool ComprobarCompaniaActiva(string idCompania, string idEmpresa)
+        {
+            CnMysql Conexion = new CnMysql(CnTrabajadores);
+            
+            try
+            {
+                Conexion.AbrirCnMysql();
+                MySqlCommand cmd = new MySqlCommand("SELECT Activo_Compania FROM " +
+                                                    bdTrabajadores + ".companias where idCompania = '" +
+                                                    idCompania + "' and Empresas_idEmpresa = '" +
+                                                    idEmpresa + "'", Conexion.ObtenerCnMysql());
+                MySqlDataReader rd = cmd.ExecuteReader();
+
+                if (rd.Read())
+                {
+                    return rd["Activo_Compania"].ToString() == "1" ? true : false;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (Conexion.EstadoConexion() == ConnectionState.Open)
+                {
+                    Conexion.CerrarCnMysql();
+                }
+            }
+        }
+
+        /// <summary>
         /// Comprueba si la compania tiene el modulo de objetivos activos
         /// </summary>
         /// <returns>True si esta activo</returns>

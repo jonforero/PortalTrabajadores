@@ -89,6 +89,7 @@ namespace PortalTrabajadores.Portal
             ConsultasGenerales consultaGeneral = new ConsultasGenerales();
             bool objetivos = consultaGeneral.ComprobarModuloObjetivos(Session["compania"].ToString(), Session["idEmpresa"].ToString());
             bool comp = consultaGeneral.ComprobarModuloCompetencias(Session["compania"].ToString(), Session["idEmpresa"].ToString());
+            bool activa = consultaGeneral.ComprobarCompaniaActiva(Session["compania"].ToString(), Session["idEmpresa"].ToString());
             Session.Add("seguimientoPeriodo", consultaGeneral.ConsultarPeriodoSeguimiento(Session["compania"].ToString(), Session["idEmpresa"].ToString()));
             
             if (valor)
@@ -157,7 +158,7 @@ namespace PortalTrabajadores.Portal
                                 }
                                 else 
                                 {
-                                    if (drDataRow[1].ToString().Contains("Gestión Desempeño") && objetivos)
+                                    if (drDataRow[1].ToString().Contains("Gestión Desempeño") && objetivos && activa)
                                     {
                                         if (rolDataTable != null && rolDataTable.Rows.Count > 0)
                                         {
@@ -166,8 +167,8 @@ namespace PortalTrabajadores.Portal
                                             AddChildItem(ref miMenuItem, dtDataTable);
                                         }
                                     }
-                                    
-                                    if (drDataRow[1].ToString().Contains("Evaluar Competencias") && comp)
+
+                                    if (drDataRow[1].ToString().Contains("Evaluar Competencias") && comp && activa)
                                     {
                                         if (rolDataTable != null && rolDataTable.Rows.Count > 0)
                                         {
@@ -252,7 +253,7 @@ namespace PortalTrabajadores.Portal
                                 }
                                 else
                                 {
-                                    if (drDataRow[1].ToString().Contains("Gestión Desempeño") && objetivos)
+                                    if (drDataRow[1].ToString().Contains("Gestión Desempeño") && objetivos && activa)
                                     {
                                         if (rolDataTable != null && rolDataTable.Rows.Count > 0)
                                         {
@@ -262,7 +263,7 @@ namespace PortalTrabajadores.Portal
                                         }
                                     }
 
-                                    if (drDataRow[1].ToString().Contains("Evaluar Competencias") && comp)
+                                    if (drDataRow[1].ToString().Contains("Evaluar Competencias") && comp && activa)
                                     {
                                         if (rolDataTable != null && rolDataTable.Rows.Count > 0)
                                         {
