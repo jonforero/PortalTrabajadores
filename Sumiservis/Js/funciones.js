@@ -1,4 +1,16 @@
-﻿//Oculta los mensajes de error cuando clic en cajas de texto
+﻿function CargarCalendario() {
+    $(".jqCalendar").datepicker({
+        showOn: "button",
+        buttonImage: "../js/images/calendar.gif",
+        buttonImageOnly: true,
+        buttonText: "Seleccione la fecha",
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: "yy/mm/dd"
+    });
+}
+
+//Oculta los mensajes de error cuando clic en cajas de texto
 function hideOnKeyPress() {
     document.getElementById('LblMsj').style.display = 'none';
 }
@@ -6,6 +18,15 @@ function hideOnKeyPress() {
 //Función que permite solo Números
 function ValidaSoloNumeros(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+    return true;
+}
+
+//Función que permite solo Números
+function ValidaSoloNumerosFecha(evt) {
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (evt.keyCode == 47) return true; // tab
     if (charCode > 31 && (charCode < 48 || charCode > 57))
         return false;
     return true;

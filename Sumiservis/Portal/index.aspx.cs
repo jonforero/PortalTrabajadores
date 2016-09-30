@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using PortalTrabajadores.Class;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -23,8 +24,6 @@ namespace PortalTrabajadores.Portal
         /* ****************************************************************************/
         protected void Page_Load(object sender, EventArgs e)
         {
-            CnMysql Conexion = new CnMysql(Cn);
-
             if (Session["usuario"] == null)
             {
                 //Redirecciona a la pagina de login en caso de que el usuario no se haya autenticado
@@ -34,7 +33,12 @@ namespace PortalTrabajadores.Portal
             {
                 if (!IsPostBack)
                 {
-                    MySqlCommand scSqlCommand = new MySqlCommand("SELECT Contrasena_Activo FROM " + bd2 + ".empleados where Id_Empleado = '" + this.Session["usuario"].ToString() + "'", Conexion.ObtenerCnMysql());
+                    ConsultasGenerales consultaGeneral = new ConsultasGenerales();
+                    bool objetivos = consultaGeneral.ComprobarModuloObjetivos(Session["compania"].ToString(), Session["idEmpresa"].ToString());
+                    bool comp = consultaGeneral.ComprobarModuloCompetencias(Session["compania"].ToString(), Session["idEmpresa"].ToString());
+
+                    CnMysql Conexion = new CnMysql(Cn);
+                    MySqlCommand scSqlCommand = new MySqlCommand("SELECT Contrasena_Activo, IdAreas, IdCargos, Id_Rol FROM " + bd2 + ".empleados where Id_Empleado = '" + this.Session["usuario"].ToString() + "'", Conexion.ObtenerCnMysql());
                     MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
                     DataSet dsDataSet = new DataSet();
                     DataTable dtDataTable = null;
@@ -47,11 +51,28 @@ namespace PortalTrabajadores.Portal
 
                         if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                         {
+                            InfoJefeEmpleado info = new InfoJefeEmpleado();
+
                             if (dtDataTable.Rows[0].ItemArray[0].ToString() == "1")
                             {
-                                Response.Redirect("PrimeraContrasena.aspx");
+                                Response.Redirect("PrimeraContrasena.aspx", false);
                             }
-                        }
+                            else if (dtDataTable.Rows[0].ItemArray[1].ToString() == "" ||
+                                     dtDataTable.Rows[0].ItemArray[2].ToString() == "")
+                            {
+                                if (objetivos || comp)
+                                {
+                                    Session.Add("AsignarAreaCargo", "1");
+                                    Response.Redirect("AsignarAreaCargo.aspx", false);
+                                }
+                            }
+                            else if (!info.ConsultarEstadoJefe(this.Session["usuario"].ToString()) &&
+                                     dtDataTable.Rows[0].ItemArray[3].ToString() == "2")
+                            {
+                                Session.Add("Seleccionjefe", "1");
+                                Response.Redirect("Seleccionjefe.aspx", false);
+                            }
+                        }      
                     }
                     catch (Exception ex)
                     {
