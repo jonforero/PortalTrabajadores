@@ -20,4 +20,9 @@
             <img src="../Img/Banner.png" alt="Banner publicitario" />
         </div>
     </Article>
+    <div style="display:none">
+        <div id="msjAdvertencia" title="">
+            <div id="mensaje"></div>
+        </div>
+    </div>
 </asp:Content>

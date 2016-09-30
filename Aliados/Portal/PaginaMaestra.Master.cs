@@ -8,6 +8,7 @@ using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.Data;
+using PortalTrabajadores.Class;
 
 namespace PortalTrabajadores.Portal
 {
@@ -16,6 +17,7 @@ namespace PortalTrabajadores.Portal
     {
         string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
         string bd1 = ConfigurationManager.AppSettings["BD1"].ToString();
+        string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
 
         #region Definicion de los Metodos de la Clase
 
@@ -84,25 +86,59 @@ namespace PortalTrabajadores.Portal
         /* ****************************************************************************/
         protected void bindMenuControl(Boolean valor)
         {
+            ConsultasGenerales consultaGeneral = new ConsultasGenerales();
+            bool objetivos = consultaGeneral.ComprobarModuloObjetivos(Session["compania"].ToString(), Session["idEmpresa"].ToString());
+            bool comp = consultaGeneral.ComprobarModuloCompetencias(Session["compania"].ToString(), Session["idEmpresa"].ToString());
+            bool activa = consultaGeneral.ComprobarCompaniaActiva(Session["compania"].ToString(), Session["idEmpresa"].ToString());
+            Session.Add("seguimientoPeriodo", consultaGeneral.ConsultarPeriodoSeguimiento(Session["compania"].ToString(), Session["idEmpresa"].ToString()));
+
             if (valor)
             {
                 CnMysql Conexion = new CnMysql(Cn);
-                MySqlCommand scSqlCommand = new MySqlCommand("SELECT idOption_Menu, descripcion, idparent_option_Menu, url FROM " + bd1 + ".Options_Menu WHERE idEmpresa = 'AE' and TipoPortal = 'T'", Conexion.ObtenerCnMysql());
-                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
-                DataSet dsDataSet = new DataSet();
+                MySqlCommand cmd = new MySqlCommand();
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter();
                 DataTable dtDataTable = null;
+                DataSet dsDataSet = new DataSet();
+
                 try
                 {
                     Conexion.AbrirCnMysql();
+                    sdaSqlDataAdapter = new MySqlDataAdapter(bd1 + ".CargueMenu", Conexion.ObtenerCnMysql());
+                    sdaSqlDataAdapter.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    sdaSqlDataAdapter.SelectCommand.Parameters.AddWithValue("@idEmpleado", Session["usuario"].ToString());
+                    sdaSqlDataAdapter.SelectCommand.Parameters.AddWithValue("@Id_Empresa", "AE");
+                    sdaSqlDataAdapter.SelectCommand.Parameters.AddWithValue("@TipoPortal", "T");
+                    sdaSqlDataAdapter.SelectCommand.Parameters.AddWithValue("@IdRol", Session["rol"].ToString());
+                    sdaSqlDataAdapter.SelectCommand.Parameters.AddWithValue("@Externo", this.Session["Externo"].ToString());
                     sdaSqlDataAdapter.Fill(dsDataSet);
-                    dtDataTable = dsDataSet.Tables[0];
+
+                    dtDataTable = dsDataSet.Tables[1];
                     if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                     {
                         foreach (DataRow drDataRow in dtDataTable.Rows)
                         {
                             if (Convert.ToInt32(drDataRow[0]) == Convert.ToInt32(drDataRow[2]))
                             {
-                                MySqlCommand rolCommand = new MySqlCommand("SELECT Id_Menu FROM " + bd1 + ".roles_menu WHERE Id_Rol = " + this.Session["rol"].ToString() + " AND Id_Menu = " + drDataRow[2], Conexion.ObtenerCnMysql());
+                                MySqlCommand rolCommand;
+
+                                if (this.Session["Externo"].ToString() == "False")
+                                {
+                                    rolCommand = new MySqlCommand(
+                                                            "SELECT Id_Menu FROM " + bd1 +
+                                                            ".roles_menu WHERE (Id_Rol = " +
+                                                            this.Session["rol"].ToString() + " OR Id_Rol = 2)" +
+                                                            " AND Id_Menu = " +
+                                                            drDataRow[2], Conexion.ObtenerCnMysql());
+                                }
+                                else
+                                {
+                                    rolCommand = new MySqlCommand(
+                                                            "SELECT Id_Menu FROM " + bd1 +
+                                                            ".roles_menu WHERE Id_Rol = " +
+                                                            this.Session["rol"].ToString() + " AND Id_Menu = " +
+                                                            drDataRow[2], Conexion.ObtenerCnMysql());
+                                }
+
                                 MySqlDataAdapter rolDataAdapter = new MySqlDataAdapter(rolCommand);
                                 DataSet rolDataSet = new DataSet();
                                 DataTable rolDataTable = null;
@@ -110,11 +146,37 @@ namespace PortalTrabajadores.Portal
                                 rolDataAdapter.Fill(rolDataSet);
                                 rolDataTable = rolDataSet.Tables[0];
 
-                                if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                                if (!drDataRow[1].ToString().Contains("Gestión Desempeño") &&
+                                    !drDataRow[1].ToString().Contains("Evaluar Competencias"))
                                 {
-                                    MenuItem miMenuItem = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
-                                    this.MenuPrincipal.Items.Add(miMenuItem);
-                                    AddChildItem(ref miMenuItem, dtDataTable);
+                                    if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                                    {
+                                        MenuItem miMenuItem = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                                        this.MenuPrincipal.Items.Add(miMenuItem);
+                                        AddChildItem(ref miMenuItem, dtDataTable);
+                                    }
+                                }
+                                else
+                                {
+                                    if (drDataRow[1].ToString().Contains("Gestión Desempeño") && objetivos && activa)
+                                    {
+                                        if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                                        {
+                                            MenuItem miMenuItem = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                                            this.MenuPrincipal.Items.Add(miMenuItem);
+                                            AddChildItem(ref miMenuItem, dtDataTable);
+                                        }
+                                    }
+
+                                    if (drDataRow[1].ToString().Contains("Evaluar Competencias") && comp && activa)
+                                    {
+                                        if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                                        {
+                                            MenuItem miMenuItem = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                                            this.MenuPrincipal.Items.Add(miMenuItem);
+                                            AddChildItem(ref miMenuItem, dtDataTable);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -127,7 +189,7 @@ namespace PortalTrabajadores.Portal
                 }
                 finally
                 {
-                    if (Conexion.EstadoConexion()  == ConnectionState.Open)
+                    if (Conexion.EstadoConexion() == ConnectionState.Open)
                     {
                         Conexion.CerrarCnMysql();
                         dtDataTable.Dispose();
@@ -144,14 +206,33 @@ namespace PortalTrabajadores.Portal
                 try
                 {
                     dsDataSet = (DataSet)Session["Menu"];
-                    dtDataTable = dsDataSet.Tables[0];
+                    dtDataTable = dsDataSet.Tables[1];
                     if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                     {
                         foreach (DataRow drDataRow in dtDataTable.Rows)
                         {
                             if (Convert.ToInt32(drDataRow[0]) == Convert.ToInt32(drDataRow[2]))
                             {
-                                MySqlCommand rolCommand = new MySqlCommand("SELECT Id_Menu FROM " + bd1 + ".roles_menu WHERE Id_Rol = " + this.Session["rol"].ToString() + " AND Id_Menu = " + drDataRow[2], Conexion.ObtenerCnMysql());
+                                MySqlCommand rolCommand;
+
+                                if (this.Session["Externo"].ToString() == "False")
+                                {
+                                    rolCommand = new MySqlCommand(
+                                                            "SELECT Id_Menu FROM " + bd1 +
+                                                            ".roles_menu WHERE (Id_Rol = " +
+                                                            this.Session["rol"].ToString() + " OR Id_Rol = 2)" +
+                                                            " AND Id_Menu = " +
+                                                            drDataRow[2], Conexion.ObtenerCnMysql());
+                                }
+                                else
+                                {
+                                    rolCommand = new MySqlCommand(
+                                                            "SELECT Id_Menu FROM " + bd1 +
+                                                            ".roles_menu WHERE Id_Rol = " +
+                                                            this.Session["rol"].ToString() + " AND Id_Menu = " +
+                                                            drDataRow[2], Conexion.ObtenerCnMysql());
+                                }
+
                                 MySqlDataAdapter rolDataAdapter = new MySqlDataAdapter(rolCommand);
                                 DataSet rolDataSet = new DataSet();
                                 DataTable rolDataTable = null;
@@ -159,11 +240,37 @@ namespace PortalTrabajadores.Portal
                                 rolDataAdapter.Fill(rolDataSet);
                                 rolDataTable = rolDataSet.Tables[0];
 
-                                if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                                if (!drDataRow[1].ToString().Contains("Gestión Desempeño") &&
+                                    !drDataRow[1].ToString().Contains("Evaluar Competencias"))
                                 {
-                                    MenuItem miMenuItem = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
-                                    this.MenuPrincipal.Items.Add(miMenuItem);
-                                    AddChildItem(ref miMenuItem, dtDataTable);
+                                    if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                                    {
+                                        MenuItem miMenuItem = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                                        this.MenuPrincipal.Items.Add(miMenuItem);
+                                        AddChildItem(ref miMenuItem, dtDataTable);
+                                    }
+                                }
+                                else
+                                {
+                                    if (drDataRow[1].ToString().Contains("Gestión Desempeño") && objetivos && activa)
+                                    {
+                                        if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                                        {
+                                            MenuItem miMenuItem = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                                            this.MenuPrincipal.Items.Add(miMenuItem);
+                                            AddChildItem(ref miMenuItem, dtDataTable);
+                                        }
+                                    }
+
+                                    if (drDataRow[1].ToString().Contains("Evaluar Competencias") && comp && activa)
+                                    {
+                                        if (rolDataTable != null && rolDataTable.Rows.Count > 0)
+                                        {
+                                            MenuItem miMenuItem = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                                            this.MenuPrincipal.Items.Add(miMenuItem);
+                                            AddChildItem(ref miMenuItem, dtDataTable);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -196,9 +303,37 @@ namespace PortalTrabajadores.Portal
             {
                 if (Convert.ToInt32(drDataRow[2]) == Convert.ToInt32(miMenuItem.Value) && Convert.ToInt32(drDataRow[0]) != Convert.ToInt32(drDataRow[2]))
                 {
-                    MenuItem miMenuItemChild = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
-                    miMenuItem.ChildItems.Add(miMenuItemChild);
-                    AddChildItem(ref miMenuItemChild, dtDataTable);
+                    if (drDataRow[1].ToString().Contains("Fijación Seguimiento 1") ||
+                        drDataRow[1].ToString().Contains("Primer Seguimiento") ||
+                        drDataRow[1].ToString().Contains("Fijación Seguimiento 2") ||
+                        drDataRow[1].ToString().Contains("Segundo Seguimiento"))
+                    {
+                        if (Session["seguimientoPeriodo"].ToString() != "1")
+                        {
+                            if (Session["seguimientoPeriodo"].ToString() == "2")
+                            {
+                                if (drDataRow[1].ToString().Contains("Fijación Seguimiento 1") ||
+                                   drDataRow[1].ToString().Contains("Primer Seguimiento"))
+                                {
+                                    MenuItem miMenuItemChild = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                                    miMenuItem.ChildItems.Add(miMenuItemChild);
+                                    AddChildItem(ref miMenuItemChild, dtDataTable);
+                                }
+                            }
+                            else
+                            {
+                                MenuItem miMenuItemChild = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                                miMenuItem.ChildItems.Add(miMenuItemChild);
+                                AddChildItem(ref miMenuItemChild, dtDataTable);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MenuItem miMenuItemChild = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                        miMenuItem.ChildItems.Add(miMenuItemChild);
+                        AddChildItem(ref miMenuItemChild, dtDataTable);
+                    }
                 }
             }
         }

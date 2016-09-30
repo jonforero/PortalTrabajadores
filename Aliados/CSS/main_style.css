@@ -118,6 +118,7 @@ footer p{
 }
 
 /*Estos estilos son de páginas internas*/
+
 h2 {
     color: #929292;
     font-size: 2em;
@@ -147,7 +148,18 @@ h2 {
     border: 1px solid #000000;
 }
 
+#Container_UpdatePanel1 #Container_Container_UpdatePanelObservaciones table{
+    border: 1px solid #000000;
+    margin: 20px auto;
+    text-align: left;
+}
+
 #Container_UpdatePanel1 td, th{
+    padding: 0.3em;
+}
+
+#Container_UpdatePanel1 #Container_Container_UpdatePanelObservaciones td, th {
+    border: 0 none;
     padding: 0.3em;
 }
 
@@ -156,6 +168,14 @@ h2 {
     font-weight: bold;
     color: #FFFFFF;
     border: 1px solid #000000;
+    text-align: center;
+}
+
+#Container_UpdatePanel1 #Container_Container_UpdatePanelObservaciones th {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #000000;
+    color: #75bf4f;
+    font-weight: bold;
     text-align: center;
 }
 
@@ -192,4 +212,19 @@ h2 {
 .PaginaInicio h2{
     color: #929292;
     font-size: 2em;
+}
+
+/*Estilos Observaciones*/
+
+.ObservacionesCSS {
+    color: #ff3434;
+    font-size: 10pt;
+}
+
+.tablaInfo{
+    margin: 0 !important;
+}
+
+.tablaInfo th{
+    display: none;
 }

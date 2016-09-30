@@ -46,8 +46,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\AjaxMin.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>packages\HtmlAgilityPack.1.4.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="itextsharp">
       <HintPath>packages\iTextSharp.5.5.0\lib\itextsharp.dll</HintPath>
@@ -85,26 +94,48 @@
     <Content Include="CSS\VentanaModal.css" />
     <Content Include="CSS\main_style.css" />
     <Content Include="Html\Aliados.html" />
+    <Content Include="Img\add.gif" />
+    <Content Include="Img\Alert.png" />
     <Content Include="Img\Aliados.jpg" />
     <Content Include="Img\Banner.png" />
+    <Content Include="Img\delete.gif" />
+    <Content Include="Img\edit.gif" />
     <Content Include="Img\Firma.png" />
+    <Content Include="Img\loader.gif" />
+    <Content Include="Img\loader_Red.gif" />
     <Content Include="Img\Logo.png" />
     <Content Include="Img\Logo_Aliados.jpg" />
     <Content Include="Img\Nombre.png" />
     <Content Include="fonts\icomoon.svg" />
     <Content Include="Img\fondo_body.jpg" />
+    <Content Include="Img\ok.gif" />
     <Content Include="Img\pdf.gif" />
     <Content Include="Img\printButton.png" />
+    <Content Include="Img\search.gif" />
+    <Content Include="Img\unchecked.png" />
     <Content Include="Js\funciones.js" />
-    <Content Include="lib\ClosedXML.dll" />
-    <Content Include="lib\ClosedXML.XML" />
-    <Content Include="lib\DocumentFormat.OpenXml.dll" />
+    <Content Include="Js\images\calendar.gif" />
+    <Content Include="Js\images\ui-icons_444444_256x240.png" />
+    <Content Include="Js\images\ui-icons_555555_256x240.png" />
+    <Content Include="Js\images\ui-icons_777620_256x240.png" />
+    <Content Include="Js\images\ui-icons_777777_256x240.png" />
+    <Content Include="Js\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="Js\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Js\jquery-1.10.2.js" />
+    <Content Include="Js\jquery-ui.css" />
+    <Content Include="Js\jquery-ui.js" />
     <Content Include="Portal\Actualizadatos.aspx" />
+    <Content Include="Portal\AsignarAreaCargo.aspx" />
     <Content Include="Portal\Certificado.aspx" />
     <Content Include="Portal\Comprobantes.aspx" />
     <Content Include="Portal\Contactenos.aspx" />
     <Content Include="Portal\Cesantias.aspx" />
     <Content Include="Portal\EstadoFondo.aspx" />
+    <Content Include="Portal\EvaluarCompetencias.aspx" />
+    <Content Include="Portal\FijarObjetivos.aspx" />
+    <Content Include="Portal\FijarSeguimiento1.aspx" />
+    <Content Include="Portal\FijarSeguimiento2.aspx" />
+    <Content Include="Portal\FijarSeguimientoFinal.aspx" />
     <Content Include="Portal\index.aspx" />
     <Content Include="Portal\IngRetenciones.aspx" />
     <Content Include="Portal\Laboral.aspx" />
@@ -140,6 +171,11 @@
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <None Include="Properties\PublishProfiles\PerfilTrabajador.pubxml" />
     <Content Include="Portal\Retenciones.aspx" />
+    <Content Include="Portal\Seleccionjefe.aspx" />
+    <Content Include="Portal\ValidarObjetivos.aspx" />
+    <Content Include="Portal\ValidarSeguimiento1.aspx" />
+    <Content Include="Portal\ValidarSeguimiento2.aspx" />
+    <Content Include="Portal\ValidarSeguimientoFinal.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -159,10 +195,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class\CnMysql.cs" />
+    <Compile Include="Class\ConsultasGenerales.cs" />
+    <Compile Include="Class\InfoJefeEmpleado.cs" />
     <Compile Include="Class\LlenadoDropBox.cs" />
     <Compile Include="Class\ManejoLog.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Class\SqlServer.cs" />
     <Compile Include="DataSet1.cs">
       <DependentUpon>DataSet1.xsd</DependentUpon>
       <SubType>Component</SubType>
@@ -188,6 +227,13 @@
     </Compile>
     <Compile Include="Portal\Actualizadatos.aspx.designer.cs">
       <DependentUpon>Actualizadatos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\AsignarAreaCargo.aspx.cs">
+      <DependentUpon>AsignarAreaCargo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\AsignarAreaCargo.aspx.designer.cs">
+      <DependentUpon>AsignarAreaCargo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Portal\Certificado.aspx.cs">
       <DependentUpon>Certificado.aspx</DependentUpon>
@@ -223,6 +269,41 @@
     </Compile>
     <Compile Include="Portal\EstadoFondo.aspx.designer.cs">
       <DependentUpon>EstadoFondo.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\EvaluarCompetencias.aspx.cs">
+      <DependentUpon>EvaluarCompetencias.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\EvaluarCompetencias.aspx.designer.cs">
+      <DependentUpon>EvaluarCompetencias.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\FijarObjetivos.aspx.cs">
+      <DependentUpon>FijarObjetivos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\FijarObjetivos.aspx.designer.cs">
+      <DependentUpon>FijarObjetivos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\FijarSeguimiento1.aspx.cs">
+      <DependentUpon>FijarSeguimiento1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\FijarSeguimiento1.aspx.designer.cs">
+      <DependentUpon>FijarSeguimiento1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\FijarSeguimiento2.aspx.cs">
+      <DependentUpon>FijarSeguimiento2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\FijarSeguimiento2.aspx.designer.cs">
+      <DependentUpon>FijarSeguimiento2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\FijarSeguimientoFinal.aspx.cs">
+      <DependentUpon>FijarSeguimientoFinal.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\FijarSeguimientoFinal.aspx.designer.cs">
+      <DependentUpon>FijarSeguimientoFinal.aspx</DependentUpon>
     </Compile>
     <Compile Include="Portal\index.aspx.cs">
       <DependentUpon>index.aspx</DependentUpon>
@@ -293,6 +374,41 @@
     </Compile>
     <Compile Include="Portal\Segsocial.aspx.designer.cs">
       <DependentUpon>Segsocial.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\Seleccionjefe.aspx.cs">
+      <DependentUpon>Seleccionjefe.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\Seleccionjefe.aspx.designer.cs">
+      <DependentUpon>Seleccionjefe.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\ValidarObjetivos.aspx.cs">
+      <DependentUpon>ValidarObjetivos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\ValidarObjetivos.aspx.designer.cs">
+      <DependentUpon>ValidarObjetivos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\ValidarSeguimiento1.aspx.cs">
+      <DependentUpon>ValidarSeguimiento1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\ValidarSeguimiento1.aspx.designer.cs">
+      <DependentUpon>ValidarSeguimiento1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\ValidarSeguimiento2.aspx.cs">
+      <DependentUpon>ValidarSeguimiento2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\ValidarSeguimiento2.aspx.designer.cs">
+      <DependentUpon>ValidarSeguimiento2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Portal\ValidarSeguimientoFinal.aspx.cs">
+      <DependentUpon>ValidarSeguimientoFinal.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Portal\ValidarSeguimientoFinal.aspx.designer.cs">
+      <DependentUpon>ValidarSeguimientoFinal.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecuperarContrasena.aspx.cs">

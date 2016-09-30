@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using PortalTrabajadores.Class;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -14,6 +15,7 @@ namespace PortalTrabajadores.Portal
     {
         string Cn = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
         string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
+        ConsultasGenerales consultas;
 
         #region Definicion de los Metodos de la Clase
 
@@ -34,19 +36,14 @@ namespace PortalTrabajadores.Portal
         protected void btnlogin_Click(object sender, EventArgs e)
         {
             Page.Validate();
-            CnMysql Conexion = new CnMysql(Cn);
+            consultas = new ConsultasGenerales();
+
             try
             {
-                MySqlCommand scSqlCommand = new MySqlCommand("SELECT Id_Empleado, Id_Rol, Nombres_Empleado FROM " + bd2 + ".empleados where Id_Empleado = '" + this.txtuser.Text + "' and Contrasena_Empleado = '" + this.txtPass.Text + "' and Companias_idEmpresa = 'AE'", Conexion.ObtenerCnMysql());
-                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
-                DataSet dsDataSet = new DataSet();
-                DataTable dtDataTable = null;
                 //Asegura que los controles de la pagina hayan sido validados
                 if (Page.IsValid)
                 {
-                    Conexion.AbrirCnMysql();
-                    sdaSqlDataAdapter.Fill(dsDataSet);
-                    dtDataTable = dsDataSet.Tables[0];
+                    DataTable dtDataTable = consultas.InicioSesion(txtuser.Text, txtPass.Text);
 
                     if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                     {
@@ -54,6 +51,24 @@ namespace PortalTrabajadores.Portal
                         Session.Add("usuario", txtuser.Text);
                         Session.Add("rol", dtDataTable.Rows[0].ItemArray[1].ToString());
                         Session.Add("nombre", dtDataTable.Rows[0].ItemArray[2].ToString());
+                        Session.Add("compania", dtDataTable.Rows[0].ItemArray[3].ToString());
+                        Session.Add("idEmpresa", dtDataTable.Rows[0].ItemArray[4].ToString());
+
+                        if (dtDataTable.Rows[0].ItemArray[5] != null)
+                        {
+                            if (dtDataTable.Rows[0].ItemArray[5].ToString() != string.Empty)
+                            {
+                                Session.Add("Externo", Convert.ToBoolean(dtDataTable.Rows[0].ItemArray[5]));
+                            }
+                            else
+                            {
+                                Session.Add("Externo", false);
+                            }
+                        }
+                        else
+                        {
+                            Session.Add("Externo", false);
+                        }
 
                         //redirecciona al usuario a la pagina principal del Portal
                         Response.Redirect("~/Portal/index.aspx");
@@ -67,10 +82,6 @@ namespace PortalTrabajadores.Portal
             catch 
             {
                 MensajeError("El sistema no se encuentra disponible en este momento. Intente más tarde.");
-            }
-            finally
-            {
-                Conexion.CerrarCnMysql();
             }
         }
         #endregion
