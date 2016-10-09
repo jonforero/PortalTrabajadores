@@ -94,6 +94,8 @@ namespace PortalTrabajadores.Portal
                     string filename = System.IO.Path.Combine(ruta, filepath, filename2);
                     if (System.IO.File.Exists(filename))
                     {
+                        Response.ClearContent();
+                        Response.ClearHeaders();
                         Response.Clear();
                         //Response.ContentType = "application/octet-stream";
                         //Response.AddHeader("Content-Disposition", "attachment; filename=" + filename2);
@@ -101,9 +103,9 @@ namespace PortalTrabajadores.Portal
                         Response.Buffer = true;
                         Response.ContentType = "application/pdf";
                         Response.AddHeader("Content-Disposition", "attachment; filename=" + filename2);
-                        Response.WriteFile(filename);
+                        Response.WriteFile(filename);                        
                         Response.Flush();
-                        Response.Close();
+                        Response.End();
                     }
                     else
                     {

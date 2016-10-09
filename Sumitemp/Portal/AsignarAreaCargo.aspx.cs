@@ -15,7 +15,8 @@ namespace PortalTrabajadores.Portal
     public partial class AsignarAreaCargo : System.Web.UI.Page
     {
         string Cn1 = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString2"].ConnectionString.ToString();
-        string Cn2 = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();        
+        string Cn2 = ConfigurationManager.ConnectionStrings["trabajadoresConnectionString"].ConnectionString.ToString();
+        string bd1 = ConfigurationManager.AppSettings["BD1"].ToString();
         string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
         MySqlConnection MySqlCn;
 
@@ -61,6 +62,18 @@ namespace PortalTrabajadores.Portal
                         if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                         {
                             this.CargarInfoCliente(Session["usuario"].ToString(), false);
+                        }
+
+                        scSqlCommand = new MySqlCommand("SELECT descripcion FROM " + bd1 + ".Options_Menu WHERE url = 'AsignarAreaCargo.aspx'", MySqlCn);
+                        sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
+                        dsDataSet = new DataSet();
+                        dtDataTable = null;
+
+                        sdaSqlDataAdapter.Fill(dsDataSet);
+                        dtDataTable = dsDataSet.Tables[0];
+                        if (dtDataTable != null && dtDataTable.Rows.Count > 0)
+                        {
+                            this.lblTitulo.Text = dtDataTable.Rows[0].ItemArray[0].ToString();
                         }
 
                         UpdatePanel1.Update();
@@ -218,6 +231,7 @@ namespace PortalTrabajadores.Portal
         {
             this.LimpiarMensajes();
             CnMysql Conexion = new CnMysql(Cn2);
+            string msgError = string.Empty;
 
             try
             {
@@ -244,6 +258,10 @@ namespace PortalTrabajadores.Portal
 
                     ddlArea.Items.Insert(0, new ListItem("---Seleccione---", "0", true));
                 }
+                else
+                {
+                    msgError = "No se han creado areas.";
+                }
 
                 cmd = new MySqlCommand(bd2 + ".sp_ConsultaCargosEmp", Conexion.ObtenerCnMysql());
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -265,6 +283,15 @@ namespace PortalTrabajadores.Portal
                     ddlCargo.DataBind();
 
                     ddlCargo.Items.Insert(0, new ListItem("---Seleccione---", "0", true));
+                }
+                else
+                {
+                    msgError += "No se han creado cargos.";
+                }
+
+                if (msgError != string.Empty)
+                {
+                    MensajeError(msgError + " Comuniquese con su admnistrador");
                 }
             }
             catch (Exception E)

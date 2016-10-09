@@ -130,6 +130,7 @@ D:\Sumi\PortalTrabajadores\Sumiservis\bin\HtmlAgilityPack.pdb
 D:\Sumi\PortalTrabajadores\Sumiservis\bin\HtmlAgilityPack.xml
 D:\Sumi\PortalTrabajadores\Sumiservis\bin\itextsharp.xml
 D:\Sumi\PortalTrabajadores\Sumiservis\bin\es\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Sumi\PortalTrabajadores\Sumiservis\obj\Debug\SumiServis.csprojResolveAssemblyReference.cache
 D:\Sumi\PortalTrabajadores\Sumiservis\obj\Debug\RdlCompile.cache
 D:\Sumi\PortalTrabajadores\Sumiservis\obj\Debug\RdlCompile.compiled
 D:\Sumi\PortalTrabajadores\Sumiservis\obj\Debug\PortalTrabajadores.dll
