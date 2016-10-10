@@ -260,7 +260,7 @@ namespace PortalTrabajadores.Portal
                 }
                 else
                 {
-                    msgError = "No se han creado areas.";
+                    msgError = "No se han creado áreas. ";
                 }
 
                 cmd = new MySqlCommand(bd2 + ".sp_ConsultaCargosEmp", Conexion.ObtenerCnMysql());
@@ -286,12 +286,12 @@ namespace PortalTrabajadores.Portal
                 }
                 else
                 {
-                    msgError += "No se han creado cargos.";
+                    msgError += "No se han creado cargos. ";
                 }
 
                 if (msgError != string.Empty)
                 {
-                    MensajeError(msgError + " Comuniquese con su admnistrador");
+                    MensajeError(msgError + "Comuniquese con su administrador.");
                 }
             }
             catch (Exception E)

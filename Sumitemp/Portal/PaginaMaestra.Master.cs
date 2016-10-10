@@ -300,6 +300,10 @@ namespace PortalTrabajadores.Portal
         /* ****************************************************************************/
         protected void AddChildItem(ref MenuItem miMenuItem, DataTable dtDataTable)
         {
+            ConsultasGenerales consultaGeneral = new ConsultasGenerales();
+            bool objetivos = consultaGeneral.ComprobarModuloObjetivos(Session["compania"].ToString(), Session["idEmpresa"].ToString());
+            bool comp = consultaGeneral.ComprobarModuloCompetencias(Session["compania"].ToString(), Session["idEmpresa"].ToString());
+            
             foreach (DataRow drDataRow in dtDataTable.Rows)
             {
                 if (Convert.ToInt32(drDataRow[2]) == Convert.ToInt32(miMenuItem.Value) && Convert.ToInt32(drDataRow[0]) != Convert.ToInt32(drDataRow[2]))
@@ -307,9 +311,19 @@ namespace PortalTrabajadores.Portal
                     if (drDataRow[1].ToString().Contains("Fijación Seguimiento 1") ||
                         drDataRow[1].ToString().Contains("Primer Seguimiento") ||
                         drDataRow[1].ToString().Contains("Fijación Seguimiento 2") ||
-                        drDataRow[1].ToString().Contains("Segundo Seguimiento"))
+                        drDataRow[1].ToString().Contains("Segundo Seguimiento") ||
+                        drDataRow[1].ToString().Contains("Área y Cargo"))
                     {
-                        if (Session["seguimientoPeriodo"].ToString() != "1")
+                        if (drDataRow[1].ToString().Contains("Área y Cargo"))
+                        {
+                            if (objetivos || comp)
+                            {
+                                MenuItem miMenuItemChild = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
+                                miMenuItem.ChildItems.Add(miMenuItemChild);
+                                AddChildItem(ref miMenuItemChild, dtDataTable);
+                            }
+                        }
+                        else if (Session["seguimientoPeriodo"].ToString() != "1")
                         {
                             if (Session["seguimientoPeriodo"].ToString() == "2")
                             {
@@ -320,14 +334,14 @@ namespace PortalTrabajadores.Portal
                                     miMenuItem.ChildItems.Add(miMenuItemChild);
                                     AddChildItem(ref miMenuItemChild, dtDataTable);
                                 }
-                            }
+                            }                            
                             else
                             {
                                 MenuItem miMenuItemChild = new MenuItem(Convert.ToString(drDataRow[1]), Convert.ToString(drDataRow[0]), String.Empty, Convert.ToString(drDataRow[3]));
                                 miMenuItem.ChildItems.Add(miMenuItemChild);
                                 AddChildItem(ref miMenuItemChild, dtDataTable);
                             }                            
-                        }                        
+                        }
                     }
                     else 
                     {
