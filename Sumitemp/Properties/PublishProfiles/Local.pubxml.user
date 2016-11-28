@@ -208,7 +208,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>04/04/2016 22:39:28</publishTime>
     </File>
     <File Include="Html/SumiTemp.html">
-      <publishTime>04/04/2016 22:39:28</publishTime>
+      <publishTime>11/28/2016 10:38:30</publishTime>
     </File>
     <File Include="Img/add.gif">
       <publishTime>04/16/2016 10:21:44</publishTime>
@@ -229,7 +229,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>04/07/2016 16:14:00</publishTime>
     </File>
     <File Include="Img/Firma.png">
-      <publishTime>10/09/2016 14:43:56</publishTime>
+      <publishTime>11/16/2016 22:46:15</publishTime>
     </File>
     <File Include="Img/fondo_body.jpg">
       <publishTime>04/04/2016 22:39:28</publishTime>
