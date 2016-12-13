@@ -82,7 +82,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="bin/PortalTrabajadores.dll">
-      <publishTime>10/09/2016 21:11:44</publishTime>
+      <publishTime>12/13/2016 01:29:33</publishTime>
     </File>
     <File Include="bin/pt/AjaxControlToolkit.resources.dll">
       <publishTime>01/01/0001 00:00:00</publishTime>
@@ -202,7 +202,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>03/06/2016 15:00:55</publishTime>
     </File>
     <File Include="Html/SumiServis.html">
-      <publishTime>03/06/2016 15:00:55</publishTime>
+      <publishTime>11/28/2016 10:42:04</publishTime>
     </File>
     <File Include="Img/add.gif">
       <publishTime>09/25/2016 11:24:51</publishTime>
@@ -223,7 +223,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>09/25/2016 11:24:51</publishTime>
     </File>
     <File Include="Img/Firma.png">
-      <publishTime>10/09/2016 14:49:01</publishTime>
+      <publishTime>11/16/2016 22:46:15</publishTime>
     </File>
     <File Include="Img/fondo_body.jpg">
       <publishTime>03/06/2016 15:00:55</publishTime>
@@ -340,7 +340,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>03/06/2016 15:00:55</publishTime>
     </File>
     <File Include="Portal/EvaluarCompetencias.aspx">
-      <publishTime>09/25/2016 11:29:16</publishTime>
+      <publishTime>12/13/2016 00:45:28</publishTime>
     </File>
     <File Include="Portal/FijarObjetivos.aspx">
       <publishTime>09/25/2016 11:29:50</publishTime>

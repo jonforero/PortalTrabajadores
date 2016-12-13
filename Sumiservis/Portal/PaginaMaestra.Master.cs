@@ -87,8 +87,8 @@ namespace PortalTrabajadores.Portal
         protected void bindMenuControl(Boolean valor)
         {
             ConsultasGenerales consultaGeneral = new ConsultasGenerales();
-            bool objetivos = consultaGeneral.ComprobarModuloObjetivos(Session["compania"].ToString(), Session["idEmpresa"].ToString());
-            bool comp = consultaGeneral.ComprobarModuloCompetencias(Session["compania"].ToString(), Session["idEmpresa"].ToString());
+            bool objetivos = consultaGeneral.ComprobarModuloObjetivos(Session["nit"].ToString(), Session["idEmpresa"].ToString());
+            bool comp = consultaGeneral.ComprobarModuloCompetencias(Session["nit"].ToString(), Session["idEmpresa"].ToString());
             bool activa = consultaGeneral.ComprobarCompaniaActiva(Session["compania"].ToString(), Session["idEmpresa"].ToString());
             Session.Add("seguimientoPeriodo", consultaGeneral.ConsultarPeriodoSeguimiento(Session["compania"].ToString(), Session["idEmpresa"].ToString()));
 
@@ -301,8 +301,8 @@ namespace PortalTrabajadores.Portal
         protected void AddChildItem(ref MenuItem miMenuItem, DataTable dtDataTable)
         {
             ConsultasGenerales consultaGeneral = new ConsultasGenerales();
-            bool objetivos = consultaGeneral.ComprobarModuloObjetivos(Session["compania"].ToString(), Session["idEmpresa"].ToString());
-            bool comp = consultaGeneral.ComprobarModuloCompetencias(Session["compania"].ToString(), Session["idEmpresa"].ToString());
+            bool objetivos = consultaGeneral.ComprobarModuloObjetivos(Session["nit"].ToString(), Session["idEmpresa"].ToString());
+            bool comp = consultaGeneral.ComprobarModuloCompetencias(Session["nit"].ToString(), Session["idEmpresa"].ToString());
 
             foreach (DataRow drDataRow in dtDataTable.Rows)
             {

@@ -34,12 +34,12 @@ namespace PortalTrabajadores.Class
                 Conexion.AbrirCnMysql();
                 string consulta;
 
-                consulta = "SELECT Id_Empleado, Id_Rol, Nombres_Empleado, " +
-                           "Companias_idCompania, Companias_idEmpresa, Externo " +
-                           "FROM " + bdTrabajadores + ".empleados " +
-                           "where Id_Empleado = '" + usuario + "' and " +
-                           "Contrasena_Empleado = '" + pass + "' and " +
-                           "Companias_idEmpresa = 'AE'";
+                consulta = "SELECT emp.Id_Empleado, emp.Id_Rol, emp.Nombres_Empleado, " +
+                           "emp.Companias_idCompania, emp.Companias_idEmpresa, emp.Externo, " +
+                           "com.Terceros_Nit_Tercero FROM " + bdTrabajadores + ".empleados emp INNER JOIN " +
+                           bdTrabajadores + ".companias com ON emp.Companias_idCompania = com.idCompania and " +
+                           "emp.Companias_idEmpresa = com.Empresas_idEmpresa where Id_Empleado = '" + usuario +
+                           "' and Contrasena_Empleado = '" + pass + "' and Companias_idEmpresa = 'AE'";
 
                 MySqlCommand cmd = new MySqlCommand(consulta, Conexion.ObtenerCnMysql());
                 MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(cmd);
@@ -106,20 +106,20 @@ namespace PortalTrabajadores.Class
                 }
             }
         }
-        
+
         /// <summary>
         /// Comprueba si la compania tiene el modulo de objetivos activos
         /// </summary>
         /// <returns>True si esta activo</returns>
-        public bool ComprobarModuloObjetivos(string idCompania, string idEmpresa)
+        public bool ComprobarModuloObjetivos(string idTercero, string idEmpresa)
         {
             CnMysql Conexion = new CnMysql(CnTrabajadores);
 
             try
             {
                 MySqlCommand rolCommand = new MySqlCommand("SELECT * FROM " +
-                                                            bdBasica + ".matriz_modulostercero where idCompania = '" +
-                                                            idCompania + "' and idEmpresa = '" +
+                                                            bdBasica + ".matriz_modulostercero where idTercero = '" +
+                                                            idTercero + "' and idEmpresa = '" +
                                                             idEmpresa + "' and idModulo = 1", Conexion.ObtenerCnMysql());
 
                 MySqlDataAdapter rolDataAdapter = new MySqlDataAdapter(rolCommand);
@@ -155,15 +155,15 @@ namespace PortalTrabajadores.Class
         /// Comprueba si la compania tiene el modulo de objetivos activos
         /// </summary>
         /// <returns>True si esta activo</returns>
-        public bool ComprobarModuloCompetencias(string idCompania, string idEmpresa)
+        public bool ComprobarModuloCompetencias(string idTercero, string idEmpresa)
         {
             CnMysql Conexion = new CnMysql(CnTrabajadores);
 
             try
             {
                 MySqlCommand rolCommand = new MySqlCommand("SELECT * FROM " +
-                                                            bdBasica + ".matriz_modulostercero where idCompania = '" +
-                                                            idCompania + "' and idEmpresa = '" +
+                                                            bdBasica + ".matriz_modulostercero where idTercero = '" +
+                                                            idTercero + "' and idEmpresa = '" +
                                                             idEmpresa + "' and idModulo = 2", Conexion.ObtenerCnMysql());
 
                 MySqlDataAdapter rolDataAdapter = new MySqlDataAdapter(rolCommand);
@@ -417,7 +417,7 @@ namespace PortalTrabajadores.Class
         /// <summary>
         /// Devuelve el cargo y competencias del usuario
         /// </summary>
-        public DataTable ConsultarCargosTrabajador(int cedula_Empleado)
+        public DataTable ConsultarCargosTrabajador(int cedula_Empleado, string ano)
         {
             CnMysql Conexion = new CnMysql(CnCompetencias);
 
@@ -427,6 +427,8 @@ namespace PortalTrabajadores.Class
                 MySqlCommand cmd = new MySqlCommand("sp_ConsultarCargosTrabajador", Conexion.ObtenerCnMysql());
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Id_Empleado", cedula_Empleado);
+                cmd.Parameters.AddWithValue("@estado", true);
+                cmd.Parameters.AddWithValue("@anioActual", ano);
 
                 MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(cmd);
                 DataSet dsDataSet = new DataSet();
@@ -756,7 +758,7 @@ namespace PortalTrabajadores.Class
         /// <summary>
         /// Crea una evaluacion para un usuario
         /// </summary>
-        public int CrearEvaluacionCompetencia(int idJefe, int idEmpleado, int idCargo, bool estadoEvaluacion, string anio, string idCompania, string idEmpresa)
+        public int CrearEvaluacionCompetencia(int idJefe, int idEmpleado, int idCargo, int idCompetencia, bool estadoEvaluacion, string anio, string idCompania, string idEmpresa)
         {
             CnMysql Conexion = new CnMysql(CnCompetencias);
             int res = 0;
@@ -771,6 +773,7 @@ namespace PortalTrabajadores.Class
                 cmd.Parameters.AddWithValue("@idJefe", idJefe);
                 cmd.Parameters.AddWithValue("@idEmpleado", idEmpleado);
                 cmd.Parameters.AddWithValue("@idCargo", idCargo);
+                cmd.Parameters.AddWithValue("@idCompetencia", idCompetencia);
                 cmd.Parameters.AddWithValue("@estadoEvaluacion", estadoEvaluacion);
                 cmd.Parameters.AddWithValue("@anio", anio);
                 cmd.Parameters.AddWithValue("@idCompania", idCompania);
@@ -1233,6 +1236,163 @@ namespace PortalTrabajadores.Class
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@idEvaluacionCompetencia", idEvaluacionCompetencia);
                 cmd.Parameters.AddWithValue("@estadoEvaluacion", estado);
+
+                // Crea un parametro de salida para el SP
+                MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                cmd.Parameters.Add(outputIdParam);
+                cmd.ExecuteNonQuery();
+
+                //Almacena la respuesta de la variable de retorno del SP
+                res = int.Parse(outputIdParam.Value.ToString());
+
+                if (res != 0)
+                {
+                    return res;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch (Exception E)
+            {
+                throw E;
+            }
+            finally
+            {
+                Conexion.CerrarCnMysql();
+            }
+        }
+
+        #endregion
+
+        #region Conductas
+
+        /// <summary>
+        /// Devuelve los planes de una competencia
+        /// </summary>
+        public DataTable ConsultarConductasCompetencia(int idCargo, int idCompetencia, string idCompania, string idEmpresa, string ano)
+        {
+            CnMysql Conexion = new CnMysql(CnCompetencias);
+
+            try
+            {
+                Conexion.AbrirCnMysql();
+                string consulta;
+
+                consulta = "SELECT ccc.idCarConCom, ccc.idConducta, cond.conducta, " +
+                           "(SELECT eval.calificacion FROM " + bdModCompetencias + ".evalcompconducta eval " +
+                           "WHERE eval.idCarConCom = ccc.idCarConCom) as calificacion " +
+                           "FROM " + bdModCompetencias + ".cargocompconductas ccc INNER JOIN " +
+                            bdModCompetencias + ".conductas cond ON ccc.idConducta = cond.idConducta " +
+                           "WHERE ccc.idCargo = " + idCargo + " AND ccc.idCompetencia = " + idCompetencia +
+                           " AND ccc.idCompania = '" + idCompania + "' AND ccc.idEmpresa = '" + idEmpresa +
+                           "' AND ccc.ano = " + ano + " AND ccc.estado = 1;";
+
+                MySqlCommand cmd = new MySqlCommand(consulta, Conexion.ObtenerCnMysql());
+                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(cmd);
+                DataSet dsDataSet = new DataSet();
+                DataTable dtDataTable = null;
+                sdaSqlDataAdapter.Fill(dsDataSet);
+                dtDataTable = dsDataSet.Tables[0];
+
+                if (dtDataTable != null && dtDataTable.Rows.Count > 0)
+                {
+                    return dtDataTable;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception E)
+            {
+                throw E;
+            }
+            finally
+            {
+                Conexion.CerrarCnMysql();
+            }
+        }
+
+        /// <summary>
+        /// Crea una calificacion de para una competencia
+        /// </summary>
+        public bool CrearEvalCompConductas(DataTable dtCarConCom, int calificacion)
+        {
+            CnMysql Conexion = new CnMysql(CnCompetencias);
+            int res = 0;
+
+            try
+            {
+                Conexion.AbrirCnMysql();
+                MySqlCommand cmd;
+
+                if (dtCarConCom != null)
+                {
+                    foreach (DataRow row in dtCarConCom.Rows)
+                    {
+                        string idCarConCom = row["idCarConCom"].ToString();
+
+                        cmd = new MySqlCommand("sp_CrearEvalCompConducta", Conexion.ObtenerCnMysql());
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@idCarConCom", idCarConCom);
+                        cmd.Parameters.AddWithValue("@calificacion", calificacion);
+
+                        // Crea un parametro de salida para el SP
+                        MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+
+                        cmd.Parameters.Add(outputIdParam);
+                        cmd.ExecuteNonQuery();
+
+                        //Almacena la respuesta de la variable de retorno del SP
+                        res = int.Parse(outputIdParam.Value.ToString());
+                    }
+                }
+
+                if (res != 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception E)
+            {
+                throw E;
+            }
+            finally
+            {
+                Conexion.CerrarCnMysql();
+            }
+        }
+
+        /// <summary>
+        /// Actualiza una calificacion de conducta
+        /// </summary>
+        public int ActualizarCalConducta(int idCarConCom, int calificacion)
+        {
+            CnMysql Conexion = new CnMysql(CnCompetencias);
+            int res = 0;
+
+            try
+            {
+                Conexion.AbrirCnMysql();
+                MySqlCommand cmd;
+
+                cmd = new MySqlCommand("sp_ActualizarCalConducta", Conexion.ObtenerCnMysql());
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@idCarConCom", idCarConCom);
+                cmd.Parameters.AddWithValue("@calificacion", calificacion);
 
                 // Crea un parametro de salida para el SP
                 MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)

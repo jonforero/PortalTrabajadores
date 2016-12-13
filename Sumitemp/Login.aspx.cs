@@ -53,6 +53,7 @@ namespace PortalTrabajadores.Portal
                         Session.Add("nombre", dtDataTable.Rows[0].ItemArray[2].ToString());
                         Session.Add("compania", dtDataTable.Rows[0].ItemArray[3].ToString());
                         Session.Add("idEmpresa", dtDataTable.Rows[0].ItemArray[4].ToString());
+                        Session.Add("nit", dtDataTable.Rows[0].ItemArray[6].ToString());
 
                         if (dtDataTable.Rows[0].ItemArray[5] != null)
                         {

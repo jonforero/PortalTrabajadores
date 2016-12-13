@@ -63,6 +63,7 @@
                     <AlternatingRowStyle CssClass="ColorOscuro" />
                     <Columns>
                         <asp:BoundField DataField="Competencia" HeaderText="Competencia" />
+                        <asp:BoundField DataField="Conductas" HeaderText="Conductas" />
                         <asp:BoundField DataField="NivelRequerido" HeaderText="Nivel Requerido" />
                         <asp:BoundField DataField="Calificacion" HeaderText="Calificacion" />
                         <asp:BoundField DataField="nvlCompetencia" HeaderText="Nivel Competencia" />
@@ -79,6 +80,9 @@
                                     ImageUrl="~/Img/add.gif" Visible="false"
                                     CommandArgument='<%#Eval("idCompetencia") + ";" + Eval("IdCargos") + ";" + Eval("idEva")%>'
                                     CommandName="Plan" ToolTip="No cumple el objetivo, puede crearle un plan de desarrollo" />
+                                <asp:ImageButton ID="btnAlerta" runat="server"
+                                    ImageUrl="~/Img/Alert.png" Visible="false"
+                                    Enabled="false" ToolTip="La competencia no tiene conductas." />
                             </ItemTemplate>
                             <ItemStyle HorizontalAlign="Center" />
                         </asp:TemplateField>
@@ -115,7 +119,7 @@
                 <asp:Button ID="BtnCargarPlanGeneral" runat="server" Text="Crear Plan General" Visible="false" OnClick="BtnCargarPlanGeneral_Click" />
                 <asp:Button ID="BtnAceptar" runat="server" Text="Finalizar" Visible="false" OnClick="BtnAceptar_Click" />
                 <asp:Button ID="BtnRegresar" runat="server" Text="Regresar" OnClick="BtnRegresar_Click" />
-                <table>
+                <table style="margin-top: 10px;">
                     <tr>
                         <td colspan="2">Para crear un plan de desarrollo general, califique al menos una competencia</td>
                     </tr>
@@ -133,6 +137,11 @@
                         <td>
                             <asp:ImageButton ID="btnP" runat="server" ImageUrl="~/Img/add.gif" Enabled="false" /></td>
                         <td>Indica que la competencia calificada es menor al rango impuesto, lo que le permite crearle un plan de desarrollo</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:ImageButton ID="btnA" runat="server" ImageUrl="~/Img/Alert.png" Enabled="false" /></td>
+                        <td>Indica que la competencia no tiene conductas y se debe comunicar con el administrador</td>
                     </tr>
                     <tr>
                         <td>Niveles creados</td>
@@ -161,36 +170,91 @@
                             <asp:Label ID="lblCompetencia" runat="server" />
                         </td>
                         <td class="CeldaTablaDatos">
-                            <asp:TextBox ID="txtCien" runat="server" Text="100" Style="display: none" />
-                            <asp:TextBox ID="txtCalificacion" runat="server" MaxLength="3" onkeypress="return ValidaSoloNumeros(event)" />
-                            <asp:CompareValidator ID="cValidator"
-                                runat="server"
-                                ErrorMessage="CompareValidator"
-                                ControlToValidate="txtCalificacion"
-                                ControlToCompare="txtCien"
-                                CssClass="MensajeError"
-                                Display="Dynamic"
-                                Operator="LessThanEqual"
-                                Type="Integer"
-                                Text="Error: La Meta no puede ser mayor a 100"
-                                ValidationGroup="objForm">
-                            </asp:CompareValidator>
-                            <asp:RequiredFieldValidator ID="rfvMeta"
-                                runat="server"
-                                ErrorMessage="Debe digitar valor"
-                                CssClass="MensajeError"
-                                Display="Dynamic"
-                                ControlToValidate="txtCalificacion"
-                                ValidationGroup="objForm"></asp:RequiredFieldValidator>
+                            <asp:Label ID="txtCalificacion" runat="server" />
                         </td>
                     </tr>
                     <tr class="ColorOscuro">
                         <td class="BotonTablaDatos">
-                            <asp:Button ID="BtnCalificar" runat="server" Text="Calificar" ValidationGroup="objForm" OnClick="BtnCalificar_Click" />
+                            <asp:Button ID="BtnCalificar" runat="server" Text="Calificar"
+                                ValidationGroup="objForm" OnClick="BtnCalificar_Click"
+                                OnClientClick="return confirm('Esta seguro que quiere continuar?');return false;" />
                         </td>
                         <td class="BotonTablaDatos">
                             <asp:Button ID="BtnRegresarCal" runat="server" Text="Regresar" OnClick="BtnRegresarCal_Click" />
                         </td>
+                    </tr>
+                </table>
+                <br />
+                <asp:GridView ID="gvCalConductas" runat="server" AutoGenerateColumns="false"
+                    OnRowCommand="gvCalConductas_RowCommand">
+                    <AlternatingRowStyle CssClass="ColorOscuro" />
+                    <Columns>
+                        <asp:BoundField DataField="conducta" HeaderText="Conducta" />
+                        <asp:BoundField DataField="calificacion" HeaderText="Calificación" />
+                        <asp:TemplateField HeaderText="Acciones" ItemStyle-HorizontalAlign="Center">
+                            <ItemTemplate>
+                                <asp:ImageButton ID="btnCalificar" runat="server"
+                                    ImageUrl="~/Img/edit.gif"
+                                    CommandArgument='<%#Eval("idCarConCom") + ";" + Eval("conducta") + ";" + Eval("calificacion") %>'
+                                    CommandName="Calificar" ToolTip="Calificar Conducta" />
+                            </ItemTemplate>
+                            <ItemStyle HorizontalAlign="Center" />
+                        </asp:TemplateField>
+                    </Columns>
+                </asp:GridView>
+                <div id="Container_Conducta" runat="server" visible="false">
+                    <br />
+                    <table id="TablaDatos">
+                        <tr>
+                            <th colspan="2">Calificar la conducta</th>
+                        </tr>
+                        <tr>
+                            <td class="CeldaTablaDatos">
+                                <asp:Label ID="lblConducta" runat="server" />
+                            </td>
+                            <td class="CeldaTablaDatos">
+                                <asp:TextBox ID="txtCien" runat="server" Text="100" Style="display: none" />
+                                <asp:TextBox ID="txtCalConducta" runat="server" MaxLength="3" onkeypress="return ValidaSoloNumeros(event)" />
+                                <asp:CompareValidator ID="cValidator"
+                                    runat="server"
+                                    ErrorMessage="CompareValidator"
+                                    ControlToValidate="txtCalConducta"
+                                    ControlToCompare="txtCien"
+                                    CssClass="MensajeError"
+                                    Display="Dynamic"
+                                    Operator="LessThanEqual"
+                                    Type="Integer"
+                                    Text="Error: La conducta no puede ser mayor a 100"
+                                    ValidationGroup="objConduc">
+                                </asp:CompareValidator>
+                                <asp:RequiredFieldValidator ID="rfvConducta"
+                                    runat="server"
+                                    ErrorMessage="Debe digitar valor"
+                                    CssClass="MensajeError"
+                                    Display="Dynamic"
+                                    ControlToValidate="txtCalConducta"
+                                    ValidationGroup="objConduc"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                        <tr class="ColorOscuro">
+                            <td class="BotonTablaDatos">
+                                <asp:Button ID="BtnCalificarConducta" runat="server" Text="Guardar" ValidationGroup="objConduc" OnClick="BtnCalificarConducta_Click" />
+                            </td>
+                            <td class="BotonTablaDatos">
+                                <asp:Button ID="BtnCerrarConducta" runat="server" Text="Cerrar" OnClick="BtnCerrarConducta_Click" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <br />
+                <table>
+                    <tr>
+                        <td colspan="2">Para calificar una competencia, primero debe calificar las conductas.</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:ImageButton ID="ImageButton1" runat="server" ImageUrl="~/Img/edit.gif" Enabled="false" /></td>
+                        <td>Carga la ventana de calificación de la competencia.</td>
                     </tr>
                 </table>
             </div>

@@ -19,8 +19,6 @@ namespace PortalTrabajadores.Portal
         string bdTrabajadores = ConfigurationManager.AppSettings["BD2"].ToString();
         string bdObjetivos = ConfigurationManager.AppSettings["BD3"].ToString();
         string bdCompetencias = ConfigurationManager.AppSettings["BD4"].ToString();
-
-        MySqlConnection MySqlCn;
         ConsultasGenerales consultas;
 
         #region Metodo Page Load
@@ -205,14 +203,41 @@ namespace PortalTrabajadores.Portal
                 gvPlanGeneral.DataSource = planes;
                 BtnCargarPlanGeneral.Visible = false;
             }
-            else 
+            else
             {
                 gvPlanGeneral.DataSource = null;
                 BtnCargarPlanGeneral.Visible = true;
             }
-            
+
             gvPlanGeneral.DataBind();
             UpdatePanel1.Update();
+        }
+
+        /// <summary>
+        /// Carga las calificaciones de las conductas
+        /// </summary>
+        private void CargarCalificacionConducta()
+        {
+            DataTable conductas = consultas.ConsultarConductasCompetencia(Convert.ToInt32(Session["idCargos"]),
+                                                                          Convert.ToInt32(Session["idCompetencia"]),
+                                                                          Session["compania"].ToString(),
+                                                                          Session["idEmpresa"].ToString(),
+                                                                          Session["anoActivo"].ToString());
+
+            int sum = 0;
+            int total = 0;
+
+            foreach (DataRow row in conductas.Rows)
+            {
+                int cal = Convert.ToInt32(row["calificacion"].ToString());
+
+                total += cal;
+                sum++;
+            }
+
+            txtCalificacion.Text = (total / sum).ToString();
+            gvCalConductas.DataSource = conductas;
+            gvCalConductas.DataBind();
         }
 
         #endregion
@@ -238,7 +263,7 @@ namespace PortalTrabajadores.Portal
                 Session.Add("idJefeEmpleado", idJefeEmpleado);
                 Session.Add("cedulaEmpleado", cedulaEmpleado);
 
-                DataTable dtDataTable = consultas.ConsultarCargosTrabajador(cedulaEmpleado);
+                DataTable dtDataTable = consultas.ConsultarCargosTrabajador(cedulaEmpleado, Session["anoActivo"].ToString());
 
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
@@ -272,15 +297,14 @@ namespace PortalTrabajadores.Portal
                             Session["btnPlanGeneral"] = false;
                             BtnCargarPlanGeneral.Visible = false;
                         }
-                        else 
+                        else
                         {
                             gvPlanGeneral.DataSource = null;
                             gvPlanGeneral.DataBind();
                         }
-                    }                    
+                    }
 
                     //// Consultamos si la evaluación creo plan
-                    
                     this.CargarNiveles();
                 }
                 else
@@ -321,7 +345,7 @@ namespace PortalTrabajadores.Portal
                 string cedulaJefe = DataBinder.Eval(e.Row.DataItem, "Cedula_Jefe").ToString();
                 string cedulaEmpleado = DataBinder.Eval(e.Row.DataItem, "Cedula_Empleado").ToString();
 
-                if (idCargos != string.Empty)
+                if (idCargos != string.Empty && idCargos != "0")
                 {
                     bool estado = consultas.EvaluacionCompetencia(Session["compania"].ToString(),
                                                                   "ST",
@@ -380,20 +404,29 @@ namespace PortalTrabajadores.Portal
 
                 if (e.CommandName == "Evaluar")
                 {
+                    DataTable conductas = consultas.ConsultarConductasCompetencia(idCargos,
+                                                                                  idCompetencia,
+                                                                                  Session["compania"].ToString(),
+                                                                                  Session["idEmpresa"].ToString(),
+                                                                                  Session["anoActivo"].ToString());
                     if (idEvaluacionCompetencia == 0)
                     {
                         idEvaluacionCompetencia = consultas.CrearEvaluacionCompetencia(
                                                                  Convert.ToInt32(Session["usuario"].ToString()),
                                                                  Convert.ToInt32(Session["cedulaEmpleado"].ToString()),
                                                                  idCargos,
+                                                                 idCompetencia,
                                                                  false,
                                                                  Session["anoActivo"].ToString(),
                                                                  Session["compania"].ToString(),
                                                                  Session["idEmpresa"].ToString());
+
+                        bool crearConductas = consultas.CrearEvalCompConductas(conductas, 0);
                     }
 
-                    Session.Add("idEvaluacionCompetencia", idEvaluacionCompetencia);
+                    this.CargarCalificacionConducta();
 
+                    Session.Add("idEvaluacionCompetencia", idEvaluacionCompetencia);
                     lblCompetencia.Text = gvCompetencias.Rows[RowIndex].Cells[0].Text;
                     BtnCalificar.Text = "Calificar";
                     Container_UpdatePanel2.Visible = false;
@@ -403,8 +436,6 @@ namespace PortalTrabajadores.Portal
                 else if (e.CommandName == "Plan")
                 {
                     lblCompetenciaG.Text = gvCompetencias.Rows[RowIndex].Cells[0].Text;
-                    lblCalificacionG.Text = gvCompetencias.Rows[RowIndex].Cells[1].Text;
-
                     DataTable planes = consultas.ConsultarPlanes(idCargos, idCompetencia);
 
                     if (planes == null)
@@ -430,8 +461,9 @@ namespace PortalTrabajadores.Portal
                 else if (e.CommandName == "Editar")
                 {
                     lblCompetencia.Text = gvCompetencias.Rows[RowIndex].Cells[0].Text;
-                    txtCalificacion.Text = gvCompetencias.Rows[RowIndex].Cells[2].Text;
-                    BtnCalificar.Text = "Editar";
+                    BtnCalificar.Text = "Confirmar cambio";
+                    this.CargarCalificacionConducta();
+
                     Container_UpdatePanel2.Visible = false;
                     Container_UpdatePanel3.Visible = true;
                     UpdatePanel1.Update();
@@ -455,11 +487,13 @@ namespace PortalTrabajadores.Portal
                 ImageButton btnCalificar = (ImageButton)e.Row.FindControl("btnCalificar");
                 ImageButton btnFin = (ImageButton)e.Row.FindControl("btnFin");
                 ImageButton btnPlan = (ImageButton)e.Row.FindControl("btnPlan");
+                ImageButton btnAlerta = (ImageButton)e.Row.FindControl("btnAlerta");
 
                 string idEvaluacionCompetencia = DataBinder.Eval(e.Row.DataItem, "idEva").ToString();
                 string idCompetencia = DataBinder.Eval(e.Row.DataItem, "idCompetencia").ToString();
                 string idCargo = DataBinder.Eval(e.Row.DataItem, "idCargos").ToString();
                 string calificacion = DataBinder.Eval(e.Row.DataItem, "Calificacion").ToString();
+                string conducta = DataBinder.Eval(e.Row.DataItem, "Conductas").ToString();
 
                 if (idEvaluacionCompetencia != "")
                 {
@@ -472,7 +506,14 @@ namespace PortalTrabajadores.Portal
                                                               Session["cedulaEmpleado"].ToString());
                 if (!estado)
                 {
-                    if (calificacion != string.Empty)
+                    if (conducta == "0")
+                    {
+                        btnCalificar.Visible = false;
+                        btnFin.Visible = false;
+                        btnPlan.Visible = false;
+                        btnAlerta.Visible = true;
+                    }
+                    else if (calificacion != string.Empty)
                     {
                         bool eval = consultas.ConsultarCalificacionRango(Session["compania"].ToString(),
                                                                          Session["idEmpresa"].ToString(),
@@ -485,12 +526,14 @@ namespace PortalTrabajadores.Portal
                             btnCalificar.Visible = false;
                             btnFin.Visible = true;
                             btnPlan.Visible = false;
+                            btnAlerta.Visible = false;
                         }
                         else
                         {
                             btnCalificar.Visible = false;
                             btnFin.Visible = false;
                             btnPlan.Visible = true;
+                            btnAlerta.Visible = false;
                         }
                     }
                     else
@@ -498,6 +541,7 @@ namespace PortalTrabajadores.Portal
                         btnCalificar.Visible = true;
                         btnFin.Visible = false;
                         btnPlan.Visible = false;
+                        btnAlerta.Visible = false;
                     }
                 }
                 else
@@ -505,6 +549,7 @@ namespace PortalTrabajadores.Portal
                     btnCalificar.Visible = false;
                     btnFin.Visible = false;
                     btnPlan.Visible = false;
+                    btnAlerta.Visible = false;
                 }
             }
         }
@@ -516,21 +561,45 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">evento e</param>
         protected void BtnAceptar_Click(object sender, EventArgs e)
         {
+            bool finalizar = false;
+            int res = 0;
             this.LimpiarMensaje();
 
             try
             {
-                int res = consultas.ActualizarEstadoEvaluacion(Convert.ToInt32(Session["idEvaluacionCompetencia"]),
-                                                               true);
+                DataTable dtDataTable = consultas.ConsultarCargosTrabajador(
+                                                    Convert.ToInt32(Session["cedulaEmpleado"]),
+                                                    Session["anoActivo"].ToString());
 
-                if (res == 0)
+                foreach (DataRow row in dtDataTable.Rows)
                 {
-                    MensajeError("Hubo un error al crear el seguimiento");
+                    if (row["Conductas"].ToString() == "0")
+                    {
+                        finalizar = true;
+                        break;
+                    }
+                }
+
+                if (finalizar)
+                {
+                    MensajeError("No se puede finalizar ya que existen competencias sin calificar.");
                 }
                 else
                 {
-                    this.CargarEmpleados(Session["usuario"].ToString(), Session["compania"].ToString());
-                    MensajeError("Evaluación Finalizada");
+                    foreach (DataRow row in dtDataTable.Rows)
+                    {
+                        res = consultas.ActualizarEstadoEvaluacion(Convert.ToInt32(row["idEva"].ToString()), true);
+                    }
+
+                    if (res == 0)
+                    {
+                        MensajeError("Hubo un error al crear el seguimiento");
+                    }
+                    else
+                    {
+                        this.CargarEmpleados(Session["usuario"].ToString(), Session["compania"].ToString());
+                        MensajeError("Evaluación Finalizada");
+                    }
                 }
 
                 UpdatePanel1.Update();
@@ -565,7 +634,7 @@ namespace PortalTrabajadores.Portal
             {
                 int res;
 
-                if (BtnCalificar.Text != "Editar")
+                if (BtnCalificar.Text != "Confirmar cambio")
                 {
                     res = consultas.CrearEvalCargoCompetencias(Convert.ToInt32(Session["idEvaluacionCompetencia"]),
                                                                Convert.ToInt32(Session["idCargos"]),
@@ -590,7 +659,9 @@ namespace PortalTrabajadores.Portal
                     MensajeError("Calificación Recibida.");
                 }
 
-                DataTable dtDataTable = consultas.ConsultarCargosTrabajador(Convert.ToInt32(Session["cedulaEmpleado"]));
+                DataTable dtDataTable = consultas.ConsultarCargosTrabajador(
+                                                    Convert.ToInt32(Session["cedulaEmpleado"]),
+                                                    Session["anoActivo"].ToString());
                 gvCompetencias.DataSource = dtDataTable;
                 gvCompetencias.DataBind();
 
@@ -616,6 +687,12 @@ namespace PortalTrabajadores.Portal
         /// <param name="e">evento e</param>
         protected void BtnRegresarCal_Click(object sender, EventArgs e)
         {
+            DataTable dtDataTable = consultas.ConsultarCargosTrabajador(
+                                                    Convert.ToInt32(Session["cedulaEmpleado"]),
+                                                    Session["anoActivo"].ToString());
+            gvCompetencias.DataSource = dtDataTable;
+            gvCompetencias.DataBind();
+
             this.LimpiarMensaje();
             txtCalificacion.Text = string.Empty;
             Container_UpdatePanel3.Visible = false;
@@ -741,10 +818,10 @@ namespace PortalTrabajadores.Portal
         protected void BtnRegCalificar_Click(object sender, EventArgs e)
         {
             this.LimpiarMensaje();
+            this.CargarCalificacionConducta();
 
             lblCompetencia.Text = lblCompetenciaG.Text;
-            txtCalificacion.Text = lblCalificacionG.Text;
-            BtnCalificar.Text = "Editar";
+            BtnCalificar.Text = "Confirmar cambio";
             Container_UpdatePanel4.Visible = false;
             Container_UpdatePanel5.Visible = false;
             Container_UpdatePanel3.Visible = true;
@@ -928,8 +1005,6 @@ namespace PortalTrabajadores.Portal
             UpdatePanel1.Update();
         }
 
-        #endregion
-
         /// <summary>
         /// Carga el formulario de plan general
         /// </summary>
@@ -1081,8 +1156,8 @@ namespace PortalTrabajadores.Portal
                                                            txtPlanGeneral.Text,
                                                            DateTime.Parse(txtFechaGeneral.Text));
 
-                    if (res != 0) 
-                    { 
+                    if (res != 0)
+                    {
                         res = Convert.ToInt32(Session["idPlanEstrategico"]);
                     }
                 }
@@ -1142,6 +1217,86 @@ namespace PortalTrabajadores.Portal
             Container_UpdatePanelPlan1.Visible = false;
             BtnRegresarComp.Visible = false;
             BtnRegresarSeg.Visible = true;
+            UpdatePanel1.Update();
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Comandos de calificacion de conductas
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void gvCalConductas_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            this.LimpiarMensaje();
+
+            try
+            {
+                string[] arg = new string[2];
+                arg = e.CommandArgument.ToString().Split(';');
+                Session.Add("idCarConCom", Convert.ToInt32(arg[0]));
+
+                if (e.CommandName == "Calificar")
+                {
+                    lblConducta.Text = arg[1];
+                    txtCalConducta.Text = arg[2];
+
+                    Container_Conducta.Visible = true;
+                    UpdatePanel1.Update();
+                }
+            }
+            catch (Exception E)
+            {
+                MensajeError("Ha ocurrido el siguiente error: " + E.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            }
+        }
+
+        /// <summary>
+        /// Califica una conducta
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void BtnCalificarConducta_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int idCarConCom = Convert.ToInt32(Session["idCarConCom"]);
+
+                int res = consultas.ActualizarCalConducta(idCarConCom, Convert.ToInt32(txtCalConducta.Text));
+
+                if (res == 0)
+                {
+                    MensajeError("Hubo un error al ingresar la información.");
+                }
+                else
+                {
+                    MensajeError("Calificación Recibida.");
+                }
+
+                this.CargarCalificacionConducta();
+
+                Container_Conducta.Visible = false;
+                txtCalConducta.Text = string.Empty;
+                lblConducta.Text = string.Empty;
+                UpdatePanel1.Update();
+            }
+            catch (Exception E)
+            {
+                MensajeError("Ha ocurrido el siguiente error: " + E.Message + " _Metodo: " + System.Reflection.MethodBase.GetCurrentMethod().Name);
+            }
+        }
+
+        /// <summary>
+        /// Cierra la ventana de edicion de Conducta
+        /// </summary>
+        /// <param name="sender">objeto sender</param>
+        /// <param name="e">evento e</param>
+        protected void BtnCerrarConducta_Click(object sender, EventArgs e)
+        {
+            Container_Conducta.Visible = false;
+            txtCalConducta.Text = string.Empty;
+            lblConducta.Text = string.Empty;
             UpdatePanel1.Update();
         }
     }

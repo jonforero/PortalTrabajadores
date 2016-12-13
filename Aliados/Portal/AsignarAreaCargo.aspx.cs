@@ -141,7 +141,7 @@ namespace PortalTrabajadores.Portal
                 cmd.Parameters.AddWithValue("@Companias_idEmpresa", Session["idEmpresa"]);
                 cmd.Parameters.AddWithValue("@Companias_idCompania", Session["compania"]);
                 cmd.Parameters.AddWithValue("@IdAreas", ddlArea.SelectedValue);
-                cmd.Parameters.AddWithValue("@IdCargos", ddlCargo.SelectedValue);               
+                cmd.Parameters.AddWithValue("@IdCargos", ddlCargo.SelectedValue);
 
                 // Crea un parametro de salida para el SP
                 MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
@@ -212,7 +212,7 @@ namespace PortalTrabajadores.Portal
                     MensajeError("Error al cargar la información");
                 }
 
-                rd.Close();         
+                rd.Close();
             }
             catch (Exception E)
             {
@@ -236,10 +236,10 @@ namespace PortalTrabajadores.Portal
             try
             {
                 Conexion.AbrirCnMysql();
-                MySqlCommand cmd = new MySqlCommand(bd2 + ".sp_ConsultaAreasEmp", Conexion.ObtenerCnMysql());
+                MySqlCommand cmd = new MySqlCommand(bd2 + ".sp_ConsultaAreas", Conexion.ObtenerCnMysql());
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@nitTercero", Session["nit"]);
                 cmd.Parameters.AddWithValue("@idEmpresa", Session["idEmpresa"]);
-                cmd.Parameters.AddWithValue("@id_Compania", Session["compania"]);
                 cmd.Parameters.AddWithValue("@estado", true);
 
                 MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(cmd);
@@ -263,10 +263,10 @@ namespace PortalTrabajadores.Portal
                     msgError = "No se han creado áreas. ";
                 }
 
-                cmd = new MySqlCommand(bd2 + ".sp_ConsultaCargosEmp", Conexion.ObtenerCnMysql());
+                cmd = new MySqlCommand(bd2 + ".sp_ConsultaCargos", Conexion.ObtenerCnMysql());
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@nitTercero", Session["nit"]);
                 cmd.Parameters.AddWithValue("@idEmpresa", Session["idEmpresa"]);
-                cmd.Parameters.AddWithValue("@id_Compania", Session["compania"]);
                 cmd.Parameters.AddWithValue("@estado", true);
 
                 sdaSqlDataAdapter = new MySqlDataAdapter(cmd);
