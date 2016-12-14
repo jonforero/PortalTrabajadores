@@ -238,6 +238,8 @@ namespace PortalTrabajadores.Portal
                 MySqlCn = new MySqlConnection(Cn);
                 MySqlCommand scSqlCommand;
                 string consulta = "SELECT * FROM  " + bd3 + ".fechasetapas where Etapas_idEtapas = " + etapa +
+                                  " AND Emp_idEmpresa = '" + Session["idEmpresa"].ToString() +
+                                  "' AND idTercero = " + Session["nit"].ToString() +
                                   " AND (Corte_Inicio <= '" + fecha.ToString("yyyy/MM/dd") + "' AND Corte_Fin >= '" + fecha.ToString("yyyy/MM/dd") + "');";
 
                 scSqlCommand = new MySqlCommand(consulta, MySqlCn);
