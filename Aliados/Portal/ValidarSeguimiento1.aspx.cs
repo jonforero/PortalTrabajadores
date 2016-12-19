@@ -137,24 +137,10 @@ namespace PortalTrabajadores.Portal
         {
             try
             {
-                DataSet dsDataSet = new DataSet();
-                DataTable dtDataTable = null;
-
-                MySqlCn = new MySqlConnection(Cn);
-                MySqlCommand scSqlCommand;
-                string consulta = "SELECT jefeempleado.idJefeEmpleado," +
-                                  "jefeempleado.idTercero," +
-                                  "jefeempleado.idCompania," +
-                                  "jefeempleado.Cedula_Empleado," +
-                                  "empleados.Nombres_Completos_Empleado " +
-                                  "FROM " + bd3 + ".jefeempleado " +
-                                  "INNER JOIN " + bd2 + ".empleados ON jefeempleado.Cedula_Empleado = empleados.Id_Empleado " +
-                                  "WHERE idCompania = '" + idCompania + "' AND Cedula_Jefe = " + cedulaJefe + " AND Ano = '" + Session["anoActivo"] + "';";
-
-                scSqlCommand = new MySqlCommand(consulta, MySqlCn);
-                MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(scSqlCommand);
-                sdaSqlDataAdapter.Fill(dsDataSet);
-                dtDataTable = dsDataSet.Tables[0];
+                DataTable dtDataTable = claseConsultas.ConsultarTrabajadoresXJefe(Session["idEmpresa"].ToString(),
+                                                                                  idCompania,
+                                                                                  cedulaJefe,
+                                                                                  Session["anoActivo"].ToString());
 
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {

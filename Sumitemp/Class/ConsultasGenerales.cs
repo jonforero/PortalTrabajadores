@@ -366,7 +366,7 @@ namespace PortalTrabajadores.Class
         /// <summary>
         /// Devuelve los trabajadores que tiene un jefe
         /// </summary>
-        public DataTable ConsultarTrabajadoresXJefe(string idCompania, string cedulaJefe, string anio)
+        public DataTable ConsultarTrabajadoresXJefe(string idEmpresa, string idCompania, string cedulaJefe, string anio)
         {
             CnMysql Conexion = new CnMysql(CnObjetivos);
 
@@ -375,18 +375,19 @@ namespace PortalTrabajadores.Class
                 Conexion.AbrirCnMysql();
                 string consulta;
 
-                consulta = "SELECT jefeempleado.idJefeEmpleado, " +
-                           "jefeempleado.idTercero, " +
-                           "jefeempleado.idCompania, " +
-                           "jefeempleado.Cedula_Empleado, " +
-                           "jefeempleado.Cedula_Jefe, " +
-                           "empleados.Nombres_Completos_Empleado, " +
-                           "empleados.IdCargos " +
-                           "FROM " + bdModobjetivos + ".jefeempleado " +
-                           "INNER JOIN " + bdTrabajadores + ".empleados " +
-                           "ON jefeempleado.Cedula_Empleado = empleados.Id_Empleado  " +
-                           "WHERE idCompania = '" + idCompania + "' " +
-                           "AND Cedula_Jefe = " + cedulaJefe + " AND Ano = '" + anio + "';";
+                consulta = "SELECT je.idJefeEmpleado, " +
+                           "je.idTercero, " +
+                           "je.idCompania, " +
+                           "je.Cedula_Empleado, " +
+                           "je.Cedula_Jefe, " +
+                           "em.Nombres_Completos_Empleado, " +
+                           "em.IdCargos " +
+                           "FROM " + bdModobjetivos + ".jefeempleado AS je " +
+                           "INNER JOIN " + bdTrabajadores + ".empleados AS em " +
+                           "ON je.Cedula_Empleado = em.Id_Empleado  " +
+                           "WHERE je.idCompania = '" + idCompania + "' " +
+                           "AND je.Cedula_Jefe = " + cedulaJefe + " AND je.Ano = '" + anio +
+                           "' AND em.Companias_idEmpresa = '" + idEmpresa + "';";
 
                 MySqlCommand cmd = new MySqlCommand(consulta, Conexion.ObtenerCnMysql());
                 MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(cmd);

@@ -121,9 +121,10 @@ namespace PortalTrabajadores.Portal
 
             try
             {
-                DataTable dtDataTable = consultas.ConsultarTrabajadoresXJefe(idCompania,
-                                                                             cedulaJefe,
-                                                                             Session["anoActivo"].ToString());
+                DataTable dtDataTable = consultas.ConsultarTrabajadoresXJefe(Session["idEmpresa"].ToString(),
+                                                                                  idCompania,
+                                                                                  cedulaJefe,
+                                                                                  Session["anoActivo"].ToString());
 
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
