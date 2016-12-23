@@ -264,7 +264,10 @@ namespace PortalTrabajadores.Portal
                 Session.Add("idJefeEmpleado", idJefeEmpleado);
                 Session.Add("cedulaEmpleado", cedulaEmpleado);
 
-                DataTable dtDataTable = consultas.ConsultarCargosTrabajador(cedulaEmpleado, Session["anoActivo"].ToString());
+                DataTable dtDataTable = consultas.ConsultarCargosTrabajador(
+                                                                    cedulaEmpleado,
+                                                                    Session["anoActivo"].ToString(),
+                                                                    Session["idEmpresa"].ToString());
 
                 if (dtDataTable != null && dtDataTable.Rows.Count > 0)
                 {
@@ -570,7 +573,8 @@ namespace PortalTrabajadores.Portal
             {
                 DataTable dtDataTable = consultas.ConsultarCargosTrabajador(
                                                     Convert.ToInt32(Session["cedulaEmpleado"]),
-                                                    Session["anoActivo"].ToString());
+                                                    Session["anoActivo"].ToString(),
+                                                    Session["idEmpresa"].ToString());
 
                 foreach (DataRow row in dtDataTable.Rows)
                 {
@@ -662,7 +666,8 @@ namespace PortalTrabajadores.Portal
 
                 DataTable dtDataTable = consultas.ConsultarCargosTrabajador(
                                                     Convert.ToInt32(Session["cedulaEmpleado"]),
-                                                    Session["anoActivo"].ToString());
+                                                    Session["anoActivo"].ToString(),
+                                                    Session["idEmpresa"].ToString());
                 gvCompetencias.DataSource = dtDataTable;
                 gvCompetencias.DataBind();
 
@@ -690,7 +695,8 @@ namespace PortalTrabajadores.Portal
         {
             DataTable dtDataTable = consultas.ConsultarCargosTrabajador(
                                                        Convert.ToInt32(Session["cedulaEmpleado"]),
-                                                       Session["anoActivo"].ToString());
+                                                       Session["anoActivo"].ToString(),
+                                                       Session["idEmpresa"].ToString());
             gvCompetencias.DataSource = dtDataTable;
             gvCompetencias.DataBind();
 

@@ -387,7 +387,8 @@ namespace PortalTrabajadores.Class
                            "ON je.Cedula_Empleado = em.Id_Empleado  " +
                            "WHERE je.idCompania = '" + idCompania + "' " +
                            "AND je.Cedula_Jefe = " + cedulaJefe + " AND je.Ano = '" + anio +
-                           "' AND em.Companias_idEmpresa = '" + idEmpresa + "';";
+                           "' AND em.Companias_idEmpresa = '" + idEmpresa + 
+                           "' AND em.Activo_Empleado = 'A';";
 
                 MySqlCommand cmd = new MySqlCommand(consulta, Conexion.ObtenerCnMysql());
                 MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(cmd);
@@ -419,7 +420,7 @@ namespace PortalTrabajadores.Class
         /// <summary>
         /// Devuelve el cargo y competencias del usuario
         /// </summary>
-        public DataTable ConsultarCargosTrabajador(int cedula_Empleado, string ano)
+        public DataTable ConsultarCargosTrabajador(int cedula_Empleado, string ano, string idEmpresa)
         {
             CnMysql Conexion = new CnMysql(CnCompetencias);
 
@@ -431,6 +432,7 @@ namespace PortalTrabajadores.Class
                 cmd.Parameters.AddWithValue("@Id_Empleado", cedula_Empleado);
                 cmd.Parameters.AddWithValue("@estado", true);
                 cmd.Parameters.AddWithValue("@anioActual", ano);
+                cmd.Parameters.AddWithValue("@idEmpresa", idEmpresa);
 
                 MySqlDataAdapter sdaSqlDataAdapter = new MySqlDataAdapter(cmd);
                 DataSet dsDataSet = new DataSet();
