@@ -340,7 +340,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>03/06/2016 15:00:53</publishTime>
     </File>
     <File Include="Portal/EvaluarCompetencias.aspx">
-      <publishTime>12/13/2016 00:47:26</publishTime>
+      <publishTime>12/27/2016 17:01:02</publishTime>
     </File>
     <File Include="Portal/FijarObjetivos.aspx">
       <publishTime>09/29/2016 20:57:07</publishTime>

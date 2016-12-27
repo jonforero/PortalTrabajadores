@@ -346,7 +346,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>04/04/2016 22:39:28</publishTime>
     </File>
     <File Include="Portal/EvaluarCompetencias.aspx">
-      <publishTime>12/04/2016 12:32:23</publishTime>
+      <publishTime>12/27/2016 16:30:59</publishTime>
     </File>
     <File Include="Portal/FijarObjetivos.aspx">
       <publishTime>06/30/2016 21:09:42</publishTime>
@@ -475,7 +475,7 @@ editando este archivo MSBuild. Para conocer más acerca de esto, visite http://g
       <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>12/18/2016 19:46:43</publishTime>
+      <publishTime>12/27/2016 16:54:27</publishTime>
     </File>
   </ItemGroup>
 </Project>

@@ -301,7 +301,7 @@
                         <td class="CeldaTablaDatos">Plan de Desarrollo
                         </td>
                         <td class="CeldaTablaDatos">
-                            <asp:TextBox ID="txtPlan" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px" />
+                            <asp:TextBox ID="txtPlan" runat="server" TextMode="MultiLine" MaxLength="800" Height="60px" Width="180px" />
                             <asp:RequiredFieldValidator ID="rfvPlan"
                                 runat="server"
                                 ErrorMessage="Debe digitar información del Plan"
@@ -350,7 +350,7 @@
                         <td class="CeldaTablaDatos">Seguimiento
                         </td>
                         <td class="CeldaTablaDatos">
-                            <asp:TextBox ID="txtSeguimiento" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px" />
+                            <asp:TextBox ID="txtSeguimiento" runat="server" TextMode="MultiLine" MaxLength="500" Height="60px" Width="180px" />
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1"
                                 runat="server"
                                 ErrorMessage="Debe digitar información del Plan"
@@ -379,7 +379,7 @@
                         <td class="CeldaTablaDatos">Plan de Desarrollo
                         </td>
                         <td class="CeldaTablaDatos">
-                            <asp:TextBox ID="txtPlanGeneral" runat="server" TextMode="MultiLine" MaxLength="200" Height="60px" Width="180px" />
+                            <asp:TextBox ID="txtPlanGeneral" runat="server" TextMode="MultiLine" MaxLength="800" Height="60px" Width="180px" />
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator2"
                                 runat="server"
                                 ErrorMessage="Debe digitar información del Plan"
