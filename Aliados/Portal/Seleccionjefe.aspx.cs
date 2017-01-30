@@ -19,6 +19,7 @@ namespace PortalTrabajadores.Portal
         string bd1 = ConfigurationManager.AppSettings["BD1"].ToString();
         string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
         string bd3 = ConfigurationManager.AppSettings["BD3"].ToString();
+        MySqlConnection MySqlCn;
 
         #region Definicion de los Metodos de la Clase
 
@@ -63,6 +64,8 @@ namespace PortalTrabajadores.Portal
                         {
                             this.lblTitulo.Text = dtDataTable.Rows[0].ItemArray[0].ToString();
                         }
+
+                        this.ObtenerPeriodoActivo();
                     }
                     catch (Exception E)
                     {
@@ -192,6 +195,7 @@ namespace PortalTrabajadores.Portal
                 cmd.Parameters.AddWithValue("@idjefe", TxtDoc.Text);
                 cmd.Parameters.AddWithValue("@idEmpleado", Session["usuario"].ToString());
                 cmd.Parameters.AddWithValue("@empresa", "AE");
+                cmd.Parameters.AddWithValue("@anio", Session["anoActivo"].ToString());
 
                 // Crea un parametro de salida para el SP
                 MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
@@ -323,6 +327,43 @@ namespace PortalTrabajadores.Portal
             }
         }
         #endregion
+
+        /// <summary>
+        /// Obtiene el año activo en el sistema
+        /// </summary>
+        public void ObtenerPeriodoActivo()
+        {
+            try
+            {
+                MySqlCn = new MySqlConnection(Cn);
+                MySqlCommand scSqlCommand;
+                string consulta = "SELECT * FROM " + bd3 + ".parametrosgenerales " +
+                                  "WHERE Empresas_idEmpresa = '" + Session["idEmpresa"] +
+                                  "' AND idCompania = '" + Session["compania"] + "'" +
+                                  " AND Activo = 1;";
+
+                scSqlCommand = new MySqlCommand(consulta, MySqlCn);
+
+                MySqlCn.Open();
+                MySqlDataReader rd = scSqlCommand.ExecuteReader();
+
+                if (rd.HasRows)
+                {
+                    if (rd.Read())
+                    {
+                        Session.Add("anoActivo", rd["Ano"]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MensajeError("El sistema no se encuentra disponible en este momento. " + ex.Message);
+            }
+            finally
+            {
+                MySqlCn.Close();
+            }
+        }
 
         #endregion
     }

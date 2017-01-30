@@ -19,10 +19,8 @@ namespace PortalTrabajadores.Portal
         string bd1 = ConfigurationManager.AppSettings["BD1"].ToString();
         string bd2 = ConfigurationManager.AppSettings["BD2"].ToString();
         string bd3 = ConfigurationManager.AppSettings["BD3"].ToString();
+        MySqlConnection MySqlCn;
 
-        #region Definicion de los Metodos de la Clase
-
-        #region Metodo Page Load
         /* ****************************************************************************/
         /* Metodo que se ejecuta al momento de la carga de la Pagina
         /* ****************************************************************************/
@@ -63,6 +61,8 @@ namespace PortalTrabajadores.Portal
                         {
                             this.lblTitulo.Text = dtDataTable.Rows[0].ItemArray[0].ToString();
                         }
+
+                        this.ObtenerPeriodoActivo();
                     }
                     catch (Exception E)
                     {
@@ -75,9 +75,7 @@ namespace PortalTrabajadores.Portal
                 }
             }
         }
-        #endregion
 
-        #region Metodo MensajeError
         /* ****************************************************************************/
         /* Metodo que habilita el label de mensaje de error
         /* ****************************************************************************/
@@ -87,9 +85,7 @@ namespace PortalTrabajadores.Portal
             LblMsj.Visible = true;
             UpdatePanel3.Update();
         }
-        #endregion
 
-        #region Metodo BtnBuscar_Click
         /* ****************************************************************************/
         /* Metodo que consulta la información del tercero a actualizar
         /* ****************************************************************************/
@@ -131,9 +127,7 @@ namespace PortalTrabajadores.Portal
                 }
             }
         }
-        #endregion
 
-        #region Metodo CargarInfoCliente
         /* ****************************************************************************/
         /* Metodo que carga la informacion del tercero en el formulario
         /* ****************************************************************************/
@@ -173,9 +167,7 @@ namespace PortalTrabajadores.Portal
                 Conexion.CerrarCnMysql();
             }
         }
-        #endregion
-        
-        #region Metodo BtnEditar_Click
+
         /* ********************************************************************************************************/
         /* Evento que se produce al dar clic sobre el boton BtnEditar para almacenar la informacion del tercero
         /* ********************************************************************************************************/
@@ -192,6 +184,7 @@ namespace PortalTrabajadores.Portal
                 cmd.Parameters.AddWithValue("@idjefe", TxtDoc.Text);
                 cmd.Parameters.AddWithValue("@idEmpleado", Session["usuario"].ToString());
                 cmd.Parameters.AddWithValue("@empresa", "ST");
+                cmd.Parameters.AddWithValue("@anio", Session["anoActivo"].ToString());
 
                 // Crea un parametro de salida para el SP
                 MySqlParameter outputIdParam = new MySqlParameter("@respuesta", SqlDbType.Int)
@@ -234,9 +227,7 @@ namespace PortalTrabajadores.Portal
                 Conexion.CerrarCnMysql();
             }
         }
-        #endregion
 
-        #region Metodo ActualizaInfoTercero
         /* ****************************************************************************/
         /* Metodo que actualiza la informacion del tercero en la Base de datos
         /* ****************************************************************************/
@@ -278,9 +269,7 @@ namespace PortalTrabajadores.Portal
                 Session.Remove("cambiaContrasena");
             }
         }
-        #endregion
 
-        #region Metodo CrearTercero
         /* ****************************************************************************/
         /* Metodo que inserta la informacion del tercero en la Base de datos
         /* ****************************************************************************/
@@ -322,8 +311,42 @@ namespace PortalTrabajadores.Portal
                 Session.Remove("cambiaContrasena");
             }
         }
-        #endregion
 
-        #endregion
+        /// <summary>
+        /// Obtiene el año activo en el sistema
+        /// </summary>
+        public void ObtenerPeriodoActivo()
+        {
+            try
+            {
+                MySqlCn = new MySqlConnection(Cn);
+                MySqlCommand scSqlCommand;
+                string consulta = "SELECT * FROM " + bd3 + ".parametrosgenerales " +
+                                  "WHERE Empresas_idEmpresa = '" + Session["idEmpresa"] +
+                                  "' AND idCompania = '" + Session["compania"] + "'" +
+                                  " AND Activo = 1;";
+
+                scSqlCommand = new MySqlCommand(consulta, MySqlCn);
+
+                MySqlCn.Open();
+                MySqlDataReader rd = scSqlCommand.ExecuteReader();
+
+                if (rd.HasRows)
+                {
+                    if (rd.Read())
+                    {
+                        Session.Add("anoActivo", rd["Ano"]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MensajeError("El sistema no se encuentra disponible en este momento. " + ex.Message);
+            }
+            finally
+            {
+                MySqlCn.Close();
+            }
+        }
     }
 }
